@@ -4,7 +4,14 @@ export default async function handler(req, res) {
   }
 
   try {
-    const userMessage = req.body.message;
+    const body = req.body || {};
+
+    const userMessage =
+      body.message ||
+      body.text ||
+      body.prompt ||
+      body.query ||
+      "Hola";
 
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -27,19 +34,16 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    console.log("CLAUDE RESPONSE:", JSON.stringify(data, null, 2));
-
-    let reply =
-      data?.content?.find(x => x.type === "text")?.text ||
-      data?.completion ||
+    const reply =
+      data?.content?.[0]?.text ||
       data?.error?.message ||
       "No pude responder.";
 
     return res.status(200).json({ reply });
 
-  } catch (error) {
+  } catch (err) {
     return res.status(500).json({
-      reply: "Error conectando IA: " + error.message
+      reply: "Error: " + err.message
     });
   }
 }
