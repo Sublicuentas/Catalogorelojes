@@ -17,12 +17,17 @@ export default async function handler(req, res) {
         "content-type": "application/json"
       },
       body: JSON.stringify({
-        model: "claude-3-haiku-20240307",
+        model: "claude-sonnet-4-0",
         max_tokens: 250,
         messages: [
           {
             role: "user",
-            content: userMessage
+            content: [
+              {
+                type: "text",
+                text: userMessage
+              }
+            ]
           }
         ]
       })
@@ -30,18 +35,23 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    console.log(data);
+    console.log("ANTHROPIC:", data);
+
+    if (!response.ok) {
+      return res.status(200).json({
+        reply: "ERROR API: " + JSON.stringify(data.error || data)
+      });
+    }
 
     const reply =
       data?.content?.[0]?.text ||
-      data?.error?.message ||
-      "No pude responder.";
+      "No hubo respuesta.";
 
-    res.status(200).json({ reply });
+    return res.status(200).json({ reply });
 
   } catch (e) {
-    res.status(500).json({
-      reply: e.message
+    return res.status(500).json({
+      reply: "ERROR SERVER: " + e.message
     });
   }
 }
