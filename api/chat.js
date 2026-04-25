@@ -1,25 +1,19 @@
 export default async function handler(req, res) {
-  try {
-    const msg = req.body?.message || req.body?.text || req.body?.prompt || "Hola";
-
-    const modelsRes = await fetch("https://api.anthropic.com/v1/models", {
-      headers: {
-        "x-api-key": process.env.ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01"
-      }
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      reply: "Método no permitido"
     });
+  }
 
-    const modelsData = await modelsRes.json();
+  try {
+    const body = req.body || {};
 
-    if (!modelsRes.ok) {
-      return res.status(200).json({
-        reply: "Error con API key: " + (modelsData?.error?.message || JSON.stringify(modelsData))
-      });
-    }
-
-    const model =
-      modelsData?.data?.[0]?.id ||
-      "claude-3-haiku-20240307";
+    const userMessage =
+      body.message ||
+      body.text ||
+      body.prompt ||
+      body.query ||
+      "Hola";
 
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -29,13 +23,14 @@ export default async function handler(req, res) {
         "content-type": "application/json"
       },
       body: JSON.stringify({
-        model,
+        model: "claude-haiku-4-5-20251001",
         max_tokens: 300,
-        system: "Usted es SubliBot, asesor digital de Sublicuentas. Responda corto, amable y vendedor. Venda Netflix, Disney+, Max, Prime Video, YouTube Premium, Spotify, Crunchyroll, Vix, Apple TV, Universal+, IPTV y promociones digitales. Trate siempre al cliente de usted.",
+        system:
+          "Usted es SubliBot, asesor digital de Sublicuentas. Responda corto, claro y amable. Trate al cliente de usted. Ayude a vender Netflix, Disney+, Max, Prime Video, Spotify, YouTube Premium, Crunchyroll, IPTV y demás servicios digitales.",
         messages: [
           {
             role: "user",
-            content: msg
+            content: userMessage
           }
         ]
       })
@@ -45,17 +40,19 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       return res.status(200).json({
-        reply: "Error modelo: " + (data?.error?.message || JSON.stringify(data))
+        reply: "Error API: " + (data?.error?.message || JSON.stringify(data))
       });
     }
 
-    return res.status(200).json({
-      reply: data?.content?.[0]?.text || "No pude responder."
-    });
+    const reply =
+      data?.content?.[0]?.text ||
+      "No pude responder en este momento.";
 
-  } catch (e) {
+    return res.status(200).json({ reply });
+
+  } catch (error) {
     return res.status(500).json({
-      reply: "Error servidor: " + e.message
+      reply: "Error servidor: " + error.message
     });
   }
 }
