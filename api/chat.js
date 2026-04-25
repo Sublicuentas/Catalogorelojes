@@ -14,9 +14,9 @@ export default async function handler(req, res) {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: model || 'claude-3-5-haiku-20241022',
+        model: 'claude-haiku-4-5-20251001',  // modelo que ya funcionaba antes
         max_tokens: max_tokens || 500,
-        system: system,   // <-- usa exactamente el system prompt del frontend
+        system: system,
         messages: messages
       })
     });
@@ -24,13 +24,15 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
-      return res.status(response.status).json({ error: data });
+      return res.status(200).json({
+        reply: 'Error API: ' + (data?.error?.message || JSON.stringify(data))
+      });
     }
 
-    const reply = data.content?.[0]?.text || '';
+    const reply = data?.content?.[0]?.text || 'No pude responder en este momento.';
     return res.status(200).json({ reply });
 
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    return res.status(200).json({ reply: 'Error servidor: ' + err.message });
   }
 }
