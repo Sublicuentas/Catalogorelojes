@@ -1,4 +1,10 @@
 export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      reply: "Método no permitido"
+    });
+  }
+
   try {
     const body = req.body || {};
 
@@ -17,8 +23,8 @@ export default async function handler(req, res) {
         "content-type": "application/json"
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-0",
-        max_tokens: 250,
+        model: "claude-3-5-haiku-latest",
+        max_tokens: 300,
         messages: [
           {
             role: "user",
@@ -35,23 +41,29 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    console.log("ANTHROPIC:", data);
+    console.log("ANTHROPIC RESPONSE:", data);
 
     if (!response.ok) {
       return res.status(200).json({
-        reply: "ERROR API: " + JSON.stringify(data.error || data)
+        reply:
+          "Error API: " +
+          (data?.error?.message || JSON.stringify(data))
       });
     }
 
     const reply =
       data?.content?.[0]?.text ||
-      "No hubo respuesta.";
+      "No pude responder en este momento.";
 
-    return res.status(200).json({ reply });
+    return res.status(200).json({
+      reply
+    });
 
-  } catch (e) {
+  } catch (error) {
+    console.error(error);
+
     return res.status(500).json({
-      reply: "ERROR SERVER: " + e.message
+      reply: "Error servidor: " + error.message
     });
   }
 }
