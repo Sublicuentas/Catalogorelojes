@@ -1,0 +1,441 @@
+{
+  "empresa": "Sublicuentas",
+  "pais": "Honduras",
+  "whatsapp": "+504 3212-6332",
+  "whatsapp_url": "https://wa.me/50432126332",
+  "fuente": "Extraído del index.html actual subido en la conversación.",
+  "reglas_venta": [
+    "Tratar siempre al cliente de usted.",
+    "Responder en español.",
+    "No inventar precios ni promociones.",
+    "Si el cliente pide descuento, dirigirlo a WhatsApp.",
+    "Cerrar con una pregunta de compra o activación."
+  ],
+  "servicios": [
+    {
+      "nombre": "Netflix",
+      "resumen": "2 planes disponibles",
+      "planes": [
+        {
+          "nombre": "Cuenta Premium",
+          "precio": "Lps. 130/mes",
+          "detalles": [
+            "1 dispositivo · Perfil con PIN",
+            "Acceso por codigo - no se brinda correo ni clave",
+            "Codigo hogar cada 20 dias"
+          ],
+          "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Netflix%20Compartido%20%28L130%29"
+        },
+        {
+          "nombre": "VIP ⭐",
+          "precio": "Lps. 150/mes",
+          "detalles": [
+            "Perfil personal · Se brinda correo y clave",
+            "Multidispositivo · Visualiza en uno a la vez",
+            "Sin codigo hogar"
+          ],
+          "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Netflix%20VIP%20%28L150%29"
+        }
+      ]
+    },
+    {
+      "nombre": "Disney+",
+      "resumen": "2 planes disponibles",
+      "planes": [
+        {
+          "nombre": "Premium",
+          "precio": "Lps. 100/mes",
+          "detalles": [
+            "1 dispositivo · Perfil con PIN · Acceso por codigo",
+            "Todo el catalogo Disney y Hulu",
+            "Todos los canales ESPN y deportes"
+          ],
+          "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Disney%2B%20Premium%20%28L100%29"
+        },
+        {
+          "nombre": "Basico",
+          "precio": "Lps. 60/mes",
+          "detalles": [
+            "1 dispositivo · Perfil con PIN · Acceso por codigo",
+            "Todo el catalogo Disney y Hulu",
+            "Sin canales ESPN"
+          ],
+          "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Disney%2B%20Basico%20%28L60%29"
+        }
+      ]
+    },
+    {
+      "nombre": "HBO Max",
+      "resumen": "1 plan disponible",
+      "planes": [
+        {
+          "nombre": "Mensual",
+          "precio": "Lps. 70/mes",
+          "detalles": [
+            "1 dispositivo · 30 dias · Full HD",
+            "Acceso por codigo - no se brinda correo/clave",
+            "Estrenos y originales exclusivos · Garantia"
+          ],
+          "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20HBO%20Max%20%28L70%29"
+        }
+      ]
+    },
+    {
+      "nombre": "Prime Video",
+      "resumen": "1 plan disponible",
+      "planes": [
+        {
+          "nombre": "Mensual",
+          "precio": "Lps. 70/mes",
+          "detalles": [
+            "1 dispositivo · 30 dias · Acceso por codigo",
+            "Full HD · Series y peliculas exclusivas",
+            "Solo catalogo Prime - no incluye compras ni rentas"
+          ],
+          "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Prime%20Video%20%28L70%29"
+        }
+      ]
+    },
+    {
+      "nombre": "Crunchyroll",
+      "resumen": "1 plan disponible",
+      "planes": [
+        {
+          "nombre": "Mensual",
+          "precio": "Lps. 70/mes",
+          "detalles": [
+            "1 dispositivo · 30 días · Acceso por código · Garantía incluida · Estrenos simultáneos con Japón · Todo el catálogo oficial de anime en HD"
+          ],
+          "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Crunchyroll%20%28L70%29"
+        }
+      ]
+    },
+    {
+      "nombre": "Vix",
+      "resumen": "1 plan disponible",
+      "planes": [
+        {
+          "nombre": "Mensual",
+          "precio": "Lps. 70/mes",
+          "detalles": [
+            "Se brinda correo y contraseña · 30 días",
+            "Peliculas, series y novelas mexicanas de todas las epocas",
+            "Garantia incluida",
+            "Canales en vivo · Noticias · Deportes latinos"
+          ],
+          "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Vix%20%28L70%29"
+        }
+      ]
+    },
+    {
+      "nombre": "Paramount+",
+      "resumen": "1 plan disponible",
+      "planes": [
+        {
+          "nombre": "Mensual",
+          "precio": "Lps. 70/mes",
+          "detalles": [
+            "1 dispositivo · 30 días · Acceso por código · Garantía incluida",
+            "UFC en vivo · Eventos de artes marciales mixtas",
+            "Series Paramount Originals · CBS · Películas de estreno"
+          ],
+          "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Paramount%2B%20%28L70%29"
+        }
+      ]
+    },
+    {
+      "nombre": "Viki Rakuten",
+      "resumen": "1 plan disponible",
+      "planes": [
+        {
+          "nombre": "Mensual",
+          "precio": "Lps. 80/mes",
+          "detalles": [
+            "1 dispositivo · 30 dias",
+            "Acceso a todo el catalogo Viki - K-dramas, doramas, anime",
+            "Contenido en idioma natal con subtitulos en espanol",
+            "Sin doblaje latino - solo subtitulado · Garantia"
+          ],
+          "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Viki%20Rakuten%20%28L80%29"
+        }
+      ]
+    },
+    {
+      "nombre": "Deezer Premium",
+      "resumen": "1 plan disponible",
+      "planes": [
+        {
+          "nombre": "Mensual",
+          "precio": "Lps. 80/mes",
+          "detalles": [
+            "+90 millones de canciones · Sin anuncios · Calidad hasta 320kbps",
+            "Podcasts exclusivos · Listas curadas · Descarga offline",
+            "Compatible con Alexa y Smart TV · Garantía incluida"
+          ],
+          "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Deezer%20Premium"
+        }
+      ]
+    },
+    {
+      "nombre": "Spotify Premium",
+      "resumen": "1 plan disponible",
+      "planes": [
+        {
+          "nombre": "Mensual",
+          "precio": "Lps. 110/mes",
+          "detalles": [
+            "30 dias · Se brinda correo y clave",
+            "Musica sin anuncios · Calidad de audio muy alta",
+            "Descarga canciones para escuchar sin conexion",
+            "+100 millones de canciones · Podcasts · Audiolibros · Garantia"
+          ],
+          "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Spotify%20Premium%20%28L110%29"
+        }
+      ]
+    },
+    {
+      "nombre": "YouTube Premium",
+      "resumen": "1 plan disponible",
+      "planes": [
+        {
+          "nombre": "Mensual",
+          "precio": "Lps. 110/mes",
+          "detalles": [
+            "30 días · Se brinda correo y clave",
+            "Videos sin anuncios en toda la plataforma",
+            "Reproducción en segundo plano · Pantalla apagada",
+            "Descarga de videos para ver sin conexión",
+            "Acceso incluido a YouTube Music Premium"
+          ],
+          "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20YouTube%20Premium"
+        }
+      ]
+    },
+    {
+      "nombre": "Oleada TV",
+      "resumen": "2 planes disponibles",
+      "planes": [
+        {
+          "nombre": "1 Dispositivo",
+          "precio": "Desde Lps. 80",
+          "detalles": [],
+          "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Oleada%20TV%201%20Dispositivo"
+        },
+        {
+          "nombre": "3 Dispositivos",
+          "precio": "Desde Lps. 160",
+          "detalles": [],
+          "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Oleada%20TV%203%20Dispositivos"
+        }
+      ]
+    },
+    {
+      "nombre": "Latin TV",
+      "resumen": "Ver planes completos",
+      "planes": [
+        {
+          "nombre": "Planes Latin TV",
+          "precio": "",
+          "detalles": [
+            "Multiples planes con diferentes duraciones y canales",
+            "Garantia y soporte incluidos"
+          ],
+          "whatsapp_url": "https://latintvrelojes.netlify.app"
+        }
+      ]
+    },
+    {
+      "nombre": "ChatGPT Plus",
+      "resumen": "1 plan disponible",
+      "planes": [
+        {
+          "nombre": "Mensual",
+          "precio": "Lps. 170/mes",
+          "detalles": [
+            "Se brinda correo o se renueva cuenta personal · Renovable",
+            "Acceso a GPT-4 y todas las funciones premium"
+          ],
+          "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20ChatGPT%20Plus%20%28L170%29"
+        }
+      ]
+    },
+    {
+      "nombre": "Gemini Plus",
+      "resumen": "1 plan disponible",
+      "planes": [
+        {
+          "nombre": "Mensual",
+          "precio": "Lps. 170/mes",
+          "detalles": [
+            "Se brinda correo y clave",
+            "Acceso a Google Gemini Advanced"
+          ],
+          "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Gemini%20Plus%20%28L170%29"
+        }
+      ]
+    },
+    {
+      "nombre": "Perplexity",
+      "resumen": "Plan anual disponible",
+      "planes": [
+        {
+          "nombre": "Anual",
+          "precio": "Lps. 600 /año",
+          "detalles": [
+            "Se renueva cuenta existente",
+            "Solo aplica si nunca ha tenido suscripcion Plus previa"
+          ],
+          "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Perplexity%20Anual%20%28L600%29"
+        }
+      ]
+    },
+    {
+      "nombre": "Canva Edu Pro",
+      "resumen": "4 planes disponibles",
+      "planes": [
+        {
+          "nombre": "Planes",
+          "precio": "",
+          "detalles": [
+            "Acceso completo a Canva Pro · Millones de templates premium",
+            "Descarga sin marca de agua · Garantia incluida"
+          ],
+          "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Canva%20Edu%20Pro"
+        }
+      ]
+    },
+    {
+      "nombre": "Office 365",
+      "resumen": "1 plan disponible",
+      "planes": [
+        {
+          "nombre": "Anual",
+          "precio": "Lps. 350 /año",
+          "detalles": [
+            "Vigencia de 1 año · Hasta 5 dispositivos",
+            "Word, Excel, PowerPoint, Outlook, OneNote y mas",
+            "1 TB en OneDrive · Compatible Windows, Mac, iOS y Android",
+            "Siempre actualizado · Garantia incluida"
+          ],
+          "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Office%20365%20Anual%205%20dispositivos%20%28L350%29"
+        }
+      ]
+    }
+  ],
+  "promociones_activas": [
+    {
+      "nombre": "Vix Premium",
+      "descripcion": "Series, películas y deportes en español. Lo mejor del entretenimiento latino sin interrupciones.",
+      "condiciones": [
+        "✅ 1 dispositivo vigente",
+        "✅ Servicio garantizado"
+      ],
+      "ofertas": [
+        {
+          "duracion": "3 meses",
+          "precio": "Lps. 120"
+        }
+      ],
+      "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Vix%20Premium%203%20meses%20L120"
+    },
+    {
+      "nombre": "Crunchyroll Premium",
+      "descripcion": "Anime sin anuncios, estrenos simultáneos con Japón, acceso a todo el catálogo oficial.",
+      "condiciones": [
+        "✅ 1 dispositivo vigente",
+        "✅ Acceso por código",
+        "✅ Servicio garantizado"
+      ],
+      "ofertas": [
+        {
+          "duracion": "3 meses",
+          "precio": "Lps. 180"
+        }
+      ],
+      "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Crunchyroll%20Premium%203%20meses%20L180"
+    },
+    {
+      "nombre": "Prime Video",
+      "descripcion": "Series y películas exclusivas Amazon Originals, estrenos semanales y contenido para toda la familia.",
+      "condiciones": [
+        "✅ 1 dispositivo vigente",
+        "✅ Acceso por código",
+        "✅ Servicio garantizado"
+      ],
+      "ofertas": [
+        {
+          "duracion": "3 meses",
+          "precio": "Lps. 180"
+        }
+      ],
+      "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Prime%20Video%203%20meses%20L180"
+    },
+    {
+      "nombre": "Paramount+",
+      "descripcion": "Series premiadas, películas de estreno, deportes CBS y contenido exclusivo Paramount+ Originals.",
+      "condiciones": [
+        "✅ 1 dispositivo vigente",
+        "✅ Acceso por código",
+        "✅ Servicio garantizado"
+      ],
+      "ofertas": [
+        {
+          "duracion": "3 meses",
+          "precio": "Lps. 180"
+        }
+      ],
+      "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Paramount%2B%203%20meses%20L180"
+    },
+    {
+      "nombre": "HBO Max",
+      "descripcion": "Game of Thrones, The Last of Us, Succession y los mejores estrenos HBO en resolución 4K.",
+      "condiciones": [
+        "✅ 1 dispositivo vigente",
+        "✅ Acceso por código",
+        "✅ Servicio garantizado"
+      ],
+      "ofertas": [
+        {
+          "duracion": "3 meses",
+          "precio": "Lps. 180"
+        }
+      ],
+      "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20HBO%20Max%203%20meses%20L180"
+    },
+    {
+      "nombre": "Disney+ Standard",
+      "descripcion": "Marvel, Pixar, Star Wars, National Geographic y todo el catálogo Disney en un solo lugar.",
+      "condiciones": [
+        "✅ 1 dispositivo vigente",
+        "✅ Acceso por código",
+        "✅ Servicio garantizado"
+      ],
+      "ofertas": [
+        {
+          "duracion": "3 meses",
+          "precio": "Lps. 150"
+        }
+      ],
+      "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Disney%2B%20Standard%203%20meses%20L150"
+    },
+    {
+      "nombre": "Deezer Premium",
+      "descripcion": "90 millones de canciones, podcasts, descargas offline y audio de alta calidad 320kbps.",
+      "condiciones": [
+        "✅ 1 dispositivo vigente",
+        "✅ Servicio garantizado"
+      ],
+      "ofertas": [
+        {
+          "duracion": "3 meses",
+          "precio": "Lps. 190"
+        },
+        {
+          "duracion": "6 meses",
+          "precio": "Lps. 380"
+        }
+      ],
+      "whatsapp_url": "https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Deezer%20Premium%203%20meses%20L190"
+    }
+  ]
+}
