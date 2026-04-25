@@ -1,58 +1,36 @@
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({
-      reply: "Método no permitido"
-    });
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    const body = req.body || {};
+    const { model, max_tokens, system, messages } = req.body;
 
-    const userMessage =
-      body.message ||
-      body.text ||
-      body.prompt ||
-      body.query ||
-      "Hola";
-
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
       headers: {
-        "x-api-key": process.env.ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
-        "content-type": "application/json"
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 300,
-        system:
-          "Usted es SubliBot, asesor digital de Sublicuentas. Responda corto, claro y amable. Trate al cliente de usted. Ayude a vender Netflix, Disney+, Max, Prime Video, Spotify, YouTube Premium, Crunchyroll, IPTV y demás servicios digitales.",
-        messages: [
-          {
-            role: "user",
-            content: userMessage
-          }
-        ]
+        model: model || 'claude-3-5-haiku-20241022',
+        max_tokens: max_tokens || 500,
+        system: system,   // <-- usa exactamente el system prompt del frontend
+        messages: messages
       })
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      return res.status(200).json({
-        reply: "Error API: " + (data?.error?.message || JSON.stringify(data))
-      });
+      return res.status(response.status).json({ error: data });
     }
 
-    const reply =
-      data?.content?.[0]?.text ||
-      "No pude responder en este momento.";
-
+    const reply = data.content?.[0]?.text || '';
     return res.status(200).json({ reply });
 
-  } catch (error) {
-    return res.status(500).json({
-      reply: "Error servidor: " + error.message
-    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
   }
 }
