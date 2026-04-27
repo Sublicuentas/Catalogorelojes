@@ -6,25 +6,29 @@ export default async function handler(req, res) {
   try {
     const { model, max_tokens, system, messages } = req.body;
 
-    // Validar que lleguen los datos
-    if (!messages || !Array.isArray(messages)) {
-      return res.status(200).json({ reply: 'Error: mensajes no recibidos correctamente.' });
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      return res.status(200).json({ reply: 'Error: mensajes no recibidos.' });
     }
 
-    // Filtrar mensajes validos (solo user y assistant, sin vacios)
-    const mensajesLimpios = messages.filter(m =>
+    // Limpiar mensajes: solo user/assistant con contenido
+    let limpios = messages.filter(m =>
       (m.role === 'user' || m.role === 'assistant') &&
-      m.content && m.content.trim().length > 0
+      m.content && String(m.content).trim().length > 0
     );
 
-    if (mensajesLimpios.length === 0) {
-      return res.status(200).json({ reply: 'Error: no hay mensajes válidos.' });
+    // La API de Anthropic requiere que empiece con 'user' y alterne
+    // Si empieza con assistant, quitarlo
+    if (limpios.length > 0 && limpios[0].role === 'assistant') {
+      limpios = limpios.slice(1);
     }
 
-    // El ultimo mensaje debe ser del usuario
-    const ultimoMensaje = mensajesLimpios[mensajesLimpios.length - 1];
-    if (ultimoMensaje.role !== 'user') {
-      return res.status(200).json({ reply: 'Error: el último mensaje debe ser del usuario.' });
+    // Asegurar que termina en user
+    while (limpios.length > 0 && limpios[limpios.length - 1].role === 'assistant') {
+      limpios = limpios.slice(0, -1);
+    }
+
+    if (limpios.length === 0) {
+      return res.status(200).json({ reply: 'Error: no hay mensajes del usuario.' });
     }
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -38,15 +42,16 @@ export default async function handler(req, res) {
         model: 'claude-haiku-4-5-20251001',
         max_tokens: max_tokens || 500,
         system: system || '',
-        messages: mensajesLimpios
+        messages: limpios
       })
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      const errorMsg = data?.error?.message || JSON.stringify(data);
-      return res.status(200).json({ reply: 'Error API: ' + errorMsg });
+      return res.status(200).json({
+        reply: 'Error API: ' + (data?.error?.message || JSON.stringify(data))
+      });
     }
 
     const reply = data?.content?.[0]?.text || 'Sin respuesta.';
