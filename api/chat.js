@@ -7,28 +7,27 @@ export default async function handler(req, res) {
     const { model, max_tokens, system, messages } = req.body;
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
-      return res.status(200).json({ reply: 'Error: mensajes no recibidos.' });
+      return res.status(200).json({ reply: 'Sin mensajes recibidos.' });
     }
 
-    // Limpiar mensajes: solo user/assistant con contenido
+    // Limpiar: solo user/assistant con contenido
     let limpios = messages.filter(m =>
       (m.role === 'user' || m.role === 'assistant') &&
       m.content && String(m.content).trim().length > 0
     );
 
-    // La API de Anthropic requiere que empiece con 'user' y alterne
-    // Si empieza con assistant, quitarlo
-    if (limpios.length > 0 && limpios[0].role === 'assistant') {
+    // Anthropic requiere que empiece con 'user'
+    while (limpios.length > 0 && limpios[0].role === 'assistant') {
       limpios = limpios.slice(1);
     }
 
-    // Asegurar que termina en user
+    // Debe terminar en 'user'
     while (limpios.length > 0 && limpios[limpios.length - 1].role === 'assistant') {
       limpios = limpios.slice(0, -1);
     }
 
     if (limpios.length === 0) {
-      return res.status(200).json({ reply: 'Error: no hay mensajes del usuario.' });
+      return res.status(200).json({ reply: 'No hay mensajes del usuario aún.' });
     }
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -58,6 +57,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ reply });
 
   } catch (err) {
-    return res.status(200).json({ reply: 'Error servidor: ' + err.message });
+    return res.status(200).json({ reply: 'Error: ' + err.message });
   }
 }
