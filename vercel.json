@@ -8,12 +8,20 @@
     {
       "src": "api/chat.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "api/cartelera.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/api/chat",
       "dest": "/api/chat.js"
+    },
+    {
+      "src": "/api/cartelera",
+      "dest": "/api/cartelera.js"
     },
     {
       "src": "/(.*)",
