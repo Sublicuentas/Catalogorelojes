@@ -1,93 +1,65 @@
 // ============================================================
-//  /api/cartelera.js   —  Funcion Serverless de Vercel (CommonJS)
+//  /api/cartelera.js   —  Funcion Serverless de Vercel (Node)
 // ============================================================
-//  - Modo LISTA:    /api/cartelera?provider=netflix
-//  - Modo DETALLE:  /api/cartelera?id=123&type=tv  (o type=movie)
-//  Region = HN (Honduras) para que cada titulo salga en la
-//  plataforma correcta de tu mercado.
-//  Acepta clave v3 (corta) o token v4 (largo con puntos).
+//  PASOS PARA ACTIVARLA:
+//  1) Crea una cuenta GRATIS en https://www.themoviedb.org/
+//     -> Settings (Ajustes) -> API -> "Create" -> elige "Developer"
+//     -> copia tu "API Key (v3 auth)".
+//  2) En Vercel: tu proyecto -> Settings -> Environment Variables
+//     -> agrega:   Name = TMDB_API_KEY    Value = (tu clave)
+//     -> guarda y haz "Redeploy".
+//  3) Sube ESTE archivo dentro de la carpeta  /api  de tu repo
+//     (es decir, debe quedar como  api/cartelera.js).
+//     Vercel lo publica solo como  https://tudominio/api/cartelera
+//
+//  Listo: la pestana Cartelera empezara a mostrar las caratulas.
+//  Se actualiza solo (cache de ~12h) porque TMDB actualiza su data
+//  y el orden por popularidad cambia a diario.
 // ============================================================
 
+// IDs de proveedor en TMDB. Si una app no muestra nada, prueba los
+// IDs alternativos que dejo en el comentario.
 const PROVIDERS = {
   netflix:     8,
-  disney:      337,
-  hbomax:      1899,  // Max. Alternativos: 384, 615
-  prime:       119,   // Prime Video. Alternativo: 9
-  paramount:   531,
+  disney:      337,   // Disney+
+  hbomax:      1899,  // Max (antes HBO Max). Alternativos: 384, 615
+  prime:       119,   // Amazon Prime Video. Alternativo: 9
+  paramount:   531,   // Paramount+
   crunchyroll: 283
 };
 
-const REGION = 'HN';   // Honduras. Prueba 'MX' si quieres mas titulos.
-const LANG   = 'es-MX';
-const IMG    = 'https://image.tmdb.org/t/p/';
+// Region de disponibilidad. 'US' trae mas titulos; tambien puedes
+// probar 'MX', 'ES' o 'HN' (Honduras suele traer menos data).
+const REGION = 'US';
+const LANG   = 'es-MX';   // idioma de titulos/descripciones
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   try {
     const key = process.env.TMDB_API_KEY;
-    if (!key) return res.status(500).json({ error: 'Falta TMDB_API_KEY (haz Redeploy)' });
+    if (!key) return res.status(500).json({ error: 'Falta la variable TMDB_API_KEY en Vercel' });
 
-    const isV4 = key.length > 50 && key.indexOf('.') !== -1;
-    const headers = isV4 ? { Authorization: 'Bearer ' + key } : {};
-    const authQ = isV4 ? '' : ('api_key=' + key + '&');
-    const api = 'https://api.themoviedb.org/3/';
-
-    // ---------- MODO DETALLE ----------
-    const id = req.query && req.query.id;
-    if (id) {
-      const type = (req.query.type === 'tv') ? 'tv' : 'movie';
-      const u = api + type + '/' + encodeURIComponent(id) + '?' + authQ + 'language=';
-      const d = await fetch(u + LANG, { headers }).then(r => r.json());
-      let overview = d.overview || '';
-      if (!overview) {
-        const de = await fetch(u + 'en-US', { headers }).then(r => r.json()).catch(() => ({}));
-        overview = de.overview || '';
-      }
-      const sl = (d.spoken_languages && d.spoken_languages[0]) || {};
-      const detail = {
-        id: d.id, type: type,
-        title: d.title || d.name || '',
-        original: d.original_title || d.original_name || '',
-        year: (d.release_date || d.first_air_date || '').slice(0, 4),
-        rating: d.vote_average ? Number(d.vote_average).toFixed(1) : '',
-        overview: overview,
-        poster: d.poster_path ? IMG + 'w342' + d.poster_path : '',
-        backdrop: d.backdrop_path ? IMG + 'w780' + d.backdrop_path : '',
-        genres: (d.genres || []).map(g => g.name),
-        language: sl.name || sl.english_name || d.original_language || '',
-        countries: (d.production_countries || []).map(c => c.name),
-        seasons: d.number_of_seasons || null,
-        episodes: d.number_of_episodes || null,
-        runtime: type === 'movie' ? (d.runtime || null) : ((d.episode_run_time && d.episode_run_time[0]) || null),
-        statusTxt: d.status || ''
-      };
-      res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=172800');
-      return res.status(200).json(detail);
-    }
-
-    // ---------- MODO LISTA ----------
-    const provider = String((req.query && req.query.provider) || 'netflix').toLowerCase();
+    const provider = String(req.query.provider || 'netflix').toLowerCase();
     const pid = PROVIDERS[provider];
-    if (!pid) return res.status(400).json({ error: 'provider invalido: ' + provider });
+    if (!pid) return res.status(400).json({ error: 'provider invalido' });
 
-    const q = authQ + 'language=' + LANG + '&watch_region=' + REGION +
-              '&with_watch_providers=' + pid + '&sort_by=popularity.desc&page=1';
-    const [mvR, tvR] = await Promise.all([
-      fetch(api + 'discover/movie?' + q, { headers }),
-      fetch(api + 'discover/tv?'    + q, { headers })
+    const base = 'https://api.themoviedb.org/3/discover/';
+    const q = `api_key=${key}&language=${LANG}&watch_region=${REGION}` +
+              `&with_watch_providers=${pid}&sort_by=popularity.desc&page=1`;
+
+    const [mv, tv] = await Promise.all([
+      fetch(base + 'movie?' + q).then(r => r.json()),
+      fetch(base + 'tv?'    + q).then(r => r.json())
     ]);
-    if (!mvR.ok && !tvR.ok) {
-      const t = await mvR.text().catch(() => '');
-      return res.status(502).json({ error: 'TMDB ' + mvR.status + ': ' + t.slice(0, 140) });
-    }
-    const mv = await mvR.json().catch(() => ({ results: [] }));
-    const tv = await tvR.json().catch(() => ({ results: [] }));
+
     const map = (arr, type) => (arr || []).map(x => ({
-      id: x.id, type: type,
-      title: x.title || x.name || '',
-      year: (x.release_date || x.first_air_date || '').slice(0, 4),
+      title:  x.title || x.name || '',
+      type,
+      year:  (x.release_date || x.first_air_date || '').slice(0, 4),
       rating: x.vote_average ? Number(x.vote_average).toFixed(1) : '',
-      poster: x.poster_path ? IMG + 'w342' + x.poster_path : ''
+      poster: x.poster_path ? 'https://image.tmdb.org/t/p/w342' + x.poster_path : ''
     }));
+
+    // Intercala peliculas y series (ambas por popularidad)
     const M = map(mv.results, 'movie');
     const T = map(tv.results, 'tv');
     const out = [];
@@ -96,9 +68,11 @@ module.exports = async (req, res) => {
       if (T[i]) out.push(T[i]);
     }
     const items = out.filter(i => i.poster).slice(0, 18);
+
+    // Cache en el edge: se refresca solo cada ~12h
     res.setHeader('Cache-Control', 's-maxage=43200, stale-while-revalidate=86400');
-    return res.status(200).json({ provider: provider, region: REGION, count: items.length, items: items });
+    return res.status(200).json({ provider, region: REGION, items });
   } catch (e) {
-    return res.status(500).json({ error: 'Error interno: ' + (e && e.message ? e.message : 'desconocido') });
+    return res.status(500).json({ error: 'No se pudo consultar TMDB' });
   }
-};
+}
