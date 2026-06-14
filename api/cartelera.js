@@ -57,7 +57,7 @@ module.exports = async (req, res) => {
         year: (d.release_date || d.first_air_date || '').slice(0, 4),
         rating: d.vote_average ? Number(d.vote_average).toFixed(1) : '',
         overview: overview,
-        poster: d.poster_path ? IMG + 'w342' + d.poster_path : '',
+        poster: d.poster_path ? IMG + 'w500' + d.poster_path : '',
         backdrop: d.backdrop_path ? IMG + 'w780' + d.backdrop_path : '',
         genres: (d.genres || []).map(g => g.name),
         language: sl.name || sl.english_name || d.original_language || '',
@@ -72,26 +72,40 @@ module.exports = async (req, res) => {
     }
 
     // ---------- LISTA ----------
-    // poster w185 = mas liviano = carga mas rapido
+    // poster w342 = nitido en PC, sigue siendo razonable en movil
+    // Generos TMDB: Soap(telenovela)=10766, Animation=16
+    function clasifica(x, type){
+      var g = x.genre_ids || [];
+      var lang = x.original_language || '';
+      if (type === 'movie') return 'pelicula';
+      // TV: detectar anime (animacion + japones) o novela (soap)
+      if (g.indexOf(16) !== -1 && (lang === 'ja' || lang === 'zh' || lang === 'ko')) return 'anime';
+      if (g.indexOf(10766) !== -1) return 'novela';
+      return 'serie';
+    }
     const map = (arr, type, provider) => (arr || []).map(x => ({
       id: x.id, type: type, provider: provider,
+      cat: clasifica(x, type),
       title: x.title || x.name || '',
       year: (x.release_date || x.first_air_date || '').slice(0, 4),
       rating: x.vote_average ? Number(x.vote_average).toFixed(1) : '',
       pop: x.popularity || 0,
-      poster: x.poster_path ? IMG + 'w185' + x.poster_path : ''
+      poster: x.poster_path ? IMG + 'w342' + x.poster_path : ''
     }));
 
     async function fetchProvider(provider) {
       const pid = PROVIDERS[provider];
-      const q = authQ + 'language=' + LANG + '&watch_region=' + REGION +
-                '&with_watch_providers=' + pid + '&sort_by=popularity.desc&page=1';
-      const [mvR, tvR] = await Promise.all([
-        fetch(api + 'discover/movie?' + q, { headers }).then(r => r.ok ? r.json() : { results: [] }).catch(() => ({ results: [] })),
-        fetch(api + 'discover/tv?'    + q, { headers }).then(r => r.ok ? r.json() : { results: [] }).catch(() => ({ results: [] }))
+      const base = '&language=' + LANG + '&watch_region=' + REGION +
+                '&with_watch_providers=' + pid + '&sort_by=popularity.desc';
+      // 2 paginas de cada tipo = mas titulos (entran novelas, animes, estrenos)
+      const [mv1, mv2, tv1, tv2] = await Promise.all([
+        fetch(api + 'discover/movie?' + authQ + base + '&page=1', { headers }).then(r => r.ok ? r.json() : { results: [] }).catch(() => ({ results: [] })),
+        fetch(api + 'discover/movie?' + authQ + base + '&page=2', { headers }).then(r => r.ok ? r.json() : { results: [] }).catch(() => ({ results: [] })),
+        fetch(api + 'discover/tv?'    + authQ + base + '&page=1', { headers }).then(r => r.ok ? r.json() : { results: [] }).catch(() => ({ results: [] })),
+        fetch(api + 'discover/tv?'    + authQ + base + '&page=2', { headers }).then(r => r.ok ? r.json() : { results: [] }).catch(() => ({ results: [] }))
       ]);
-      const M = map(mvR.results, 'movie', provider);
-      const T = map(tvR.results, 'tv', provider);
+      const M = map([].concat(mv1.results||[], mv2.results||[]), 'movie', provider);
+      const T = map([].concat(tv1.results||[], tv2.results||[]), 'tv', provider);
       const out = [];
       for (let i = 0; i < Math.max(M.length, T.length); i++) { if (M[i]) out.push(M[i]); if (T[i]) out.push(T[i]); }
       return out.filter(i => i.poster);
@@ -125,7 +139,7 @@ module.exports = async (req, res) => {
     provs.forEach(function(p){
       byProvider[p] = (byProviderRaw[p] || [])
         .filter(function(it){ return owner[it.type + ':' + it.id] === p; })
-        .slice(0, 18);
+        .slice(0, 40);
     });
 
     res.setHeader('Cache-Control', 's-maxage=21600, stale-while-revalidate=43200');
