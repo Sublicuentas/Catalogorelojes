@@ -78,9 +78,11 @@ module.exports = async (req, res) => {
       var g = x.genre_ids || [];
       var lang = x.original_language || '';
       if (type === 'movie') return 'pelicula';
-      // TV: detectar anime (animacion + japones) o novela (soap)
+      // ANIME: animacion + origen asiatico
       if (g.indexOf(16) !== -1 && (lang === 'ja' || lang === 'zh' || lang === 'ko')) return 'anime';
+      // NOVELA: genero Soap(10766), o serie en español con Drama(18) (novelas latinas)
       if (g.indexOf(10766) !== -1) return 'novela';
+      if (lang === 'es' && g.indexOf(18) !== -1) return 'novela';
       return 'serie';
     }
     const map = (arr, type, provider) => (arr || []).map(x => ({
