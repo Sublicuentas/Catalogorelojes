@@ -18,11 +18,13 @@ const PROVIDERS = {
   paramount:   531,
   crunchyroll: 283
 };
-// Orden de prioridad cuando un titulo esta en varias apps:
+// Orden de prioridad cuando un titulo aparece en varias apps:
 // se queda en la primera de esta lista donde aparezca.
-const PRIORITY = ['crunchyroll','disney','hbomax','paramount','netflix','prime'];
+// Netflix primero (es la mas grande/exclusiva en LatAm), luego Crunchyroll (anime),
+// despues el resto. Asi titulos como Rosario Tijeras se quedan en Netflix.
+const PRIORITY = ['netflix','crunchyroll','disney','hbomax','paramount','prime'];
 
-const REGION = 'HN';
+const REGION = 'MX';   // Mexico = mismo catalogo que Honduras pero datos mas completos en TMDB
 const LANG   = 'es-MX';
 const IMG    = 'https://image.tmdb.org/t/p/';
 
@@ -77,12 +79,13 @@ module.exports = async (req, res) => {
     function clasifica(x, type){
       var g = x.genre_ids || [];
       var lang = x.original_language || '';
+      // ANIME: género Animación (16) con origen asiático (japonés, coreano, chino)
+      // aplica tanto a películas como series (hay películas anime también)
+      if (g.indexOf(16) !== -1 && (lang === 'ja' || lang === 'ko' || lang === 'zh')) return 'anime';
       if (type === 'movie') return 'pelicula';
-      // ANIME: animacion + origen asiatico
-      if (g.indexOf(16) !== -1 && (lang === 'ja' || lang === 'zh' || lang === 'ko')) return 'anime';
-      // NOVELA: genero Soap(10766), o serie en español con Drama(18) (novelas latinas)
+      // NOVELA: género telenovela (Soap 10766), o serie en español/portugués con Drama(18)
       if (g.indexOf(10766) !== -1) return 'novela';
-      if (lang === 'es' && g.indexOf(18) !== -1) return 'novela';
+      if ((lang === 'es' || lang === 'pt') && g.indexOf(18) !== -1) return 'novela';
       return 'serie';
     }
     const map = (arr, type, provider) => (arr || []).map(x => ({
