@@ -28,6 +28,71 @@ const REGION = 'MX';   // Mexico = mismo catalogo que Honduras pero datos mas co
 const LANG   = 'es-MX';
 const IMG    = 'https://image.tmdb.org/t/p/';
 
+// ============================================================
+//  LISTA CURADA de NOVELAS y ANIMES por app (nombres reales).
+//  El codigo busca cada nombre en TMDB para traer poster/año/rating.
+//  Editar libremente: agregar o quitar titulos por app.
+//  type: 'tv' o 'movie' (la mayoria de novelas/animes son 'tv').
+// ============================================================
+const CURATED = {
+  netflix: {
+    novela: [
+      'Café con aroma de mujer','Pasión de gavilanes','La reina del flow','Rosario Tijeras',
+      'Yo soy Betty, la fea','Sin senos sí hay paraíso','La casa de las flores','Oscuro deseo',
+      'Rebelde','Bolívar','Romina poderosa','Cien años de soledad','La venganza de Analía',
+      'Pálpito','Distrito Salvaje','Always a Witch','El final del paraíso'
+    ],
+    anime: [
+      'One Piece','Naruto','Jujutsu Kaisen','Demon Slayer','Attack on Titan','My Hero Academia',
+      'Hunter x Hunter','Death Note','Bleach','Tokyo Revengers','Spy x Family','Chainsaw Man',
+      'Black Clover','Vinland Saga','Baki'
+    ]
+  },
+  hbomax: {
+    novela: [
+      'La que se avecina','Sin senos no hay paraíso','El Señor de los Cielos','La Reina del Sur',
+      'Rubí','Teresa','Cuna de lobos','La usurpadora'
+    ],
+    anime: [
+      'Studio Ghibli','El viaje de Chihiro','La princesa Mononoke','Mi vecino Totoro','Adventure Time',
+      'Rick and Morty','Looney Tunes'
+    ]
+  },
+  disney: {
+    novela: [
+      'Rebelde','Violetta','Soy Luna','Patito Feo','Chica Vampiro','Cómplices al rescate'
+    ],
+    anime: [
+      'Doraemon','Bluey','Los Simpson','Phineas y Ferb','Gravity Falls','Star vs las Fuerzas del Mal'
+    ]
+  },
+  prime: {
+    novela: [
+      'Pasión de gavilanes','Sin senos sí hay paraíso','La Reina del Sur','El Clon','Marimar',
+      'María la del Barrio'
+    ],
+    anime: [
+      'Dragon Ball Z','Dragon Ball','Pokémon','Sailor Moon','Inuyasha','Yu-Gi-Oh'
+    ]
+  },
+  paramount: {
+    novela: [
+      'Rubí','Teresa','La Madrastra','Triunfo del Amor','Soy tu dueña','Abismo de pasión'
+    ],
+    anime: [
+      'Bob Esponja','Avatar: La leyenda de Aang','Las Tortugas Ninja','Los Padrinos Mágicos'
+    ]
+  },
+  crunchyroll: {
+    novela: [],
+    anime: [
+      'One Piece','Naruto Shippuden','Jujutsu Kaisen','Demon Slayer','Attack on Titan','My Hero Academia',
+      'Bleach','Black Clover','Tokyo Revengers','Chainsaw Man','Spy x Family','Dragon Ball Super',
+      'Hunter x Hunter','One Punch Man','Mob Psycho 100','Solo Leveling','Blue Lock','Frieren'
+    ]
+  }
+};
+
 function buildAuth(key){
   const isV4 = key.length > 50 && key.indexOf('.') !== -1;
   return { headers: isV4 ? { Authorization: 'Bearer ' + key } : {}, authQ: isV4 ? '' : ('api_key=' + key + '&') };
@@ -98,44 +163,44 @@ module.exports = async (req, res) => {
       poster: x.poster_path ? IMG + 'w342' + x.poster_path : ''
     }));
 
+    // Busca un titulo por nombre en TMDB y lo devuelve mapeado (poster, año, rating)
+    async function searchTitle(name, cat, provider){
+      // intenta TV primero (la mayoria de novelas/animes son series)
+      const tryType = async (t) => {
+        const u = api + 'search/' + t + '?' + authQ + 'language=' + LANG + '&query=' + encodeURIComponent(name);
+        const r = await fetch(u, { headers }).then(x => x.ok ? x.json() : { results: [] }).catch(() => ({ results: [] }));
+        const hit = (r.results || []).filter(x => x.poster_path)[0];
+        return hit ? map([hit], t, provider, cat)[0] : null;
+      };
+      let item = await tryType('tv');
+      if (!item) item = await tryType('movie');
+      return item;
+    }
+    async function fetchCurated(provider, cat){
+      const names = (CURATED[provider] && CURATED[provider][cat]) || [];
+      const results = await Promise.all(names.map(n => searchTitle(n, cat, provider)));
+      return results.filter(Boolean);
+    }
+
     async function fetchProvider(provider) {
       const pid = PROVIDERS[provider];
       const base = '&language=' + LANG + '&watch_region=' + REGION +
                 '&with_watch_providers=' + pid + '&sort_by=popularity.desc';
       const G = (url) => fetch(api + url, { headers }).then(r => r.ok ? r.json() : { results: [] }).catch(() => ({ results: [] }));
-      const [
-        mv1, mv2, tv1, tv2,            // populares (peliculas y series)
-        soap1, soap2,                  // telenovelas (genero Soap 10766)
-        kdr1,                          // kdramas (genero Drama + idioma coreano)
-        tdr1,                          // dramas turcos (idioma turco)
-        animeTv1, animeTv2,            // animes serie (Animacion + japones)
-        animeMv1                       // animes pelicula
-      ] = await Promise.all([
+      const [mv1, mv2, tv1, tv2, NOV, ANI] = await Promise.all([
         G('discover/movie?' + authQ + base + '&page=1'),
         G('discover/movie?' + authQ + base + '&page=2'),
         G('discover/tv?'    + authQ + base + '&page=1'),
         G('discover/tv?'    + authQ + base + '&page=2'),
-        G('discover/tv?'    + authQ + base + '&with_genres=10766&page=1'),
-        G('discover/tv?'    + authQ + base + '&with_genres=10766&page=2'),
-        G('discover/tv?'    + authQ + base + '&with_genres=18&with_original_language=ko&page=1'),
-        G('discover/tv?'    + authQ + base + '&with_genres=18&with_original_language=tr&page=1'),
-        G('discover/tv?'    + authQ + base + '&with_genres=16&with_original_language=ja&page=1'),
-        G('discover/tv?'    + authQ + base + '&with_genres=16&with_original_language=ja&page=2'),
-        G('discover/movie?' + authQ + base + '&with_genres=16&with_original_language=ja&page=1')
+        fetchCurated(provider, 'novela'),   // novelas curadas (nombres reales)
+        fetchCurated(provider, 'anime')     // animes curados (nombres reales)
       ]);
-      const M = map([].concat(mv1.results||[], mv2.results||[]), 'movie', provider);
-      const T = map([].concat(tv1.results||[], tv2.results||[]), 'tv', provider);
-      // Novelas dedicadas (telenovelas + kdramas + turcas) -> cat 'novela'
-      const NOV = map([].concat(soap1.results||[], soap2.results||[], kdr1.results||[], tdr1.results||[]), 'tv', provider, 'novela');
-      // Animes dedicados -> cat 'anime'
-      const ANI = [].concat(
-        map([].concat(animeTv1.results||[], animeTv2.results||[]), 'tv', provider, 'anime'),
-        map(animeMv1.results||[], 'movie', provider, 'anime')
-      );
-      // Intercalar populares peli/serie
+      // Populares: solo peliculas y series (excluye lo que ya es novela/anime por clasificacion)
+      const M = map([].concat(mv1.results||[], mv2.results||[]), 'movie', provider).filter(it => it.cat==='pelicula');
+      const T = map([].concat(tv1.results||[], tv2.results||[]), 'tv', provider).filter(it => it.cat==='serie');
       const out = [];
       for (let i = 0; i < Math.max(M.length, T.length); i++) { if (M[i]) out.push(M[i]); if (T[i]) out.push(T[i]); }
-      // Agregar novelas y animes (sin duplicar por id dentro de la app)
+      // Agregar novelas y animes curados (sin duplicar por id dentro de la app)
       const seen = {}; out.forEach(it => seen[it.type+':'+it.id] = 1);
       [].concat(NOV, ANI).forEach(it => { const k = it.type+':'+it.id; if (!seen[k]) { seen[k]=1; out.push(it); } });
       return out.filter(i => i.poster);
@@ -167,7 +232,12 @@ module.exports = async (req, res) => {
 
     const byProvider = {};
     provs.forEach(function(p){
-      var mine = (byProviderRaw[p] || []).filter(function(it){ return owner[it.type + ':' + it.id] === p; });
+      // Novelas y animes curados: SIEMPRE se quedan en su app (no se deduplican entre apps).
+      // Peliculas y series populares: si se deduplican (para no repetir el mismo titulo).
+      var mine = (byProviderRaw[p] || []).filter(function(it){
+        if (it.cat === 'novela' || it.cat === 'anime') return true;
+        return owner[it.type + ':' + it.id] === p;
+      });
       // Separar por categoria para garantizar cupo de cada una
       var pelis   = mine.filter(function(it){ return it.cat === 'pelicula'; });
       var series  = mine.filter(function(it){ return it.cat === 'serie'; });
