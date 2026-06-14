@@ -88,9 +88,9 @@ module.exports = async (req, res) => {
       if ((lang === 'es' || lang === 'pt') && g.indexOf(18) !== -1) return 'novela';
       return 'serie';
     }
-    const map = (arr, type, provider) => (arr || []).map(x => ({
+    const map = (arr, type, provider, forceCat) => (arr || []).map(x => ({
       id: x.id, type: type, provider: provider,
-      cat: clasifica(x, type),
+      cat: forceCat || clasifica(x, type),
       title: x.title || x.name || '',
       year: (x.release_date || x.first_air_date || '').slice(0, 4),
       rating: x.vote_average ? Number(x.vote_average).toFixed(1) : '',
@@ -102,17 +102,42 @@ module.exports = async (req, res) => {
       const pid = PROVIDERS[provider];
       const base = '&language=' + LANG + '&watch_region=' + REGION +
                 '&with_watch_providers=' + pid + '&sort_by=popularity.desc';
-      // 2 paginas de cada tipo = mas titulos (entran novelas, animes, estrenos)
-      const [mv1, mv2, tv1, tv2] = await Promise.all([
-        fetch(api + 'discover/movie?' + authQ + base + '&page=1', { headers }).then(r => r.ok ? r.json() : { results: [] }).catch(() => ({ results: [] })),
-        fetch(api + 'discover/movie?' + authQ + base + '&page=2', { headers }).then(r => r.ok ? r.json() : { results: [] }).catch(() => ({ results: [] })),
-        fetch(api + 'discover/tv?'    + authQ + base + '&page=1', { headers }).then(r => r.ok ? r.json() : { results: [] }).catch(() => ({ results: [] })),
-        fetch(api + 'discover/tv?'    + authQ + base + '&page=2', { headers }).then(r => r.ok ? r.json() : { results: [] }).catch(() => ({ results: [] }))
+      const G = (url) => fetch(api + url, { headers }).then(r => r.ok ? r.json() : { results: [] }).catch(() => ({ results: [] }));
+      const [
+        mv1, mv2, tv1, tv2,            // populares (peliculas y series)
+        soap1, soap2,                  // telenovelas (genero Soap 10766)
+        kdr1,                          // kdramas (genero Drama + idioma coreano)
+        tdr1,                          // dramas turcos (idioma turco)
+        animeTv1, animeTv2,            // animes serie (Animacion + japones)
+        animeMv1                       // animes pelicula
+      ] = await Promise.all([
+        G('discover/movie?' + authQ + base + '&page=1'),
+        G('discover/movie?' + authQ + base + '&page=2'),
+        G('discover/tv?'    + authQ + base + '&page=1'),
+        G('discover/tv?'    + authQ + base + '&page=2'),
+        G('discover/tv?'    + authQ + base + '&with_genres=10766&page=1'),
+        G('discover/tv?'    + authQ + base + '&with_genres=10766&page=2'),
+        G('discover/tv?'    + authQ + base + '&with_genres=18&with_original_language=ko&page=1'),
+        G('discover/tv?'    + authQ + base + '&with_genres=18&with_original_language=tr&page=1'),
+        G('discover/tv?'    + authQ + base + '&with_genres=16&with_original_language=ja&page=1'),
+        G('discover/tv?'    + authQ + base + '&with_genres=16&with_original_language=ja&page=2'),
+        G('discover/movie?' + authQ + base + '&with_genres=16&with_original_language=ja&page=1')
       ]);
       const M = map([].concat(mv1.results||[], mv2.results||[]), 'movie', provider);
       const T = map([].concat(tv1.results||[], tv2.results||[]), 'tv', provider);
+      // Novelas dedicadas (telenovelas + kdramas + turcas) -> cat 'novela'
+      const NOV = map([].concat(soap1.results||[], soap2.results||[], kdr1.results||[], tdr1.results||[]), 'tv', provider, 'novela');
+      // Animes dedicados -> cat 'anime'
+      const ANI = [].concat(
+        map([].concat(animeTv1.results||[], animeTv2.results||[]), 'tv', provider, 'anime'),
+        map(animeMv1.results||[], 'movie', provider, 'anime')
+      );
+      // Intercalar populares peli/serie
       const out = [];
       for (let i = 0; i < Math.max(M.length, T.length); i++) { if (M[i]) out.push(M[i]); if (T[i]) out.push(T[i]); }
+      // Agregar novelas y animes (sin duplicar por id dentro de la app)
+      const seen = {}; out.forEach(it => seen[it.type+':'+it.id] = 1);
+      [].concat(NOV, ANI).forEach(it => { const k = it.type+':'+it.id; if (!seen[k]) { seen[k]=1; out.push(it); } });
       return out.filter(i => i.poster);
     }
 
@@ -142,9 +167,21 @@ module.exports = async (req, res) => {
 
     const byProvider = {};
     provs.forEach(function(p){
-      byProvider[p] = (byProviderRaw[p] || [])
-        .filter(function(it){ return owner[it.type + ':' + it.id] === p; })
-        .slice(0, 40);
+      var mine = (byProviderRaw[p] || []).filter(function(it){ return owner[it.type + ':' + it.id] === p; });
+      // Separar por categoria para garantizar cupo de cada una
+      var pelis   = mine.filter(function(it){ return it.cat === 'pelicula'; });
+      var series  = mine.filter(function(it){ return it.cat === 'serie'; });
+      var novelas = mine.filter(function(it){ return it.cat === 'novela'; });
+      var animes  = mine.filter(function(it){ return it.cat === 'anime'; });
+      // Ordenar cada grupo por popularidad
+      [pelis, series, novelas, animes].forEach(function(a){ a.sort(function(x,y){ return (y.pop||0)-(x.pop||0); }); });
+      // Tomar buena cantidad de cada uno (asi Novelas y Animes salen llenos)
+      byProvider[p] = [].concat(
+        pelis.slice(0, 30),
+        series.slice(0, 30),
+        novelas.slice(0, 40),
+        animes.slice(0, 40)
+      );
     });
 
     res.setHeader('Cache-Control', 's-maxage=21600, stale-while-revalidate=43200');
