@@ -3788,6 +3788,16 @@ main { display:block !important; min-height:420px !important; padding:0 14px 20p
 }
 </style>
 
+
+<style id="subli-v17-password-eye-fix">
+#tab-compras .v8-pass-wrap{position:relative!important;display:flex!important;align-items:center!important;width:100%!important;max-width:100%!important}
+#tab-compras .v8-pass-wrap input{width:100%!important;padding-right:58px!important}
+#tab-compras .v8-eye{position:absolute!important;right:10px!important;top:50%!important;transform:translateY(-50%)!important;width:42px!important;height:42px!important;border:0!important;background:transparent!important;color:#1A1A1A!important;font-size:23px!important;line-height:1!important;display:flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important;border-radius:14px!important;z-index:3!important;box-shadow:none!important;padding:0!important}
+#tab-compras .v8-eye:active{background:#FEF2F2!important;transform:translateY(-50%) scale(.94)!important}
+#tab-compras .v8-auth-card .v8-eye{color:#151515!important}
+#tab-compras .v8-auth-card .v8-pass-wrap input:focus + .v8-eye{color:#E50914!important}
+</style>
+
 <script id="subli-compras-v8-redesign-js">
 (function(){
 'use strict';
@@ -3852,8 +3862,8 @@ function savedUser(){try{return JSON.parse(localStorage.getItem('subliV8User')||
 function saveUser(){localStorage.setItem('subliV8User',JSON.stringify(state.user||{}))}
 function accounts(){try{return JSON.parse(localStorage.getItem('subliV8Accounts')||'{}')}catch(e){return {}}}
 function saveAccounts(obj){localStorage.setItem('subliV8Accounts',JSON.stringify(obj||{}))}
-function passwordOk(p){p=String(p||'').trim();return p.length>=4}
-function passwordHelp(){return 'La clave debe tener mínimo 4 caracteres.'}
+function passwordOk(p){p=String(p||'').trim();return p.length>=6}
+function passwordHelp(){return 'La clave debe tener mínimo 6 caracteres.'}
 function accountKey(mode,num){return fullPhone(mode,num)}
 function getPoints(){var n=parseInt(localStorage.getItem('subliV8Points')||localStorage.getItem('subliV7Points')||localStorage.getItem('subliWalletPoints')||'0',10);return isFinite(n)?n:0}
 function savePoints(){localStorage.setItem('subliV8Points',String(state.points));localStorage.setItem('subliV7Points',String(state.points));localStorage.setItem('subliWalletPoints',String(state.points))}
@@ -3867,6 +3877,7 @@ function closeCountries(except){document.querySelectorAll('.v8-country-menu').fo
 window.openV8Country=function(mode,e){if(e){e.preventDefault();e.stopPropagation()}var key='v8Countries-'+mode;closeCountries(key);var el=id(key);if(el)el.classList.toggle('open')}
 window.selectV8Country=function(mode,index,e){if(e){e.preventDefault();e.stopPropagation()}var c=COUNTRIES[index]||COUNTRIES[0];state.country[mode]=c;var f=id('v8Flag-'+mode), code=id('v8Code-'+mode), menu=id('v8Countries-'+mode);if(f)f.textContent=c.flag;if(code)code.textContent=c.code;if(menu)menu.classList.remove('open')}
 document.addEventListener('click',function(ev){if(!ev.target.closest('.v8-country'))closeCountries()});
+function wirePassToggles(){document.querySelectorAll('[data-pass-toggle]').forEach(function(btn){if(btn.getAttribute('data-pass-ready')==='1')return;btn.setAttribute('data-pass-ready','1');btn.onclick=function(ev){if(ev){ev.preventDefault();ev.stopPropagation()}var target=id(btn.getAttribute('data-pass-toggle'));if(!target)return;var show=target.type==='password';target.type=show?'text':'password';btn.textContent=show?'🙈':'👁️';btn.setAttribute('aria-label',show?'Ocultar clave':'Ver clave');try{target.focus()}catch(e){}}})}
 function fullPhone(mode,num){var c=state.country[mode]||COUNTRIES[0];var code=String(c.code||'+504').replace(/\D+/g,'');var n=digits(num);if(n.indexOf(code)===0&&n.length>code.length+3)return n;return code+n}
 function categorize(name){var n=(name||'').toLowerCase(); if(n.indexOf('iptv')>-1||n.indexOf('oleada')>-1||n.indexOf('magis')>-1||n.indexOf('latin')>-1||n.indexOf('lion')>-1||n.indexOf('tvgo')>-1||n.indexOf('titan')>-1)return 'IPTV'; if(n.indexOf('spotify')>-1||n.indexOf('deezer')>-1||n.indexOf('youtube')>-1)return 'Música'; if(n.indexOf('chatgpt')>-1||n.indexOf('gemini')>-1||n.indexOf('perplexity')>-1||n.indexOf('notion')>-1||n.indexOf('ia')>-1)return 'IA'; if(n.indexOf('canva')>-1||n.indexOf('office')>-1||n.indexOf('microsoft')>-1||n.indexOf('adobe')>-1||n.indexOf('software')>-1||n.indexOf('antivirus')>-1)return 'Diseño/Software'; return 'Video'}
 function findIconByText(name){var target=(name||'').toLowerCase(); var best=''; document.querySelectorAll('.ps').forEach(function(sec){var title=plain((sec.querySelector('.ph h2')||{}).textContent||'').toLowerCase(); if(!title)return; if(target.indexOf(title)>-1||title.indexOf(target)>-1){var im=sec.querySelector('.ph img,.pi img,img'); if(im&&im.src)best=im.src;}}); return best}
@@ -3888,8 +3899,8 @@ function authHTML(){
     '<div class="v8-card v8-auth-card">'+
       '<div class="v8-head v8-auth-head"><div class="v8-head-icon">🔐</div><div><h3>Entrar a la tienda</h3><p>Entre o cree su cuenta para comprar en la tienda.</p></div></div>'+
       '<div class="v8-auth-tabs"><button type="button" class="'+(state.auth==='registro'?'active':'')+'" data-v8-auth="registro">📝 Registro</button><button type="button" class="'+(state.auth==='login'?'active':'')+'" data-v8-auth="login">🔑 Acceso</button></div>'+
-      '<div id="v8Reg" class="v8-form '+(state.auth==='registro'?'':'hide')+'"><div class="v8-field"><label>Nombre y apellido</label><input id="v8RegName" type="text" autocomplete="name" placeholder="Ej. Cliente Sublicuentas"></div><div class="v8-field"><label>País y WhatsApp</label><div class="v8-phone-grid">'+countryBox('reg')+'<input id="v8RegPhone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="Número"></div></div><div class="v8-field"><label>Clave</label><input id="v8RegPass" type="password" autocomplete="new-password" placeholder="Ej. cliente123"><small class="v8-help">Mínimo 4 caracteres.</small></div><div class="v8-field"><label>Confirmar clave</label><input id="v8RegPass2" type="password" autocomplete="new-password" placeholder="Repita su clave"></div><button type="button" class="v8-btn" id="v8Register">Crear cuenta y entrar</button></div>'+
-      '<div id="v8Log" class="v8-form '+(state.auth==='login'?'':'hide')+'"><div class="v8-field"><label>País y WhatsApp</label><div class="v8-phone-grid">'+countryBox('log')+'<input id="v8LogPhone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="Número"></div></div><div class="v8-field"><label>Clave</label><input id="v8LogPass" type="password" autocomplete="current-password" placeholder="Su clave"><small class="v8-help">Mínimo 4 caracteres.</small></div><button type="button" class="v8-btn" id="v8Login">Entrar a la tienda</button></div>'+
+      '<div id="v8Reg" class="v8-form '+(state.auth==='registro'?'':'hide')+'"><div class="v8-field"><label>Nombre y apellido</label><input id="v8RegName" type="text" autocomplete="name" placeholder="Ej. Cliente Sublicuentas"></div><div class="v8-field"><label>País y WhatsApp</label><div class="v8-phone-grid">'+countryBox('reg')+'<input id="v8RegPhone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="Número"></div></div><div class="v8-field"><label>Clave</label><div class="v8-pass-wrap"><input id="v8RegPass" type="password" minlength="6" autocomplete="new-password" placeholder="Ej. cliente123"><button type="button" class="v8-eye" data-pass-toggle="v8RegPass" aria-label="Ver clave">👁️</button></div><small class="v8-help">Mínimo 6 caracteres.</small></div><div class="v8-field"><label>Confirmar clave</label><div class="v8-pass-wrap"><input id="v8RegPass2" type="password" minlength="6" autocomplete="new-password" placeholder="Repita su clave"><button type="button" class="v8-eye" data-pass-toggle="v8RegPass2" aria-label="Ver clave">👁️</button></div></div><button type="button" class="v8-btn" id="v8Register">Crear cuenta y entrar</button></div>'+
+      '<div id="v8Log" class="v8-form '+(state.auth==='login'?'':'hide')+'"><div class="v8-field"><label>País y WhatsApp</label><div class="v8-phone-grid">'+countryBox('log')+'<input id="v8LogPhone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="Número"></div></div><div class="v8-field"><label>Clave</label><div class="v8-pass-wrap"><input id="v8LogPass" type="password" minlength="6" autocomplete="current-password" placeholder="Su clave"><button type="button" class="v8-eye" data-pass-toggle="v8LogPass" aria-label="Ver clave">👁️</button></div><small class="v8-help">Mínimo 6 caracteres.</small></div><button type="button" class="v8-btn" id="v8Login">Entrar a la tienda</button></div>'+
       '<div class="v8-status" id="v8Status"></div>'+
     '</div></section>'
 }
@@ -3911,13 +3922,22 @@ function wireAuth(){
     b.onclick=function(){state.auth=b.getAttribute('data-v8-auth');renderAuth()};
   });
   wireCountries();
+  wirePassToggles();
 
   function openCatalogWith(userObj){
     state.user=userObj;
     state.section='comprar';
+    state.auth='login';
     if(!state.products||!state.products.length)state.products=collectProducts();
     saveUser();
-    try{renderApp()}catch(e){console.error(e);status('err','No pude abrir el catálogo. Recargue la página e intente de nuevo.');}
+    try{localStorage.setItem('subliV7User',JSON.stringify(state.user||{}));}catch(e){}
+    try{
+      renderApp();
+      setTimeout(function(){try{var tab=id('tab-compras');if(tab&&tab.scrollIntoView)tab.scrollIntoView({behavior:'smooth',block:'start'});if(window.scrollTo)window.scrollTo({top:0,behavior:'smooth'});}catch(e){}},80);
+    }catch(e){
+      console.error(e);
+      status('err','No pude abrir la tienda. Recargue la página e intente de nuevo.');
+    }
   }
 
   var r=id('v8Register');
@@ -3954,7 +3974,7 @@ function wireAuth(){
     }catch(e){console.error(e);status('err','No pude abrir el catálogo. Intente de nuevo.');}
   };
 
-  ['v8RegPass2','v8LogPass'].forEach(function(x){
+  ['v8RegPass','v8RegPass2','v8LogPass'].forEach(function(x){
     var el=id(x);
     if(el)el.addEventListener('keydown',function(ev){
       if(ev.key==='Enter'){ev.preventDefault();var btn=x==='v8LogPass'?id('v8Login'):id('v8Register');if(btn)btn.click();}
@@ -4730,12 +4750,46 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
       if(login)login.textContent='Entrar a la tienda';
       var reg=document.getElementById('v8Register');
       if(reg)reg.textContent='Crear cuenta y entrar';
-      root.querySelectorAll('.v8-help').forEach(function(el){el.textContent='Mínimo 4 caracteres.'});
+      root.querySelectorAll('.v8-help').forEach(function(el){el.textContent='Mínimo 6 caracteres.'});
     }catch(e){}
   }
   document.addEventListener('click',function(){setTimeout(subliAuthTextFix,40)},true);
   document.addEventListener('DOMContentLoaded',function(){subliAuthTextFix();setTimeout(subliAuthTextFix,500);setTimeout(subliAuthTextFix,1500)});
   if(document.readyState!=='loading'){subliAuthTextFix();setTimeout(subliAuthTextFix,500);setTimeout(subliAuthTextFix,1500)}
+})();
+</script>
+
+
+<script id="subli-v17-auth-force-final">
+(function(){
+  function fixAuth(){
+    try{
+      var root=document.getElementById('tab-compras');
+      if(!root)return;
+      root.querySelectorAll('.v8-help').forEach(function(el){el.textContent='Mínimo 6 caracteres.'});
+      ['v8RegPass','v8RegPass2','v8LogPass'].forEach(function(id){
+        var input=document.getElementById(id);
+        if(input){input.setAttribute('minlength','6');}
+      });
+      root.querySelectorAll('[data-pass-toggle]').forEach(function(btn){
+        if(btn.getAttribute('data-force-bound')==='1')return;
+        btn.setAttribute('data-force-bound','1');
+        btn.addEventListener('click',function(ev){
+          ev.preventDefault();ev.stopPropagation();
+          var input=document.getElementById(btn.getAttribute('data-pass-toggle'));
+          if(!input)return;
+          var show=input.type==='password';
+          input.type=show?'text':'password';
+          btn.textContent=show?'🙈':'👁️';
+          btn.setAttribute('aria-label',show?'Ocultar clave':'Ver clave');
+          try{input.focus()}catch(e){}
+        },true);
+      });
+    }catch(e){}
+  }
+  document.addEventListener('DOMContentLoaded',function(){fixAuth();setTimeout(fixAuth,600);setTimeout(fixAuth,1600)});
+  document.addEventListener('click',function(){setTimeout(fixAuth,60)},true);
+  if(document.readyState!=='loading'){fixAuth();setTimeout(fixAuth,600);setTimeout(fixAuth,1600)}
 })();
 </script>
 
