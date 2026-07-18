@@ -4,12 +4,14 @@
     { "src": "index.html", "use": "@vercel/static" },
     { "src": "api/chat.js", "use": "@vercel/node" },
     { "src": "api/cartelera.js", "use": "@vercel/node" },
-    { "src": "api/partidos.js", "use": "@vercel/node" }
+    { "src": "api/partidos.js", "use": "@vercel/node" },
+    { "src": "api/agenda.js", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/api/chat", "dest": "/api/chat.js" },
     { "src": "/api/cartelera", "dest": "/api/cartelera.js" },
     { "src": "/api/partidos", "dest": "/api/partidos.js" },
+    { "src": "/api/agenda", "dest": "/api/agenda.js" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
