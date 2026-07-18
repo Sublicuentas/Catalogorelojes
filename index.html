@@ -662,7 +662,7 @@ main{
   border-radius:0;
 }
 .nc-bg{position:absolute;inset:0;z-index:0}
-.nc-card::after{
+.nc-card:has(.nc-content)::after{
   content:'';
   position:absolute;inset:0;
   background:linear-gradient(to right, rgba(0,0,0,.72) 0%, rgba(0,0,0,.1) 100%);
