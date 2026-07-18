@@ -44,25 +44,22 @@ const CURATED = {
     ]
   },
   hbomax: {
-    novela: [
-      'La que se avecina','Sin senos no hay paraíso','El Señor de los Cielos','La Reina del Sur',
-      'Rubí','Teresa','Cuna de lobos','La usurpadora'
-    ],
+    novela: [],
     anime: [
       'Studio Ghibli','El viaje de Chihiro','La princesa Mononoke','Mi vecino Totoro','Adventure Time',
       'Rick and Morty','Looney Tunes'
     ]
   },
   disney: {
-    novela: ['Rebelde','Violetta','Soy Luna','Patito Feo','Chica Vampiro','Cómplices al rescate'],
+    novela: [],
     anime: ['Doraemon','Bluey','Los Simpson','Phineas y Ferb','Gravity Falls','Star vs las Fuerzas del Mal']
   },
   prime: {
-    novela: ['Pasión de gavilanes','Sin senos sí hay paraíso','La Reina del Sur','El Clon','Marimar','María la del Barrio'],
+    novela: [],
     anime: ['Dragon Ball Z','Dragon Ball','Pokémon','Sailor Moon','Inuyasha','Yu-Gi-Oh']
   },
   paramount: {
-    novela: ['Rubí','Teresa','La Madrastra','Triunfo del Amor','Soy tu dueña','Abismo de pasión'],
+    novela: [],
     anime: ['Bob Esponja','Avatar: La leyenda de Aang','Las Tortugas Ninja','Los Padrinos Mágicos']
   },
   crunchyroll: {
@@ -213,18 +210,20 @@ export default async (req, res) => {
     }
 
     // ---------- LISTA ----------
-    function clasifica(x, type){
+    function clasifica(x, type, provider){
       var g = x.genre_ids || [];
       var lang = x.original_language || '';
       if (g.indexOf(16) !== -1 && (lang === 'ja' || lang === 'ko' || lang === 'zh')) return 'anime';
       if (type === 'movie') return 'pelicula';
-      if (g.indexOf(10766) !== -1) return 'novela';
-      if ((lang === 'es' || lang === 'pt') && g.indexOf(18) !== -1) return 'novela';
+      if (provider === 'netflix') {
+        if (g.indexOf(10766) !== -1) return 'novela';
+        if ((lang === 'es' || lang === 'pt') && g.indexOf(18) !== -1) return 'novela';
+      }
       return 'serie';
     }
     const map = (arr, type, provider, forceCat) => (arr || []).map(x => ({
       id: x.id, type: type, provider: provider,
-      cat: forceCat || clasifica(x, type),
+      cat: forceCat || clasifica(x, type, provider),
       title: x.title || x.name || '',
       year: (x.release_date || x.first_air_date || '').slice(0, 4),
       rating: x.vote_average ? Number(x.vote_average).toFixed(1) : '',
