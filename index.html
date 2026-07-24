@@ -3535,6 +3535,97 @@ footer{
 }
 </style>
 
+<style id="subli-desktop-layout-fix">
+/* Escritorio: conserva intacta la composición móvil y evita el estiramiento. */
+@media (min-width:900px){
+  main{
+    width:100%!important;
+    max-width:1100px!important;
+    margin-inline:auto!important;
+    padding:0 24px 42px!important;
+  }
+
+  main>.tp{
+    width:100%!important;
+    max-width:960px!important;
+    margin-inline:auto!important;
+  }
+  main>#tab-inicio{
+    max-width:1040px!important;
+  }
+
+  #tab-inicio .hero-wrap{
+    border-radius:0 0 24px 24px!important;
+  }
+  #tab-inicio .hero-top{
+    padding:24px 20px 18px!important;
+  }
+  #tab-inicio .hero-top h1{
+    font-size:28px!important;
+  }
+  #tab-inicio .new-carousel{
+    width:100%!important;
+    max-width:900px!important;
+    margin-inline:auto!important;
+  }
+  #tab-inicio .nc-track{
+    width:100%!important;
+  }
+  #tab-inicio .nc-card{
+    width:100%!important;
+    min-width:100%!important;
+    height:auto!important;
+    aspect-ratio:900/506!important;
+  }
+  #tab-inicio .nc-card>img{
+    width:100%!important;
+    height:100%!important;
+    object-fit:contain!important;
+    object-position:center!important;
+  }
+
+  #tab-inicio .subli-home-categories,
+  #tab-inicio .subli-home-cartelera{
+    width:100%!important;
+    max-width:1040px!important;
+    margin-right:auto!important;
+    margin-left:auto!important;
+  }
+  #tab-inicio .subli-category-grid{
+    gap:12px!important;
+  }
+  #tab-inicio .subli-category-card{
+    min-height:88px!important;
+    padding:8px 4px!important;
+  }
+  #tab-inicio .subli-category-card strong{
+    max-width:112px!important;
+    font-size:12px!important;
+  }
+  #tab-inicio .subli-home-poster-row{
+    gap:14px!important;
+  }
+
+  #tab-inicio .mascot-btn,
+  #tab-inicio>.icard{
+    width:100%!important;
+    max-width:900px!important;
+    margin-right:auto!important;
+    margin-left:auto!important;
+  }
+
+  footer{
+    width:calc(100% - 48px)!important;
+    max-width:960px!important;
+    margin-right:auto!important;
+    margin-left:auto!important;
+    border-right:1px solid #E7DDD5!important;
+    border-left:1px solid #E7DDD5!important;
+    border-radius:20px 20px 0 0!important;
+  }
+}
+</style>
+
 <script id="subli-design-b-reorganization-js">
 (function(){
   var CATEGORY_TABS=[
