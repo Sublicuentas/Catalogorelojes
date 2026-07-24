@@ -20,16 +20,32 @@ export default async function handler(req, res) {
     const espnDate = hnDate.replace(/-/g, "");
 
     const CATS = [
-      { key: "hn",       label: "🇭🇳 Liga Nacional de Honduras",           type: "tsdb", leagueId: "4818" },
-      { key: "concacaf", label: "🌎 CONCACAF (Champions Cup / Centroamericana)", type: "espn", sport: "soccer", slug: "concacaf.champions" },
-      { key: "mex",      label: "🇲🇽 Liga MX (Mexicana)",                  type: "espn", sport: "soccer", slug: "mex.1" },
-      { key: "bra",      label: "🇧🇷 Brasileirão (Brasileña)",             type: "espn", sport: "soccer", slug: "bra.1" },
-      { key: "eng",      label: "🏴 Premier League (Inglesa)",             type: "espn", sport: "soccer", slug: "eng.1" },
-      { key: "ucl",      label: "⭐ UEFA Champions League",                 type: "espn", sport: "soccer", slug: "uefa.champions" },
-      { key: "fra",      label: "🇫🇷 Ligue 1 (Francesa)",                  type: "espn", sport: "soccer", slug: "fra.1" },
-      { key: "esp",      label: "🇪🇸 LaLiga (Española)",                   type: "espn", sport: "soccer", slug: "esp.1" },
-      { key: "nba",      label: "🏀 NBA",                                   type: "espn", sport: "basketball", slug: "nba" },
-      { key: "mlb",      label: "⚾ MLB",                                    type: "espn", sport: "baseball", slug: "mlb" },
+      { key: "hn",            label: "🇭🇳 Liga Nacional de Honduras", type: "tsdb", leagueId: "4818" },
+      { key: "concacaf",      label: "🌎 CONCACAF Champions Cup", type: "espn", sport: "soccer", slug: "concacaf.champions" },
+      { key: "gold",          label: "🏆 Copa Oro CONCACAF", type: "espn", sport: "soccer", slug: "concacaf.gold" },
+      { key: "leaguescup",    label: "🌎 Leagues Cup", type: "espn", sport: "soccer", slug: "concacaf.leagues.cup" },
+      { key: "mex",           label: "🇲🇽 Liga MX", type: "espn", sport: "soccer", slug: "mex.1" },
+      { key: "mls",           label: "🇺🇸 MLS", type: "espn", sport: "soccer", slug: "usa.1" },
+      { key: "arg",           label: "🇦🇷 Liga Profesional Argentina", type: "espn", sport: "soccer", slug: "arg.1" },
+      { key: "bra",           label: "🇧🇷 Brasileirão", type: "espn", sport: "soccer", slug: "bra.1" },
+      { key: "eng",           label: "🏴 Premier League", type: "espn", sport: "soccer", slug: "eng.1" },
+      { key: "esp",           label: "🇪🇸 LaLiga", type: "espn", sport: "soccer", slug: "esp.1" },
+      { key: "copadelrey",    label: "🏆 Copa del Rey", type: "espn", sport: "soccer", slug: "esp.copa_del_rey" },
+      { key: "ita",           label: "🇮🇹 Serie A", type: "espn", sport: "soccer", slug: "ita.1" },
+      { key: "ger",           label: "🇩🇪 Bundesliga", type: "espn", sport: "soccer", slug: "ger.1" },
+      { key: "fra",           label: "🇫🇷 Ligue 1", type: "espn", sport: "soccer", slug: "fra.1" },
+      { key: "ucl",           label: "⭐ UEFA Champions League", type: "espn", sport: "soccer", slug: "uefa.champions" },
+      { key: "uel",           label: "🟠 UEFA Europa League", type: "espn", sport: "soccer", slug: "uefa.europa" },
+      { key: "uecl",          label: "🟢 UEFA Conference League", type: "espn", sport: "soccer", slug: "uefa.europa.conf" },
+      { key: "nations",       label: "🌍 UEFA Nations League", type: "espn", sport: "soccer", slug: "uefa.nations" },
+      { key: "libertadores",  label: "🏆 Copa Libertadores", type: "espn", sport: "soccer", slug: "conmebol.libertadores" },
+      { key: "sudamericana",  label: "🏆 Copa Sudamericana", type: "espn", sport: "soccer", slug: "conmebol.sudamericana" },
+      { key: "ufc",           label: "🥊 UFC · Peleas", type: "espn", sport: "mma", slug: "ufc" },
+      { key: "nba",           label: "🏀 NBA", type: "espn", sport: "basketball", slug: "nba" },
+      { key: "wnba",          label: "🏀 WNBA", type: "espn", sport: "basketball", slug: "wnba" },
+      { key: "mlb",           label: "⚾ MLB", type: "espn", sport: "baseball", slug: "mlb" },
+      { key: "nfl",           label: "🏈 NFL", type: "espn", sport: "football", slug: "nfl" },
+      { key: "nhl",           label: "🏒 NHL", type: "espn", sport: "hockey", slug: "nhl" },
     ];
 
     const results = await Promise.allSettled(
@@ -40,10 +56,10 @@ export default async function handler(req, res) {
       key: c.key,
       label: c.label,
       partidos: results[i].status === "fulfilled" ? results[i].value : [],
-    }));
+    })).filter((c) => c.partidos.length > 0);
 
     res.setHeader("Cache-Control", "s-maxage=300, stale-while-revalidate=600");
-    res.status(200).json({ fecha: hnDate, categorias });
+    res.status(200).json({ fecha: hnDate, timezone: "America/Tegucigalpa", categorias });
   } catch (e) {
     res.status(200).json({ error: e.message || "Error cargando la agenda deportiva" });
   }
@@ -79,7 +95,12 @@ async function fetchCat(c, espnDate, hnDate) {
       const r = await fetch(url, { signal: ctrl.signal });
       if (!r.ok) return [];
       const data = await r.json();
-      return (data.events || []).map((ev) => mapEspnEvent(ev)).filter(Boolean);
+      return (data.events || []).flatMap((ev) => {
+        if (c.sport === "mma" && ev.competitions && ev.competitions.length) {
+          return ev.competitions.map((comp) => mapEspnEvent(ev, comp)).filter(Boolean);
+        }
+        return [mapEspnEvent(ev)].filter(Boolean);
+      });
     }
     if (c.type === "tsdb") {
       const url = `https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=${hnDate}&l=${c.leagueId}`;
@@ -96,20 +117,21 @@ async function fetchCat(c, espnDate, hnDate) {
   }
 }
 
-function mapEspnEvent(ev) {
+function mapEspnEvent(ev, competition) {
   try {
-    const comp = ev.competitions && ev.competitions[0];
+    const comp = competition || (ev.competitions && ev.competitions[0]);
     const competitors = (comp && comp.competitors) || [];
     const home = competitors.find((x) => x.homeAway === "home") || competitors[0] || {};
     const away = competitors.find((x) => x.homeAway === "away") || competitors[1] || {};
-    const dt = new Date(ev.date);
-    const st = ev.status && ev.status.type ? ev.status.type : {};
+    const dt = new Date((comp && comp.date) || ev.date);
+    const status = (comp && comp.status) || ev.status;
+    const st = status && status.type ? status.type : {};
     const isFinalOrLive = st.state === "in" || st.state === "post";
     return {
-      local: (home.team && (home.team.shortDisplayName || home.team.displayName)) || "?",
-      visita: (away.team && (away.team.shortDisplayName || away.team.displayName)) || "?",
-      logoLocal: (home.team && home.team.logo) || null,
-      logoVisita: (away.team && away.team.logo) || null,
+      local: competitorName(home),
+      visita: competitorName(away),
+      logoLocal: competitorLogo(home),
+      logoVisita: competitorLogo(away),
       horaHN: horaHN(dt),
       estado: st.shortDetail || st.description || "",
       marcadorLocal: isFinalOrLive ? home.score : null,
@@ -120,10 +142,23 @@ function mapEspnEvent(ev) {
   }
 }
 
+function competitorName(competitor) {
+  const entity = competitor.team || competitor.athlete || competitor;
+  return entity.shortDisplayName || entity.displayName || entity.fullName || entity.name || "?";
+}
+
+function competitorLogo(competitor) {
+  const entity = competitor.team || competitor.athlete || competitor;
+  return entity.logo || (entity.headshot && entity.headshot.href) || null;
+}
+
 function mapTsdbEvent(ev) {
   try {
     let dt = null;
-    if (ev.strTimestamp) dt = new Date(ev.strTimestamp.replace(" ", "T") + "Z");
+    if (ev.strTimestamp) {
+      const stamp = ev.strTimestamp.includes("T") ? ev.strTimestamp : ev.strTimestamp.replace(" ", "T");
+      dt = new Date(/[zZ]|[+-]\d\d:\d\d$/.test(stamp) ? stamp : stamp + "Z");
+    }
     else if (ev.dateEvent && ev.strTime) dt = new Date(`${ev.dateEvent}T${ev.strTime}Z`);
     const played = ev.strStatus === "Match Finished" || ev.intHomeScore !== null;
     return {
