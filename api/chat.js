@@ -1,3 +1,6 @@
+import { assistantCatalogText } from './_lib/catalog.js';
+import { loadCatalogSnapshot } from './_lib/catalog-store.js';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -30,6 +33,17 @@ export default async function handler(req, res) {
       return res.status(200).json({ reply: 'No hay mensajes del usuario aún.' });
     }
 
+    // Los precios enviados por el navegador pueden quedar viejos. Siempre
+    // agregamos al final el catálogo central vigente; esta sección tiene
+    // prioridad dentro del prompt de SubliBot.
+    const catalogSnapshot = await loadCatalogSnapshot();
+    const liveCatalog = assistantCatalogText(catalogSnapshot.catalog);
+    const finalSystem = [
+      String(system || ''),
+      '',
+      liveCatalog
+    ].join('\n');
+
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -40,7 +54,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: max_tokens || 500,
-        system: system || '',
+        system: finalSystem,
         messages: limpios
       })
     });
