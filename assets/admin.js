@@ -258,8 +258,8 @@
         '<label class="field">Color<input id="peAccent" type="color" value="' + escapeHtml(product.accent || '#E2231A') + '"></label>' +
         '<label class="field">Texto corto del ícono<input id="peVisual" value="' + escapeHtml(product.visual || '') + '"></label>' +
         '<label class="field full">Descripción<textarea id="peSummary">' + escapeHtml(product.summary || '') + '</textarea></label>' +
-        '<label class="field full">URL de imagen optimizada<input id="peImage" type="url" value="' +
-          escapeHtml(product.imageUrl || '') + '" placeholder="https://.../imagen.webp"></label>' +
+        '<label class="field full">Imagen optimizada<input id="peImage" type="text" value="' +
+          escapeHtml(product.imageUrl || '') + '" placeholder="/assets/servicio.webp"></label>' +
         '<div class="image-preview full" id="peImagePreview">' +
           (product.imageUrl ? '<img src="' + escapeHtml(product.imageUrl) + '" alt="Vista previa">' : 'Sin imagen externa') +
         '</div>' +

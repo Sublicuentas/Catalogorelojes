@@ -128,7 +128,18 @@ main{max-width:1280px;margin:auto;padding:26px 22px 70px}
 .product-card:hover{transform:translateY(-3px);box-shadow:0 16px 35px rgba(17,18,24,.10)}
 .product-art{height:142px;display:grid;place-items:center;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:33px;font-weight:900;position:relative;overflow:hidden}
 .product-art::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 75% 18%,rgba(255,255,255,.25),transparent 28%)}
-.product-art img{width:100%;height:100%;object-fit:cover;position:relative;z-index:1}
+.product-art img{
+  width:calc(100% - 24px);
+  height:calc(100% - 24px);
+  object-fit:contain;
+  box-sizing:border-box;
+  padding:6px;
+  border-radius:16px;
+  background:#fff;
+  box-shadow:0 9px 24px rgba(17,18,24,.16);
+  position:relative;
+  z-index:1;
+}
 .product-art b{position:relative;z-index:1}
 .product-body{padding:14px;display:flex;flex-direction:column;flex:1}
 .product-topline{display:flex;align-items:center;gap:7px;margin-bottom:7px}
@@ -167,7 +178,7 @@ footer small{color:#999}
 .modal-close{position:absolute;right:15px;top:14px;width:36px;height:36px;border:0;border-radius:50%;background:var(--soft);font-size:22px;z-index:2}
 .modal-product-head{display:grid;grid-template-columns:110px 1fr;gap:17px;align-items:center;padding-right:25px}
 .modal-product-visual{height:110px;border-radius:19px;color:#fff;display:grid;place-items:center;font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;overflow:hidden}
-.modal-product-visual img{width:100%;height:100%;object-fit:cover}
+.modal-product-visual img{width:100%;height:100%;object-fit:contain;padding:8px;box-sizing:border-box;background:#fff}
 .modal-product-head .availability-pill{margin:0}
 .modal-product-head h2,.checkout-card h2,.success-card h2{font-family:'Barlow Condensed',sans-serif;font-size:32px;line-height:1;margin:8px 0 5px}
 .modal-product-head p,.checkout-card>p,.success-card p{font-size:12px;color:var(--muted);line-height:1.5;margin:0}

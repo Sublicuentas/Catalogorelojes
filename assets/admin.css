@@ -105,7 +105,7 @@ textarea{min-height:92px;resize:vertical;line-height:1.45}
 .list-item:hover{background:#FAFBFC}
 .list-item.active{background:#FFF4F3;box-shadow:inset 3px 0 var(--red)}
 .item-visual{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;overflow:hidden}
-.item-visual img{width:100%;height:100%;object-fit:cover}
+.item-visual img{width:100%;height:100%;object-fit:contain;padding:3px;box-sizing:border-box;background:#fff}
 .list-item strong{display:block;font-size:14px}
 .list-item small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
 .item-status{font-size:10px;padding:5px 8px;border-radius:999px;font-weight:800;white-space:nowrap}
