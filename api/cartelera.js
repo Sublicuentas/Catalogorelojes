@@ -1,327 +1,563 @@
 // ============================================================
-//  /api/cartelera.js  —  Funcion Serverless de Vercel (CommonJS)
-//  VERSION ANTI-CRASH (FUNCTION_INVOCATION_FAILED):
-//   - Concurrencia limitada (no dispara 200+ requests de golpe -> no timeout)
-//   - Timeout por request (AbortController / https) -> ningun request cuelga la funcion
-//   - Fallback de fetch para Node viejo -> sin "fetch is not defined"
-//   - SIEMPRE responde JSON (nunca revienta el proceso)
-//   - ?debug=1 para diagnostico
-// ============================================================
-//  LISTA:     /api/cartelera            -> {byProvider:{netflix:[...],...}}
-//  UNA app:   /api/cartelera?provider=netflix
-//  DETALLE:   /api/cartelera?id=123&type=tv
-//  DEBUG:     /api/cartelera?debug=1
+// /api/cartelera.js — Cartelera actual por plataforma
+//
+// La selección combina:
+//   1. Tendencias semanales de TMDB.
+//   2. Películas estrenadas durante los últimos 24 meses.
+//   3. Series nuevas o con episodios/temporadas recientes.
+//   4. Disponibilidad por suscripción en cada plataforma.
+//
+// Honduras es la región principal. México se usa únicamente si
+// TMDB no devuelve ningún título para una plataforma en Honduras.
 // ============================================================
 
 import https from 'https';
 
 const PROVIDERS = {
-  netflix: 8, disney: 337, hbomax: 1899, prime: 119, paramount: 531, crunchyroll: 283
-};
-const PRIORITY = ['netflix','crunchyroll','disney','hbomax','paramount','prime'];
-
-const REGION = 'MX';
-const LANG   = 'es-MX';
-const IMG    = 'https://image.tmdb.org/t/p/';
-
-// Concurrencia maxima de busquedas curadas simultaneas (bajala si sigue lento)
-const MAX_CONC = 8;
-const REQ_TIMEOUT = 4500; // ms por peticion (bajado: evita colgar la funcion)
-const HARD_BUDGET = 8000; // ms totales maximos para armar la lista (deja margen bajo el limite de 10s de Hobby)
-
-const CURATED = {
-  netflix: {
-    novela: [
-      'Café con aroma de mujer','Pasión de gavilanes','La reina del flow','Rosario Tijeras',
-      'Yo soy Betty, la fea','Sin senos sí hay paraíso','La casa de las flores','Oscuro deseo',
-      'Rebelde','Bolívar','Romina poderosa','Cien años de soledad','La venganza de Analía',
-      'Pálpito','Distrito Salvaje','Always a Witch','El final del paraíso'
-    ],
-    anime: [
-      'One Piece','Naruto','Jujutsu Kaisen','Demon Slayer','Attack on Titan','My Hero Academia',
-      'Hunter x Hunter','Death Note','Bleach','Tokyo Revengers','Spy x Family','Chainsaw Man',
-      'Black Clover','Vinland Saga','Baki'
-    ]
-  },
-  hbomax: {
-    novela: [],
-    anime: [
-      'Studio Ghibli','El viaje de Chihiro','La princesa Mononoke','Mi vecino Totoro','Adventure Time',
-      'Rick and Morty','Looney Tunes'
-    ]
-  },
-  disney: {
-    novela: [],
-    anime: ['Doraemon','Bluey','Los Simpson','Phineas y Ferb','Gravity Falls','Star vs las Fuerzas del Mal']
-  },
-  prime: {
-    novela: [],
-    anime: ['Dragon Ball Z','Dragon Ball','Pokémon','Sailor Moon','Inuyasha','Yu-Gi-Oh']
-  },
-  paramount: {
-    novela: [],
-    anime: ['Bob Esponja','Avatar: La leyenda de Aang','Las Tortugas Ninja','Los Padrinos Mágicos']
-  },
-  crunchyroll: {
-    novela: [],
-    anime: [
-      'One Piece','Naruto Shippuden','Jujutsu Kaisen','Demon Slayer','Attack on Titan','My Hero Academia',
-      'Bleach','Black Clover','Tokyo Revengers','Chainsaw Man','Spy x Family','Dragon Ball Super',
-      'Hunter x Hunter','One Punch Man','Mob Psycho 100','Solo Leveling','Blue Lock','Frieren'
-    ]
-  }
+  netflix: 8,
+  disney: 337,
+  hbomax: 1899,
+  prime: 119,
+  paramount: 531,
+  crunchyroll: 283
 };
 
-function buildAuth(key){
+const REGION = String(process.env.TMDB_WATCH_REGION || 'HN').toUpperCase();
+const FALLBACK_REGION = String(process.env.TMDB_FALLBACK_REGION || 'MX').toUpperCase();
+const LANG = 'es-MX';
+const IMG = 'https://image.tmdb.org/t/p/';
+const REQ_TIMEOUT = 4500;
+const CACHE_SECONDS = 3600;
+const STALE_SECONDS = 3600;
+const SELECTION_VERSION = 'trends-2026-07-v2';
+
+function buildAuth(key) {
   const isV4 = key.length > 50 && key.indexOf('.') !== -1;
-  return { headers: isV4 ? { Authorization: 'Bearer ' + key } : {}, authQ: isV4 ? '' : ('api_key=' + key + '&') };
+  return {
+    isV4,
+    headers: isV4 ? { Authorization: 'Bearer ' + key } : {}
+  };
 }
 
-// Fetch universal (fetch nativo en Node 18+, o https en Node viejo)
-function makeFetch(){
+function makeFetch() {
   if (typeof fetch === 'function') return fetch;
-  return function(url, opts){
+
+  return function fallbackFetch(url, opts) {
     opts = opts || {};
-    return new Promise(function(resolve, reject){
-      var rq = https.request(url, { method: opts.method || 'GET', headers: opts.headers || {} }, function(resp){
-        var data = '';
-        resp.on('data', function(c){ data += c; });
-        resp.on('end', function(){
-          resolve({
-            ok: resp.statusCode >= 200 && resp.statusCode < 300,
-            status: resp.statusCode,
-            json: function(){ return Promise.resolve().then(function(){ return JSON.parse(data || '{}'); }); },
-            text: function(){ return Promise.resolve(data); }
+    return new Promise(function (resolve, reject) {
+      const request = https.request(
+        url,
+        { method: opts.method || 'GET', headers: opts.headers || {} },
+        function (response) {
+          let data = '';
+          response.on('data', function (chunk) { data += chunk; });
+          response.on('end', function () {
+            resolve({
+              ok: response.statusCode >= 200 && response.statusCode < 300,
+              status: response.statusCode,
+              json: function () {
+                return Promise.resolve().then(function () {
+                  return JSON.parse(data || '{}');
+                });
+              }
+            });
           });
-        });
+        }
+      );
+
+      request.setTimeout(REQ_TIMEOUT, function () {
+        try { request.destroy(new Error('timeout')); } catch (error) {}
       });
-      rq.setTimeout(8000, function(){ try { rq.destroy(new Error('timeout')); } catch (e) {} });
-      rq.on('error', reject);
-      rq.end();
+      request.on('error', reject);
+      request.end();
     });
   };
 }
 
-// Ejecuta tareas con concurrencia limitada (evita abrir 200 conexiones a la vez)
-// deadline (timestamp ms, opcional): deja de lanzar tareas nuevas si ya se paso el presupuesto de tiempo
-function pool(items, limit, worker, deadline){
-  return new Promise(function(resolve){
-    var n = items.length;
-    var ret = new Array(n);
-    if (n === 0) return resolve(ret);
-    var idx = 0, done = 0;
-    var lim = Math.max(1, Math.min(limit, n));
-    function launch(){
-      if (idx >= n) return;
-      if (deadline && Date.now() > deadline) {
-        // presupuesto agotado: no lanzar mas, dar por terminadas las que faltan (null)
-        while (idx < n) { ret[idx] = null; idx++; done++; }
-        if (done === n) resolve(ret);
-        return;
-      }
-      var i = idx++;
-      Promise.resolve().then(function(){ return worker(items[i], i); })
-        .then(function(v){ ret[i] = v; }, function(){ ret[i] = null; })
-        .then(function(){ done++; if (done === n) resolve(ret); else launch(); });
-    }
-    for (var k = 0; k < lim; k++) launch();
-  });
+function isoOffset(days) {
+  const date = new Date();
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
 }
 
-export default async (req, res) => {
-  // Red de seguridad: si por lo que sea la logica de abajo se pasa del limite real de Vercel,
-  // respondemos algo valido ANTES de que la plataforma mate la funcion con FUNCTION_INVOCATION_FAILED.
-  const safetyTimer = setTimeout(function(){
+function mediaYear(item) {
+  return String(item.release_date || item.first_air_date || '').slice(0, 4);
+}
+
+function mediaCategory(item, type, provider) {
+  const genres = item.genre_ids || [];
+  const language = item.original_language || '';
+
+  if (
+    genres.indexOf(16) !== -1 &&
+    (language === 'ja' || language === 'ko' || language === 'zh')
+  ) {
+    return 'anime';
+  }
+
+  if (type === 'movie') return 'pelicula';
+
+  if (provider === 'netflix') {
+    if (genres.indexOf(10766) !== -1) return 'novela';
+    if (
+      (language === 'es' || language === 'pt') &&
+      genres.indexOf(18) !== -1
+    ) {
+      return 'novela';
+    }
+  }
+
+  return 'serie';
+}
+
+function resultCount(bundle) {
+  return [
+    bundle.movieRecent,
+    bundle.moviePopular,
+    bundle.tvNew,
+    bundle.tvCurrent
+  ].reduce(function (total, response) {
+    return total + (((response || {}).results || []).length);
+  }, 0);
+}
+
+function rankMap(results) {
+  const map = new Map();
+  (results || []).forEach(function (item, index) {
+    if (item && item.id) map.set(String(item.id), index + 1);
+  });
+  return map;
+}
+
+function sourceWeight(source) {
+  if (source === 'movie_recent') return 36000;
+  if (source === 'tv_new') return 36000;
+  if (source === 'tv_current') return 26000;
+  if (source === 'movie_trending') return 18000;
+  return 0;
+}
+
+function itemReason(item, source, trendRank, currentYear) {
+  const year = Number(mediaYear(item)) || 0;
+  const isRecent = year >= currentYear - 2;
+
+  if (trendRank) {
+    if (source === 'tv_current' && !isRecent) {
+      return {
+        reason: 'Tendencia semanal',
+        subtitle: 'Tendencia semanal · Temporada actual'
+      };
+    }
+    return {
+      reason: 'Tendencia semanal',
+      subtitle: 'Tendencia semanal' + (year ? ' · ' + year : '')
+    };
+  }
+
+  if (source === 'movie_recent') {
+    return {
+      reason: 'Estreno reciente',
+      subtitle: 'Estreno reciente' + (year ? ' · ' + year : '')
+    };
+  }
+
+  if (source === 'tv_new') {
+    return {
+      reason: 'Serie reciente',
+      subtitle: 'Serie reciente' + (year ? ' · ' + year : '')
+    };
+  }
+
+  return {
+    reason: 'Temporada actual',
+    subtitle: 'Temporada actual' + (isRecent && year ? ' · ' + year : '')
+  };
+}
+
+function buildProviderItems(provider, bundle, movieRanks, tvRanks) {
+  const currentYear = new Date().getUTCFullYear();
+  const merged = new Map();
+
+  function add(raw, type, source) {
+    if (!raw || !raw.id || !raw.poster_path) return;
+
+    const trendRank = type === 'movie'
+      ? (movieRanks.get(String(raw.id)) || 0)
+      : (tvRanks.get(String(raw.id)) || 0);
+
+    const key = type + ':' + raw.id;
+    const previous = merged.get(key);
+    const selectedSource = previous && sourceWeight(previous.source) > sourceWeight(source)
+      ? previous.source
+      : source;
+    const selectedRank = previous && previous.trendRank
+      ? Math.min(previous.trendRank, trendRank || previous.trendRank)
+      : trendRank;
+    const labels = itemReason(raw, selectedSource, selectedRank, currentYear);
+    const popularity = Number(raw.popularity) || 0;
+    const trendBoost = selectedRank ? Math.max(0, 110000 - selectedRank * 2500) : 0;
+
+    merged.set(key, {
+      id: raw.id,
+      type,
+      provider,
+      cat: mediaCategory(raw, type, provider),
+      title: raw.title || raw.name || '',
+      year: mediaYear(raw),
+      rating: raw.vote_average ? Number(raw.vote_average).toFixed(1) : '',
+      pop: popularity,
+      poster: IMG + 'w342' + raw.poster_path,
+      reason: labels.reason,
+      subtitle: labels.subtitle,
+      trendRank: selectedRank || null,
+      source: selectedSource,
+      region: bundle.region,
+      _score: trendBoost + sourceWeight(selectedSource) + Math.min(popularity, 1500)
+    });
+  }
+
+  const movieRecent = ((bundle.movieRecent || {}).results || []);
+  const moviePopular = ((bundle.moviePopular || {}).results || []);
+  const tvNew = ((bundle.tvNew || {}).results || []);
+  const tvCurrent = ((bundle.tvCurrent || {}).results || []);
+
+  movieRecent.forEach(function (item) {
+    add(item, 'movie', 'movie_recent');
+  });
+
+  // Una película antigua solo entra desde la búsqueda amplia si está
+  // realmente dentro de la tendencia semanal global de TMDB.
+  moviePopular.forEach(function (item) {
+    if (movieRanks.has(String(item.id))) add(item, 'movie', 'movie_trending');
+  });
+
+  tvNew.forEach(function (item) {
+    add(item, 'tv', 'tv_new');
+  });
+
+  // Incluye series veteranas únicamente cuando tienen episodios o
+  // temporada activa dentro de la ventana reciente.
+  tvCurrent.forEach(function (item) {
+    add(item, 'tv', 'tv_current');
+  });
+
+  const all = Array.from(merged.values()).sort(function (a, b) {
+    if (b._score !== a._score) return b._score - a._score;
+    return (b.pop || 0) - (a.pop || 0);
+  });
+
+  const categoryLimits = {
+    pelicula: 24,
+    serie: 24,
+    novela: 16,
+    anime: 24
+  };
+  const categoryCounts = {
+    pelicula: 0,
+    serie: 0,
+    novela: 0,
+    anime: 0
+  };
+  let legacyCurrentSeries = 0;
+
+  return all.filter(function (item) {
+    const year = Number(item.year) || 0;
+    const isLegacyCurrentSeries =
+      item.type === 'tv' &&
+      item.source === 'tv_current' &&
+      !item.trendRank &&
+      year > 0 &&
+      year < currentYear - 2;
+
+    // Evita que franquicias veteranas todavía activas ocupen casi toda la
+    // primera pantalla. Conservamos unas pocas como recomendación vigente.
+    if (isLegacyCurrentSeries) {
+      if (legacyCurrentSeries >= 4) return false;
+      legacyCurrentSeries += 1;
+    }
+
+    const category = item.cat || 'serie';
+    const limit = categoryLimits[category] || 24;
+    if (categoryCounts[category] >= limit) return false;
+    categoryCounts[category] += 1;
+    delete item._score;
+    return true;
+  }).slice(0, 64);
+}
+
+export default async function carteleraHandler(req, res) {
+  const safetyTimer = setTimeout(function () {
     if (!res.headersSent) {
-      try { res.status(200).json({ region: REGION, total: 0, byProvider: {}, warning: 'timeout_parcial: la carga tardo demasiado, intenta de nuevo' }); } catch (e) {}
+      try {
+        res.status(200).json({
+          region: REGION,
+          total: 0,
+          byProvider: {},
+          warning: 'timeout_parcial'
+        });
+      } catch (error) {}
     }
   }, 9200);
 
+  function reply(status, payload) {
+    clearTimeout(safetyTimer);
+    if (!res.headersSent) return res.status(status).json(payload);
+    return undefined;
+  }
+
   try {
-    const key = process.env.TMDB_API_KEY;
-    if (!key || !String(key).trim()) {
-      clearTimeout(safetyTimer);
-      return res.status(500).json({ error: 'Falta TMDB_API_KEY. Agrégala en Vercel (Settings > Environment Variables, Production) y haz Redeploy.' });
+    const key = String(process.env.TMDB_API_KEY || '').trim();
+    if (!key) {
+      return reply(500, {
+        error: 'Falta TMDB_API_KEY. Agrégala en Vercel y vuelve a desplegar.'
+      });
     }
-    const { headers, authQ } = buildAuth(key);
-    const api = 'https://api.themoviedb.org/3/';
+
+    const auth = buildAuth(key);
+    const apiRoot = 'https://api.themoviedb.org/3/';
     const doFetch = makeFetch();
 
-    // fetch con timeout por peticion (AbortController si hay fetch nativo)
-    function timedFetch(url, opts, ms){
-      ms = ms || REQ_TIMEOUT;
+    function apiUrl(path, params) {
+      const query = new URLSearchParams(params || {});
+      if (!auth.isV4) query.set('api_key', key);
+      return apiRoot + path + '?' + query.toString();
+    }
+
+    function timedFetch(url, opts, ms) {
       opts = opts || {};
+      ms = ms || REQ_TIMEOUT;
+
       if (typeof AbortController === 'function' && typeof fetch === 'function') {
-        var ctrl = new AbortController();
-        var timer = setTimeout(function(){ try { ctrl.abort(); } catch (e) {} }, ms);
-        var o = {}; for (var k in opts) o[k] = opts[k]; o.signal = ctrl.signal;
-        return Promise.resolve().then(function(){ return doFetch(url, o); })
-          .then(function(r){ clearTimeout(timer); return r; }, function(e){ clearTimeout(timer); throw e; });
+        const controller = new AbortController();
+        const timer = setTimeout(function () {
+          try { controller.abort(); } catch (error) {}
+        }, ms);
+        const requestOptions = Object.assign({}, opts, { signal: controller.signal });
+        return Promise.resolve(doFetch(url, requestOptions)).then(
+          function (response) {
+            clearTimeout(timer);
+            return response;
+          },
+          function (error) {
+            clearTimeout(timer);
+            throw error;
+          }
+        );
       }
-      return Promise.resolve().then(function(){ return doFetch(url, opts); });
-    }
-    const getJSON = (url) => timedFetch(url, { headers }).then(r => r.ok ? r.json() : { results: [] }).catch(() => ({ results: [] }));
 
-    // ---------- VALIDACION RAPIDA DE LA CLAVE (solo en modo debug, para no perder tiempo en cada carga) ----------
+      return Promise.resolve(doFetch(url, opts));
+    }
+
+    function getJSON(path, params) {
+      return timedFetch(apiUrl(path, params), { headers: auth.headers })
+        .then(function (response) {
+          return response.ok ? response.json() : { results: [] };
+        })
+        .catch(function () {
+          return { results: [] };
+        });
+    }
+
     if (req.query && req.query.debug) {
-      const test = await timedFetch(api + 'configuration?' + authQ, { headers }, 6000)
-        .then(function(r){ return { ok: r.ok, status: r.status }; })
-        .catch(function(e){ return { ok: false, status: 0, err: (e && e.message) || 'red' }; });
-      clearTimeout(safetyTimer);
-      return res.status(200).json({
-        ok: test.ok, tmdbStatus: test.status, keyPresent: true, keyLen: String(key).length,
-        keyType: (String(key).length > 50 && String(key).indexOf('.') !== -1) ? 'v4(token)' : 'v3(api_key)',
-        fetchNativo: (typeof fetch === 'function'), nodeVersion: process.version,
-        hint: test.status === 401 ? 'CLAVE INVALIDA (401)' : (test.ok ? 'TODO OK' : 'No se pudo contactar TMDB: ' + (test.err || ''))
+      const test = await timedFetch(
+        apiUrl('configuration', {}),
+        { headers: auth.headers },
+        6000
+      ).then(
+        function (response) {
+          return { ok: response.ok, status: response.status };
+        },
+        function (error) {
+          return { ok: false, status: 0, error: error && error.message };
+        }
+      );
+
+      return reply(200, {
+        ok: test.ok,
+        tmdbStatus: test.status,
+        keyPresent: true,
+        keyType: auth.isV4 ? 'v4(token)' : 'v3(api_key)',
+        region: REGION,
+        fallbackRegion: FALLBACK_REGION,
+        selectionVersion: SELECTION_VERSION,
+        hint: test.status === 401
+          ? 'CLAVE INVALIDA (401)'
+          : (test.ok ? 'TODO OK' : 'No se pudo contactar TMDB')
       });
     }
 
-    // ---------- MODO DETALLE ----------
-    const id = req.query && req.query.id;
-    if (id) {
-      const type = (req.query.type === 'tv') ? 'tv' : 'movie';
-      const u = api + type + '/' + encodeURIComponent(id) + '?' + authQ + 'language=';
-      const d = await timedFetch(u + LANG, { headers }).then(r => r.ok ? r.json() : {}).catch(() => ({}));
-      let overview = d.overview || '';
+    const detailId = req.query && req.query.id;
+    if (detailId) {
+      const type = req.query.type === 'tv' ? 'tv' : 'movie';
+      const detail = await getJSON(type + '/' + encodeURIComponent(detailId), {
+        language: LANG
+      });
+      let overview = detail.overview || '';
+
       if (!overview) {
-        const de = await timedFetch(u + 'en-US', { headers }).then(r => r.ok ? r.json() : {}).catch(() => ({}));
-        overview = de.overview || '';
+        const englishDetail = await getJSON(type + '/' + encodeURIComponent(detailId), {
+          language: 'en-US'
+        });
+        overview = englishDetail.overview || '';
       }
-      const sl = (d.spoken_languages && d.spoken_languages[0]) || {};
-      const detail = {
-        id: d.id, type: type, title: d.title || d.name || '',
-        original: d.original_title || d.original_name || '',
-        year: (d.release_date || d.first_air_date || '').slice(0, 4),
-        rating: d.vote_average ? Number(d.vote_average).toFixed(1) : '',
-        overview: overview,
-        poster: d.poster_path ? IMG + 'w500' + d.poster_path : '',
-        backdrop: d.backdrop_path ? IMG + 'w780' + d.backdrop_path : '',
-        genres: (d.genres || []).map(g => g.name),
-        language: sl.name || sl.english_name || d.original_language || '',
-        countries: (d.production_countries || []).map(c => c.name),
-        seasons: d.number_of_seasons || null,
-        episodes: d.number_of_episodes || null,
-        runtime: type === 'movie' ? (d.runtime || null) : ((d.episode_run_time && d.episode_run_time[0]) || null),
-        statusTxt: d.status || ''
-      };
-      res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=172800');
-      clearTimeout(safetyTimer);
-      return res.status(200).json(detail);
+
+      const spokenLanguage = (detail.spoken_languages && detail.spoken_languages[0]) || {};
+      res.setHeader(
+        'Cache-Control',
+        's-maxage=' + CACHE_SECONDS + ', stale-while-revalidate=' + STALE_SECONDS
+      );
+
+      return reply(200, {
+        id: detail.id,
+        type,
+        title: detail.title || detail.name || '',
+        original: detail.original_title || detail.original_name || '',
+        year: (detail.release_date || detail.first_air_date || '').slice(0, 4),
+        rating: detail.vote_average ? Number(detail.vote_average).toFixed(1) : '',
+        overview,
+        poster: detail.poster_path ? IMG + 'w500' + detail.poster_path : '',
+        backdrop: detail.backdrop_path ? IMG + 'w780' + detail.backdrop_path : '',
+        genres: (detail.genres || []).map(function (genre) { return genre.name; }),
+        language: spokenLanguage.name || spokenLanguage.english_name || detail.original_language || '',
+        countries: (detail.production_countries || []).map(function (country) { return country.name; }),
+        seasons: detail.number_of_seasons || null,
+        episodes: detail.number_of_episodes || null,
+        runtime: type === 'movie'
+          ? (detail.runtime || null)
+          : ((detail.episode_run_time && detail.episode_run_time[0]) || null),
+        statusTxt: detail.status || ''
+      });
     }
 
-    // ---------- LISTA ----------
-    function clasifica(x, type, provider){
-      var g = x.genre_ids || [];
-      var lang = x.original_language || '';
-      if (g.indexOf(16) !== -1 && (lang === 'ja' || lang === 'ko' || lang === 'zh')) return 'anime';
-      if (type === 'movie') return 'pelicula';
-      if (provider === 'netflix') {
-        if (g.indexOf(10766) !== -1) return 'novela';
-        if ((lang === 'es' || lang === 'pt') && g.indexOf(18) !== -1) return 'novela';
-      }
-      return 'serie';
-    }
-    const map = (arr, type, provider, forceCat) => (arr || []).map(x => ({
-      id: x.id, type: type, provider: provider,
-      cat: forceCat || clasifica(x, type, provider),
-      title: x.title || x.name || '',
-      year: (x.release_date || x.first_air_date || '').slice(0, 4),
-      rating: x.vote_average ? Number(x.vote_average).toFixed(1) : '',
-      pop: x.popularity || 0,
-      poster: x.poster_path ? IMG + 'w342' + x.poster_path : ''
-    }));
+    const providerQuery = req.query && req.query.provider
+      ? String(req.query.provider).toLowerCase()
+      : null;
+    const providers = providerQuery && PROVIDERS[providerQuery]
+      ? [providerQuery]
+      : Object.keys(PROVIDERS);
 
-    async function searchTitle(name, cat, provider){
-      const tryType = async (t) => {
-        const u = api + 'search/' + t + '?' + authQ + 'language=' + LANG + '&query=' + encodeURIComponent(name);
-        const r = await getJSON(u);
-        const hit = (r.results || []).filter(x => x.poster_path)[0];
-        return hit ? map([hit], t, provider, cat)[0] : null;
-      };
-      let item = await tryType('tv');
-      if (!item) item = await tryType('movie');
-      return item;
+    const movieStart = isoOffset(-730);
+    const tvStart = isoOffset(-730);
+    const currentSeasonStart = isoOffset(-180);
+    const today = isoOffset(0);
+    const currentSeasonEnd = isoOffset(45);
+
+    function discoverParams(provider, region, extra) {
+      return Object.assign({
+        language: LANG,
+        watch_region: region,
+        with_watch_providers: String(PROVIDERS[provider]),
+        with_watch_monetization_types: 'flatrate',
+        include_adult: 'false',
+        sort_by: 'popularity.desc',
+        page: '1'
+      }, extra || {});
     }
 
-    // presupuesto de tiempo total para esta ejecucion (evita que Vercel mate la funcion)
-    const deadline = Date.now() + HARD_BUDGET;
-
-    // 1) DISCOVER (peliculas/series populares) por provider — pocas llamadas, en paralelo
-    const provReq = req.query && req.query.provider ? String(req.query.provider).toLowerCase() : null;
-    const provs = (provReq && PROVIDERS[provReq]) ? [provReq] : Object.keys(PROVIDERS);
-    async function fetchDiscover(provider){
-      const pid = PROVIDERS[provider];
-      const base = '&language=' + LANG + '&watch_region=' + REGION + '&with_watch_providers=' + pid + '&sort_by=popularity.desc';
-      const [mv1, mv2, tv1, tv2] = await Promise.all([
-        getJSON(api + 'discover/movie?' + authQ + base + '&page=1'),
-        getJSON(api + 'discover/movie?' + authQ + base + '&page=2'),
-        getJSON(api + 'discover/tv?' + authQ + base + '&page=1'),
-        getJSON(api + 'discover/tv?' + authQ + base + '&page=2')
+    async function fetchProviderBundle(provider, region) {
+      const responses = await Promise.all([
+        getJSON('discover/movie', discoverParams(provider, region, {
+          'primary_release_date.gte': movieStart,
+          'primary_release_date.lte': today,
+          'vote_count.gte': '20'
+        })),
+        getJSON('discover/movie', discoverParams(provider, region, {
+          'vote_count.gte': '50'
+        })),
+        getJSON('discover/tv', discoverParams(provider, region, {
+          'first_air_date.gte': tvStart,
+          'first_air_date.lte': today,
+          include_null_first_air_dates: 'false',
+          'vote_count.gte': '10'
+        })),
+        getJSON('discover/tv', discoverParams(provider, region, {
+          'air_date.gte': currentSeasonStart,
+          'air_date.lte': currentSeasonEnd,
+          include_null_first_air_dates: 'false',
+          'vote_count.gte': '10'
+        }))
       ]);
-      const M = map([].concat(mv1.results || [], mv2.results || []), 'movie', provider).filter(it => it.cat === 'pelicula');
-      const T = map([].concat(tv1.results || [], tv2.results || []), 'tv', provider).filter(it => it.cat === 'serie');
-      const out = [];
-      for (let i = 0; i < Math.max(M.length, T.length); i++) { if (M[i]) out.push(M[i]); if (T[i]) out.push(T[i]); }
-      return out.filter(i => i.poster);
-    }
-    const discoverAll = await Promise.all(provs.map(fetchDiscover));
 
-    // 2) CURADOS (novelas/animes) — solo de las plataformas en juego, con presupuesto de tiempo
-    const curatedTasks = [];
-    provs.forEach(function(p){
-      ['novela','anime'].forEach(function(cat){
-        ((CURATED[p] && CURATED[p][cat]) || []).forEach(function(name){ curatedTasks.push({ p: p, cat: cat, name: name }); });
-      });
-    });
-    const curatedResults = await pool(curatedTasks, MAX_CONC, function(t){ return searchTitle(t.name, t.cat, t.p); }, deadline);
-
-    // 3) Armar byProviderRaw = discover + curados (sin duplicar dentro de la app)
-    const byProviderRaw = {};
-    provs.forEach((p, i) => { byProviderRaw[p] = (discoverAll[i] || []).slice(); });
-    const curByProv = {}; provs.forEach(p => { curByProv[p] = []; });
-    curatedResults.forEach(function(it, i){ if (it && curByProv[curatedTasks[i].p]) curByProv[curatedTasks[i].p].push(it); });
-    provs.forEach(function(p){
-      const seen = {}; byProviderRaw[p].forEach(it => { seen[it.type + ':' + it.id] = 1; });
-      curByProv[p].forEach(function(it){ const k = it.type + ':' + it.id; if (!seen[k]) { seen[k] = 1; byProviderRaw[p].push(it); } });
-    });
-
-    // 4) Dedupe global por prioridad (solo relevante si estamos procesando varias plataformas a la vez)
-    const owner = {};
-    if (provs.length > 1) {
-      PRIORITY.forEach(function(p){ (byProviderRaw[p] || []).forEach(function(it){ const k = it.type + ':' + it.id; if (owner[k] === undefined) owner[k] = p; }); });
-      provs.forEach(function(p){ (byProviderRaw[p] || []).forEach(function(it){ const k = it.type + ':' + it.id; if (owner[k] === undefined) owner[k] = p; }); });
+      return {
+        provider,
+        region,
+        movieRecent: responses[0],
+        moviePopular: responses[1],
+        tvNew: responses[2],
+        tvCurrent: responses[3]
+      };
     }
 
+    const trendingPromise = Promise.all([
+      getJSON('trending/movie/week', { language: LANG }),
+      getJSON('trending/tv/week', { language: LANG })
+    ]);
+
+    let bundles = await Promise.all(
+      providers.map(function (provider) {
+        return fetchProviderBundle(provider, REGION);
+      })
+    );
+
+    if (FALLBACK_REGION !== REGION) {
+      bundles = await Promise.all(bundles.map(async function (bundle) {
+        if (resultCount(bundle) > 0) return bundle;
+        const fallback = await fetchProviderBundle(bundle.provider, FALLBACK_REGION);
+        return resultCount(fallback) > 0 ? fallback : bundle;
+      }));
+    }
+
+    const trending = await trendingPromise;
+    const movieRanks = rankMap((trending[0] || {}).results || []);
+    const tvRanks = rankMap((trending[1] || {}).results || []);
     const byProvider = {};
-    provs.forEach(function(p){
-      var mine = (byProviderRaw[p] || []).filter(function(it){
-        if (provs.length === 1) return true;
-        if (it.cat === 'novela' || it.cat === 'anime') return true;
-        return owner[it.type + ':' + it.id] === p;
-      });
-      var pelis   = mine.filter(function(it){ return it.cat === 'pelicula'; });
-      var series  = mine.filter(function(it){ return it.cat === 'serie'; });
-      var novelas = mine.filter(function(it){ return it.cat === 'novela'; });
-      var animes  = mine.filter(function(it){ return it.cat === 'anime'; });
-      [pelis, series, novelas, animes].forEach(function(a){ a.sort(function(x, y){ return (y.pop || 0) - (x.pop || 0); }); });
-      byProvider[p] = [].concat(pelis.slice(0, 30), series.slice(0, 30), novelas.slice(0, 40), animes.slice(0, 40));
+    const providerRegions = {};
+
+    bundles.forEach(function (bundle) {
+      byProvider[bundle.provider] = buildProviderItems(
+        bundle.provider,
+        bundle,
+        movieRanks,
+        tvRanks
+      );
+      providerRegions[bundle.provider] = bundle.region;
     });
 
-    var totalItems = 0; provs.forEach(function(p){ totalItems += (byProvider[p] || []).length; });
+    let total = 0;
+    providers.forEach(function (provider) {
+      total += (byProvider[provider] || []).length;
+    });
 
-    res.setHeader('Cache-Control', 's-maxage=21600, stale-while-revalidate=43200');
-    if (provReq && PROVIDERS[provReq]) {
-      clearTimeout(safetyTimer);
-      return res.status(200).json({ provider: provReq, region: REGION, count: byProvider[provReq].length, items: byProvider[provReq] });
+    res.setHeader(
+      'Cache-Control',
+      's-maxage=' + CACHE_SECONDS + ', stale-while-revalidate=' + STALE_SECONDS
+    );
+
+    const generatedAt = new Date().toISOString();
+    if (providerQuery && PROVIDERS[providerQuery]) {
+      return reply(200, {
+        provider: providerQuery,
+        region: providerRegions[providerQuery] || REGION,
+        generatedAt,
+        selectionVersion: SELECTION_VERSION,
+        count: (byProvider[providerQuery] || []).length,
+        items: byProvider[providerQuery] || []
+      });
     }
-    clearTimeout(safetyTimer);
-    return res.status(200).json({ region: REGION, total: totalItems, byProvider: byProvider });
-  } catch (e) {
-    clearTimeout(safetyTimer);
-    return res.status(500).json({ error: 'Error interno: ' + (e && e.message ? e.message : 'desconocido') });
-  }
-};
 
-// Da mas tiempo a la funcion (evita el timeout que provoca el crash). Requiere plan que lo soporte;
-// en Hobby el limite real sigue siendo 10s aunque se declare mayor -> ver vercel.json abajo.
+    return reply(200, {
+      region: REGION,
+      regions: providerRegions,
+      generatedAt,
+      selectionVersion: SELECTION_VERSION,
+      total,
+      byProvider
+    });
+  } catch (error) {
+    return reply(500, {
+      error: 'Error interno: ' + (error && error.message ? error.message : 'desconocido')
+    });
+  }
+}
+
 export const config = { maxDuration: 60 };
