@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#111218">
+  <title>Panel administrativo · Sublicuentas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Barlow:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/admin.css">
+</head>
+<body>
+  <div class="admin-login" id="adminLogin">
+    <form class="admin-login-card" id="adminLoginForm">
+      <div class="admin-brand"><span>SUBLI</span>CUENTAS</div>
+      <small>Administración segura</small>
+      <h1>Panel de operación</h1>
+      <p>Administre pedidos, clientes, precios, disponibilidad y promociones sin editar código.</p>
+      <label>
+        Usuario
+        <input id="adminUser" autocomplete="username" required>
+      </label>
+      <label>
+        Contraseña
+        <span class="password-wrap">
+          <input id="adminPassword" type="password" autocomplete="current-password" required>
+          <button type="button" id="toggleAdminPassword" aria-label="Mostrar contraseña">Ver</button>
+        </span>
+      </label>
+      <button class="primary wide" type="submit">Ingresar</button>
+      <div class="form-message" id="adminLoginMessage" role="alert"></div>
+    </form>
+  </div>
+
+  <div class="admin-shell" id="adminShell" hidden>
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="admin-side-brand"><span>SUBLI</span>CUENTAS</div>
+      <nav aria-label="Secciones administrativas">
+        <button class="admin-nav" data-view="orders"><i>🛒</i><span>Pedidos</span></button>
+        <button class="admin-nav" data-view="clients"><i>♟</i><span>Clientes</span></button>
+        <button class="admin-nav active" data-view="products"><i>▦</i><span>Productos</span></button>
+        <button class="admin-nav" data-view="promotions"><i>◇</i><span>Promociones</span></button>
+        <button class="admin-nav" data-view="availability"><i>✓</i><span>Disponibilidad</span></button>
+        <button class="admin-nav" data-view="settings"><i>⚙</i><span>Configuración</span></button>
+        <button class="admin-nav" data-view="history"><i>↺</i><span>Historial</span></button>
+      </nav>
+      <div class="admin-side-foot">
+        <a href="/" target="_blank" rel="noopener">Ver catálogo público ↗</a>
+        <a href="/store.html" target="_blank" rel="noopener">Ver SubliStore ↗</a>
+        <button type="button" id="adminLogout">Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <button class="mobile-menu" id="adminMenuButton" aria-label="Abrir menú">☰</button>
+        <div>
+          <small>Catálogo central</small>
+          <h1 id="adminViewTitle">Productos y precios</h1>
+        </div>
+        <div class="admin-top-actions">
+          <span class="save-state" id="adminSaveState">Sin cambios</span>
+          <button class="primary" id="saveCatalog" type="button">Guardar y publicar</button>
+        </div>
+      </header>
+
+      <section class="admin-summary" aria-label="Resumen del catálogo">
+        <article><span class="summary-icon red">▣</span><div><strong id="statProducts">0</strong><small>productos activos</small></div></article>
+        <article><span class="summary-icon purple">◇</span><div><strong id="statPromos">0</strong><small>promociones activas</small></div></article>
+        <article><span class="summary-icon amber">!</span><div><strong id="statPending">0</strong><small>bajo pedido o pausados</small></div></article>
+        <article><span class="summary-icon blue">↻</span><div><strong id="statVersion">1</strong><small>versión publicada</small></div></article>
+      </section>
+
+      <div class="admin-notice" id="adminNotice" hidden></div>
+
+      <section class="admin-view" id="view-orders">
+        <div class="single-panel">
+          <div class="panel-heading">
+            <div>
+              <small>Operación SubliStore</small>
+              <h2>Pedidos y acreditación de puntos</h2>
+              <p>Confirme el pago para cerrar la compra y acreditar automáticamente los puntos configurados.</p>
+            </div>
+            <div class="panel-actions">
+              <select id="orderStatusFilter" aria-label="Filtrar pedidos">
+                <option value="">Todos los estados</option>
+                <option value="pendiente">Pendientes</option>
+                <option value="confirmada">Confirmados</option>
+                <option value="cancelada">Cancelados</option>
+              </select>
+              <button class="secondary" id="refreshOrders" type="button">Actualizar</button>
+            </div>
+          </div>
+          <div class="operations-list" id="ordersList">
+            <div class="empty-list">Abra esta sección para cargar los pedidos.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="admin-view" id="view-clients">
+        <div class="split-layout client-layout">
+          <div class="list-panel">
+            <div class="panel-heading">
+              <div><small>Comunidad SubliStore</small><h2>Clientes</h2></div>
+              <button class="secondary" id="refreshClients" type="button">Actualizar</button>
+            </div>
+            <div class="list-tools one-column">
+              <input id="clientSearch" type="search" placeholder="Buscar nombre, correo o WhatsApp">
+            </div>
+            <div class="admin-list" id="clientList"></div>
+          </div>
+          <div class="editor-panel" id="clientEditor">
+            <div class="empty-editor">
+              <span>♟</span>
+              <h3>Seleccione un cliente</h3>
+              <p>Consulte sus datos, saldo y ajuste de puntos.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="admin-view active" id="view-products">
+        <div class="split-layout">
+          <div class="list-panel">
+            <div class="panel-heading">
+              <div><small>Inventario comercial</small><h2>Productos</h2></div>
+              <button class="secondary" id="newProduct" type="button">+ Nuevo</button>
+            </div>
+            <div class="list-tools">
+              <input id="productSearch" type="search" placeholder="Buscar producto o categoría">
+              <select id="productCategoryFilter"><option value="">Todas las categorías</option></select>
+            </div>
+            <div class="admin-list" id="productList"></div>
+          </div>
+          <div class="editor-panel" id="productEditor">
+            <div class="empty-editor">
+              <span>▦</span>
+              <h3>Seleccione un producto</h3>
+              <p>Podrá editar sus planes, precios, imagen y estado.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="admin-view" id="view-promotions">
+        <div class="split-layout">
+          <div class="list-panel">
+            <div class="panel-heading">
+              <div><small>Calendario comercial</small><h2>Promociones</h2></div>
+              <button class="secondary" id="newPromotion" type="button">+ Nueva</button>
+            </div>
+            <div class="admin-list" id="promotionList"></div>
+          </div>
+          <div class="editor-panel" id="promotionEditor">
+            <div class="empty-editor">
+              <span>◇</span>
+              <h3>Seleccione una promoción</h3>
+              <p>Defina precio, vigencia y productos incluidos.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="admin-view" id="view-availability">
+        <div class="single-panel">
+          <div class="panel-heading">
+            <div>
+              <small>Control rápido</small>
+              <h2>Disponibilidad de servicios</h2>
+              <p>El estado se refleja también en SubliStore y SubliBot.</p>
+            </div>
+          </div>
+          <div class="availability-table" id="availabilityList"></div>
+        </div>
+      </section>
+
+      <section class="admin-view" id="view-settings">
+        <div class="single-panel settings-panel" id="settingsEditor"></div>
+      </section>
+
+      <section class="admin-view" id="view-history">
+        <div class="single-panel">
+          <div class="panel-heading">
+            <div><small>Auditoría</small><h2>Historial de publicaciones</h2></div>
+            <button class="secondary" id="refreshHistory" type="button">Actualizar</button>
+          </div>
+          <div class="history-list" id="historyList"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+  <script src="/assets/admin.js" defer></script>
+</body>
+</html>
