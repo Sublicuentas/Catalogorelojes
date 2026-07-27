@@ -28,6 +28,15 @@ function cleanAvailability(value) {
 function cleanImageUrl(value) {
   const url = cleanText(value, 1200);
   if (!url) return '';
+
+  if (url.startsWith('/assets/')) {
+    const assetPath = url.slice('/assets/'.length);
+    const segments = assetPath.split('/');
+    const isSafeAssetPath = /^[a-z0-9][a-z0-9._/-]*$/i.test(assetPath)
+      && segments.every((segment) => segment && segment !== '.' && segment !== '..');
+    return isSafeAssetPath ? `/assets/${assetPath}` : '';
+  }
+
   try {
     const parsed = new URL(url);
     return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '';
