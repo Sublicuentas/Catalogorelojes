@@ -4,6 +4,18 @@ import { normalizeCatalog, validateCatalog } from './catalog.js';
 const COLLECTION = String(process.env.CATALOG_COLLECTION || 'catalogo').trim() || 'catalogo';
 const DOCUMENT = String(process.env.CATALOG_DOCUMENT || 'publico').trim() || 'publico';
 
+export function withDefaultProductImages(input) {
+  const catalog = normalizeCatalog(input);
+  const defaultImages = new Map(
+    cloneDefaultCatalog().products.map((product) => [product.id, product.imageUrl || ''])
+  );
+  catalog.products = catalog.products.map((product) => ({
+    ...product,
+    imageUrl: product.imageUrl || defaultImages.get(product.id) || ''
+  }));
+  return catalog;
+}
+
 export function hasFirebaseConfiguration() {
   return Boolean(
     String(process.env.FIREBASE_SERVICE_ACCOUNT || '').trim() ||
@@ -26,7 +38,7 @@ async function getFirestore() {
 export async function loadCatalogSnapshot() {
   if (!hasFirebaseConfiguration()) {
     return {
-      catalog: normalizeCatalog(cloneDefaultCatalog()),
+      catalog: withDefaultProductImages(cloneDefaultCatalog()),
       source: 'default',
       warning: 'Firebase no está configurado; se usa el catálogo base.'
     };
@@ -37,19 +49,19 @@ export async function loadCatalogSnapshot() {
     const snapshot = await db.collection(COLLECTION).doc(DOCUMENT).get();
     if (!snapshot.exists) {
       return {
-        catalog: normalizeCatalog(cloneDefaultCatalog()),
+        catalog: withDefaultProductImages(cloneDefaultCatalog()),
         source: 'default',
         warning: 'Aún no hay un catálogo publicado en Firebase.'
       };
     }
     return {
-      catalog: normalizeCatalog(snapshot.data()),
+      catalog: withDefaultProductImages(snapshot.data()),
       source: 'firestore',
       warning: ''
     };
   } catch (error) {
     return {
-      catalog: normalizeCatalog(cloneDefaultCatalog()),
+      catalog: withDefaultProductImages(cloneDefaultCatalog()),
       source: 'default',
       warning: `No se pudo leer Firebase; se usa el respaldo: ${error.message || error}`
     };
@@ -72,7 +84,7 @@ export async function saveCatalogSnapshot(input, actor = 'admin') {
   const previousSnapshot = await reference.get();
   const previous = previousSnapshot.exists ? normalizeCatalog(previousSnapshot.data()) : null;
   const catalog = {
-    ...result.catalog,
+    ...withDefaultProductImages(result.catalog),
     catalogVersion: Math.max(
       Number(result.catalog.catalogVersion) || 1,
       Number(previous && previous.catalogVersion) || 0

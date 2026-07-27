@@ -55,7 +55,7 @@ export const DEFAULT_CATALOG = {
       order: 10,
       accent: '#E50914',
       visual: 'N',
-      imageUrl: '',
+      imageUrl: '/assets/netflix.webp',
       summary: 'Películas y series en calidad premium.',
       plans: [
         {
@@ -98,7 +98,7 @@ export const DEFAULT_CATALOG = {
       order: 20,
       accent: '#113CCF',
       visual: 'D+',
-      imageUrl: '',
+      imageUrl: '/assets/disney.webp',
       summary: 'Disney, Hulu, Marvel, Pixar, Star Wars y más.',
       plans: [
         {
@@ -143,7 +143,7 @@ export const DEFAULT_CATALOG = {
       order: 30,
       accent: '#6421D6',
       visual: 'MAX',
-      imageUrl: '',
+      imageUrl: '/assets/hbo-max.webp',
       summary: 'Estrenos, series originales y contenido Warner Bros.',
       plans: [
         {
@@ -171,7 +171,7 @@ export const DEFAULT_CATALOG = {
       order: 40,
       accent: '#00A8E1',
       visual: 'prime',
-      imageUrl: '',
+      imageUrl: '/assets/prime-video.webp',
       summary: 'Películas, series y Amazon Originals.',
       plans: [
         {
@@ -200,7 +200,7 @@ export const DEFAULT_CATALOG = {
       order: 50,
       accent: '#F47521',
       visual: 'C',
-      imageUrl: '',
+      imageUrl: '/assets/crunchyroll.webp',
       summary: 'Anime oficial, simulcasts y estrenos con Japón.',
       plans: [
         {
@@ -229,7 +229,7 @@ export const DEFAULT_CATALOG = {
       order: 60,
       accent: '#FF6900',
       visual: 'VIX',
-      imageUrl: '',
+      imageUrl: '/assets/vix.webp',
       summary: 'Novelas, series, películas, canales y deportes latinos.',
       plans: [
         {
@@ -259,7 +259,7 @@ export const DEFAULT_CATALOG = {
       order: 70,
       accent: '#0064FF',
       visual: 'P+',
-      imageUrl: 'https://i.postimg.cc/fb2LmHC1/paramount.jpg',
+      imageUrl: '/assets/paramount.webp',
       summary: 'Paramount Originals, CBS, películas y UFC en vivo.',
       plans: [
         {
@@ -288,7 +288,7 @@ export const DEFAULT_CATALOG = {
       order: 80,
       accent: '#00B6E3',
       visual: 'VIKI',
-      imageUrl: '',
+      imageUrl: '/assets/viki.webp',
       summary: 'K-dramas, doramas y contenido asiático subtitulado.',
       plans: [
         {
@@ -317,7 +317,7 @@ export const DEFAULT_CATALOG = {
       order: 10,
       accent: '#A238FF',
       visual: 'DZ',
-      imageUrl: '',
+      imageUrl: '/assets/deezer.webp',
       summary: 'Música sin anuncios, descargas y audio de alta calidad.',
       plans: [
         {
@@ -347,7 +347,7 @@ export const DEFAULT_CATALOG = {
       order: 20,
       accent: '#1DB954',
       visual: 'SP',
-      imageUrl: '',
+      imageUrl: '/assets/spotify.webp',
       summary: 'Música, podcasts y audiolibros sin anuncios.',
       plans: [
         {
@@ -376,7 +376,7 @@ export const DEFAULT_CATALOG = {
       order: 30,
       accent: '#FF0000',
       visual: 'YT',
-      imageUrl: '',
+      imageUrl: '/assets/youtube-premium.webp',
       summary: 'Videos y música sin anuncios.',
       plans: [
         {
@@ -405,7 +405,7 @@ export const DEFAULT_CATALOG = {
       order: 10,
       accent: '#1768E5',
       visual: 'O',
-      imageUrl: '',
+      imageUrl: '/assets/oleada-tv.webp',
       summary: 'Películas, series y deportes para Android y web.',
       productFeatures: [
         'Compatible con Android, Android TV, TV Box, TV Stick y web',
@@ -453,7 +453,7 @@ export const DEFAULT_CATALOG = {
       order: 20,
       accent: '#D4AF37',
       visual: 'LATIN',
-      imageUrl: '',
+      imageUrl: '/assets/latin-tv.webp',
       summary: 'Canales, películas, series y deportes en vivo.',
       productFeatures: [
         'Más de 5,000 canales en vivo',
@@ -529,7 +529,7 @@ export const DEFAULT_CATALOG = {
       order: 30,
       accent: '#C58A14',
       visual: '🦁',
-      imageUrl: '',
+      imageUrl: '/assets/lion-tv.webp',
       summary: 'IPTV estable por conexiones con demo de 6 horas.',
       productFeatures: [
         'Activación inmediata',
@@ -606,7 +606,7 @@ export const DEFAULT_CATALOG = {
       order: 10,
       accent: '#F59E0B',
       visual: 'FF',
-      imageUrl: '',
+      imageUrl: '/assets/free-fire.webp',
       summary: 'Recargas de diamantes por ID de jugador.',
       plans: [
         {
@@ -641,7 +641,7 @@ export const DEFAULT_CATALOG = {
       order: 20,
       accent: '#B7791F',
       visual: 'PUBG',
-      imageUrl: '',
+      imageUrl: '/assets/pubg-mobile.webp',
       summary: 'Recargas de UC por ID de jugador.',
       plans: [
         {
@@ -673,7 +673,7 @@ export const DEFAULT_CATALOG = {
       order: 30,
       accent: '#111827',
       visual: 'R',
-      imageUrl: '',
+      imageUrl: '/assets/roblox.webp',
       summary: 'Recargas de Robux y artículos bajo pedido.',
       plans: [
         {
@@ -700,7 +700,7 @@ export const DEFAULT_CATALOG = {
       order: 10,
       accent: '#10A37F',
       visual: 'AI',
-      imageUrl: '',
+      imageUrl: '/assets/chatgpt-plus.webp',
       summary: 'Producto temporalmente no disponible.',
       plans: [
         {
@@ -724,7 +724,7 @@ export const DEFAULT_CATALOG = {
       order: 20,
       accent: '#4285F4',
       visual: 'G',
-      imageUrl: '',
+      imageUrl: '/assets/gemini-pro.webp',
       summary: 'Herramientas premium de inteligencia artificial de Google.',
       plans: [
         {
@@ -751,7 +751,7 @@ export const DEFAULT_CATALOG = {
       order: 30,
       accent: '#159A9C',
       visual: 'P',
-      imageUrl: '',
+      imageUrl: '/assets/perplexity.webp',
       summary: 'Buscador e investigación asistida por IA.',
       plans: [
         {
@@ -778,7 +778,7 @@ export const DEFAULT_CATALOG = {
       order: 40,
       accent: '#58CC02',
       visual: 'DUO',
-      imageUrl: '',
+      imageUrl: '/assets/duolingo.svg',
       summary: 'Aprendizaje sin anuncios, vidas infinitas y repaso de errores.',
       plans: [
         {
@@ -805,7 +805,7 @@ export const DEFAULT_CATALOG = {
       order: 10,
       accent: '#00C4CC',
       visual: 'Canva',
-      imageUrl: '',
+      imageUrl: '/assets/canva.webp',
       summary: 'Plantillas y herramientas premium para diseño.',
       plans: [
         {
@@ -841,7 +841,7 @@ export const DEFAULT_CATALOG = {
       order: 20,
       accent: '#6C2BFF',
       visual: 'Ae',
-      imageUrl: '',
+      imageUrl: '/assets/adobe-express.webp',
       summary: 'Diseño profesional con plantillas y recursos de Adobe.',
       plans: [
         {
@@ -869,7 +869,7 @@ export const DEFAULT_CATALOG = {
       order: 10,
       accent: '#00A5A5',
       visual: 'ESET',
-      imageUrl: '',
+      imageUrl: '/assets/eset.webp',
       summary: 'Licencias originales para Windows y Mac.',
       plans: [
         {
@@ -924,7 +924,7 @@ export const DEFAULT_CATALOG = {
       order: 20,
       accent: '#0078D4',
       visual: '⊞',
-      imageUrl: '',
+      imageUrl: '/assets/windows.webp',
       summary: 'Licencia permanente para un equipo.',
       plans: [
         {
@@ -966,7 +966,7 @@ export const DEFAULT_CATALOG = {
       order: 30,
       accent: '#EA3E23',
       visual: 'O365',
-      imageUrl: '',
+      imageUrl: '/assets/office-365.webp',
       summary: 'Microsoft Office para cinco dispositivos.',
       plans: [
         {
@@ -996,7 +996,7 @@ export const DEFAULT_CATALOG = {
       order: 90,
       accent: '#111111',
       visual: 'MUBI',
-      imageUrl: '',
+      imageUrl: '/assets/mubi.webp',
       summary: 'Beneficio disponible mediante canje de puntos.',
       plans: [
         {
