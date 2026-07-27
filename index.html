@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- SUBLICUENTAS INDEX COMERCIAL 2026-07-27 V2 · CATALOGO EN VIVO -->
 <html lang="es">
 <head>
 <meta charset="UTF-8"/>
@@ -1166,6 +1167,7 @@ main { min-height: 0 !important; }
 body { height: auto !important; min-height: 100vh; }
 </style>
 
+<link rel="stylesheet" href="/assets/catalog-sync.css">
 </head>
 <body>
 
@@ -1218,9 +1220,31 @@ body { height: auto !important; min-height: 100vh; }
 <div class="tp active" id="tab-inicio">
   <div class="subli-home-web-hero-grid">
   <div class="hero-wrap">
-    <div class="hero-top">
-      <h1>Tus plataformas favoritas<br/><span>al mejor precio</span></h1>
-      <p>Perfiles Premium 4K &middot; Pago seguro &middot; Soporte garantizado</p>
+    <div class="hero-top subli-commerce-hero">
+      <div class="subli-commerce-copy">
+        <span class="subli-commerce-live"><i></i> Cat&aacute;logo conectado</span>
+        <h1>Todo su entretenimiento<br/><span>en un solo lugar</span></h1>
+        <p>Streaming, TV digital, gaming y licencias con precios vigentes, disponibilidad real y compra directa.</p>
+        <div class="subli-commerce-actions">
+          <button type="button" class="subli-commerce-primary" onclick="abrirSubliStore()">
+            Comprar ahora <b>&rarr;</b>
+          </button>
+          <button type="button" class="subli-commerce-secondary" onclick="openTabById('promos')">
+            Ver promociones
+          </button>
+        </div>
+        <div class="subli-commerce-trust" aria-label="Beneficios de Sublicuentas">
+          <span><b id="subliLiveProductCount">27</b> servicios</span>
+          <span><b>100%</b> digital</span>
+          <span><b>Soporte</b> garantizado</span>
+        </div>
+        <span class="catalog-sync-note" id="subliCatalogSyncNote">Comprobando precios vigentes&hellip;</span>
+      </div>
+      <div class="subli-commerce-showcase" aria-hidden="true">
+        <span style="--brand:#E50914;--turn:-8deg"><b>N</b><small>Netflix</small></span>
+        <span style="--brand:#113CCF;--turn:3deg"><b>D+</b><small>Disney+</small></span>
+        <span style="--brand:#6421D6;--turn:10deg"><b>MAX</b><small>HBO Max</small></span>
+      </div>
     </div>
     <div class="new-carousel" id="newCarousel">
       <div class="nc-track" id="ncTrack">
@@ -1255,6 +1279,40 @@ body { height: auto !important; min-height: 100vh; }
     <div class="subli-category-grid" id="subliCategoryGrid"></div>
   </section>
   </div>
+
+  <section class="subli-live-catalog" aria-labelledby="subliLiveCatalogTitle">
+    <div class="subli-live-catalog-head">
+      <div>
+        <span><i></i> Cat&aacute;logo en vivo</span>
+        <h2 id="subliLiveCatalogTitle">Servicios destacados</h2>
+        <p>Consulte precios y disponibilidad antes de comprar.</p>
+      </div>
+      <strong id="subliLiveCatalogCount">Cargando&hellip;</strong>
+    </div>
+    <div class="subli-live-search">
+      <span aria-hidden="true">&#128269;</span>
+      <input id="subliLiveSearch" type="search" autocomplete="off" placeholder="Buscar Netflix, Canva, Office, IPTV&hellip;" aria-label="Buscar en el cat&aacute;logo"/>
+      <button type="button" id="subliLiveSearchClear" aria-label="Limpiar b&uacute;squeda">&times;</button>
+    </div>
+    <div class="subli-live-filters" id="subliLiveFilters" aria-label="Filtrar servicios">
+      <button type="button" class="active" data-home-category="all">Todo</button>
+      <button type="button" data-home-category="streaming">Streaming</button>
+      <button type="button" data-home-category="iptv">TV digital</button>
+      <button type="button" data-home-category="music">M&uacute;sica</button>
+      <button type="button" data-home-category="ai,creative,software">Licencias</button>
+      <button type="button" data-home-category="gaming">Gaming</button>
+    </div>
+    <div class="subli-live-product-grid" id="subliLiveProductGrid" aria-live="polite">
+      <span class="subli-live-product-skeleton"></span>
+      <span class="subli-live-product-skeleton"></span>
+      <span class="subli-live-product-skeleton"></span>
+      <span class="subli-live-product-skeleton"></span>
+    </div>
+    <div class="subli-live-catalog-foot">
+      <div><i></i><span>Precios sincronizados con tarjetas, carrito, chatbot y ofertas.</span></div>
+      <button type="button" onclick="abrirSubliStore()">Explorar SubliStore <b>&rarr;</b></button>
+    </div>
+  </section>
 
   <section class="subli-home-cartelera" aria-labelledby="subliHomeCarteleraTitle">
     <div class="subli-home-heading">
@@ -1490,13 +1548,17 @@ body { height: auto !important; min-height: 100vh; }
   <div class="sc-cons-glow"></div>
   <div class="sc-cons-card">
     <span class="sc-cons-brand"><b>TIENDA</b> SUBLICUENTAS</span>
-    <div class="sc-cons-emoji">🚧</div>
-    <h1 class="sc-cons-title">Sección en <b>construcción</b></h1>
-    <p class="sc-cons-text">Estamos afinando la nueva tienda para vos. Muy pronto vas a poder comprar y canjear tus puntos aquí mismo. 🎬</p>
-    <div class="sc-cons-bar"><i></i></div>
-    <button type="button" class="sc-cons-store" onclick="abrirSubliStore()"><span>🛍️</span> Entrar a SubliStore (beta)</button>
+    <div class="sc-cons-emoji">🛍️</div>
+    <h1 class="sc-cons-title">Su tienda digital <b>ya está conectada</b></h1>
+    <p class="sc-cons-text">Ingrese para comprar servicios, formar combos y canjear puntos usando los mismos precios del catálogo.</p>
+    <div class="sc-cons-features">
+      <span>Precios y disponibilidad sincronizados</span>
+      <span>Carrito con validación antes de comprar</span>
+      <span>Promociones y puntos en un solo lugar</span>
+    </div>
+    <button type="button" class="sc-cons-store" onclick="abrirSubliStore()"><span>🛍️</span> Entrar a SubliStore</button>
     <a class="sc-cons-wa" href="https://wa.me/50432126332?text=Hola%2C%20quiero%20informaci%C3%B3n%20de%20Sublicuentas" target="_blank" rel="noopener"><span>💬</span> Escríbenos por WhatsApp</a>
-    <small class="sc-cons-foot">Mientras tanto, explorá la Cartelera y la Agenda Deportiva.</small>
+    <small class="sc-cons-foot">Su cuenta mantiene historial, puntos y beneficios.</small>
   </div>
 </section>
 </div>
@@ -3049,7 +3111,7 @@ main { display:block !important; min-height:420px !important; padding:0 14px 20p
 <script>
 function abrirSubliStore(pagina){
   var f = document.getElementById('sublistoreFrame');
-  if (!f.src) f.src = 'https://sublistore.imitatiko.lat/' + (pagina || '');
+  if (!f.getAttribute('src')) f.src = '/store.html' + (pagina ? ('#' + pagina) : '');
   document.getElementById('sublistoreModal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -4269,4 +4331,6 @@ footer{
 })();
 </script>
 
+<script src="/assets/catalog-sync.js" defer></script>
 </body>
+</html>
