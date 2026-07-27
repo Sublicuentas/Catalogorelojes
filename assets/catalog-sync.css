@@ -1,0 +1,53 @@
+.catalog-status{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  margin-left:auto;
+  padding:4px 8px;
+  border-radius:999px;
+  font-family:'Barlow',sans-serif;
+  font-size:9px;
+  line-height:1;
+  font-weight:900;
+  white-space:nowrap;
+}
+.catalog-status::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+.catalog-status.available{background:#DCFCE7;color:#15803D}
+.catalog-status.limited,.catalog-status.on_request{background:#FEF3C7;color:#B45309}
+.catalog-status.paused,.catalog-status.maintenance{background:#FEE2E2;color:#B91C1C}
+.catalog-disabled{pointer-events:none!important;background:#A7AAB0!important;color:#fff!important;box-shadow:none!important;opacity:.7}
+.catalog-sync-note{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin:7px 0 0;
+  color:#64748B;
+  font-size:10px;
+  font-weight:700;
+}
+.catalog-sync-note::before{
+  content:'';
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#16A34A;
+  box-shadow:0 0 0 3px rgba(22,163,74,.12);
+}
+#tab-compras .sc-cons-card{
+  background:#FFFFFF!important;
+  border:1px solid #E7DDD5!important;
+  box-shadow:0 20px 55px rgba(40,27,20,.13)!important;
+}
+#tab-compras .sc-cons-brand{color:#E2231A!important;background:#FEE9E7!important;border-color:#F5C3BE!important}
+#tab-compras .sc-cons-brand b{color:#111218!important}
+#tab-compras .sc-cons-title{color:#111218!important}
+#tab-compras .sc-cons-title b{color:#E2231A!important}
+#tab-compras .sc-cons-text{color:#5F6670!important}
+#tab-compras .sc-cons-foot{color:#7B818A!important}
+#tab-compras .sc-cons-bar{background:#EFE9E4!important}
+#tab-compras .sc-cons-features{display:grid;gap:8px;text-align:left;margin:18px auto 0;max-width:320px}
+#tab-compras .sc-cons-features span{display:flex;gap:8px;color:#3E444D;font-size:12px;font-weight:700}
+#tab-compras .sc-cons-features span::before{content:'✓';color:#15803D;font-weight:900}
+@media(min-width:900px){
+  #tab-compras .sc-cons-card{max-width:620px!important;padding:42px!important}
+}
