@@ -36,6 +36,10 @@
     'windows 10/11': 'windows',
     'office 365': 'office-365'
   };
+  var homeCatalogState = {
+    category: 'all',
+    query: ''
+  };
 
   function normalize(value) {
     return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -60,6 +64,145 @@
   function priceText(value, catalog) {
     if (value === null || value === undefined || value === '') return 'Consultar disponibilidad';
     return (catalog.settings.currencyLabel || 'Lps.') + ' ' + formatNumber(value, catalog);
+  }
+  function safeAccent(value) {
+    return /^#[0-9a-f]{3,8}$/i.test(String(value || '')) ? value : '#E2231A';
+  }
+  function minimumProductPrice(product) {
+    var values = [];
+    (product.plans || []).filter(function (plan) {
+      return plan.active && statusOf(plan.availability).purchasable;
+    }).forEach(function (plan) {
+      if (plan.options && plan.options.length) {
+        plan.options.forEach(function (option) {
+          if (option.active !== false && option.price !== null && option.price !== undefined) {
+            values.push(Number(option.price));
+          }
+        });
+      } else if (plan.price !== null && plan.price !== undefined) {
+        values.push(Number(plan.price));
+      }
+    });
+    values = values.filter(function (value) { return Number.isFinite(value); });
+    return values.length ? Math.min.apply(Math, values) : null;
+  }
+  function categoryName(catalog, id) {
+    var category = (catalog.categories || []).find(function (item) { return item.id === id; });
+    return category ? category.name : id;
+  }
+  function productVisual(product) {
+    if (product.imageUrl) {
+      return '<img src="' + escapeHtml(product.imageUrl) + '" alt="" loading="lazy" decoding="async">';
+    }
+    return '<b>' + escapeHtml(product.visual || product.name.slice(0, 4).toUpperCase()) + '</b>';
+  }
+  function openSubliProduct(productId) {
+    var target = 'producto=' + encodeURIComponent(productId);
+    if (typeof window.abrirSubliStore === 'function') {
+      window.abrirSubliStore(target);
+      return;
+    }
+    window.location.href = '/store.html#' + target;
+  }
+  function renderHomeCatalog(catalog) {
+    var grid = document.getElementById('subliLiveProductGrid');
+    if (!grid) return;
+    var query = normalize(homeCatalogState.query);
+    var categories = homeCatalogState.category === 'all'
+      ? []
+      : homeCatalogState.category.split(',');
+    var priority = ['netflix', 'disney', 'hbo-max', 'prime-video', 'crunchyroll', 'canva', 'office-365', 'latin-tv'];
+    var products = (catalog.products || []).filter(function (product) {
+      if (!product.active || !product.storeEnabled || product.redemptionOnly) return false;
+      if (categories.length && categories.indexOf(product.categoryId) === -1) return false;
+      var searchable = normalize([
+        product.name,
+        product.summary,
+        categoryName(catalog, product.categoryId),
+        (product.plans || []).map(function (plan) { return plan.name; }).join(' ')
+      ].join(' '));
+      return !query || searchable.indexOf(query) !== -1;
+    });
+    products.sort(function (a, b) {
+      if (!query && homeCatalogState.category === 'all') {
+        var aPriority = priority.indexOf(a.id);
+        var bPriority = priority.indexOf(b.id);
+        aPriority = aPriority === -1 ? 999 : aPriority;
+        bPriority = bPriority === -1 ? 999 : bPriority;
+        if (aPriority !== bPriority) return aPriority - bPriority;
+      }
+      return Number(a.order || 999) - Number(b.order || 999);
+    });
+    var resultCount = products.length;
+    var visible = products.slice(0, query || categories.length ? 12 : 8);
+    var totalActive = (catalog.products || []).filter(function (product) { return product.active; }).length;
+    var productCount = document.getElementById('subliLiveProductCount');
+    var catalogCount = document.getElementById('subliLiveCatalogCount');
+    if (productCount) productCount.textContent = totalActive;
+    if (catalogCount) {
+      catalogCount.textContent = resultCount + (resultCount === 1 ? ' resultado' : ' resultados');
+    }
+    if (!visible.length) {
+      grid.innerHTML = '<div class="subli-live-empty">No encontramos ese servicio. Pruebe con otra palabra o consulte en SubliStore.</div>';
+      return;
+    }
+    grid.innerHTML = visible.map(function (product) {
+      var price = minimumProductPrice(product);
+      var status = statusOf(product.availability);
+      return '<article class="subli-live-product" style="--product-accent:' +
+        escapeHtml(safeAccent(product.accent)) + '">' +
+        '<div class="subli-live-product-top"><span class="subli-live-product-visual">' +
+        productVisual(product) + '</span><span class="subli-live-product-status ' +
+        escapeHtml(product.availability || 'available') + '">' + escapeHtml(status.label) + '</span></div>' +
+        '<h3>' + escapeHtml(product.name) + '</h3>' +
+        '<p>' + escapeHtml(product.summary || categoryName(catalog, product.categoryId)) + '</p>' +
+        '<div class="subli-live-product-bottom"><div class="subli-live-product-price"><small>' +
+        (price === null ? 'Precio' : 'Desde') + '</small><strong>' +
+        escapeHtml(price === null ? 'Consultar' : priceText(price, catalog)) + '</strong></div>' +
+        '<button type="button" data-open-subli-product="' + escapeHtml(product.id) +
+        '" aria-label="Ver planes de ' + escapeHtml(product.name) + '">&rsaquo;</button></div></article>';
+    }).join('');
+    grid.querySelectorAll('[data-open-subli-product]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        openSubliProduct(button.getAttribute('data-open-subli-product'));
+      });
+    });
+  }
+  function bindHomeCatalog() {
+    var search = document.getElementById('subliLiveSearch');
+    var clear = document.getElementById('subliLiveSearchClear');
+    var filters = document.getElementById('subliLiveFilters');
+    if (search && !search.dataset.catalogBound) {
+      search.dataset.catalogBound = 'true';
+      search.addEventListener('input', function () {
+        homeCatalogState.query = search.value.trim();
+        search.parentElement.classList.toggle('has-value', Boolean(homeCatalogState.query));
+        if (window.__SUBLI_CATALOG__) renderHomeCatalog(window.__SUBLI_CATALOG__);
+      });
+    }
+    if (clear && !clear.dataset.catalogBound) {
+      clear.dataset.catalogBound = 'true';
+      clear.addEventListener('click', function () {
+        if (!search) return;
+        search.value = '';
+        homeCatalogState.query = '';
+        search.parentElement.classList.remove('has-value');
+        search.focus();
+        if (window.__SUBLI_CATALOG__) renderHomeCatalog(window.__SUBLI_CATALOG__);
+      });
+    }
+    if (filters && !filters.dataset.catalogBound) {
+      filters.dataset.catalogBound = 'true';
+      filters.querySelectorAll('[data-home-category]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          homeCatalogState.category = button.getAttribute('data-home-category') || 'all';
+          filters.querySelectorAll('[data-home-category]').forEach(function (item) {
+            item.classList.toggle('active', item === button);
+          });
+          if (window.__SUBLI_CATALOG__) renderHomeCatalog(window.__SUBLI_CATALOG__);
+        });
+      });
+    }
   }
   function productById(catalog, id) {
     return catalog.products.find(function (product) { return product.id === id; });
@@ -284,15 +427,15 @@
   function updateSyncNote(catalog) {
     var hero = document.querySelector('.hero-top');
     if (!hero) return;
-    var note = hero.querySelector('.catalog-sync-note');
+    var note = document.getElementById('subliCatalogSyncNote') || hero.querySelector('.catalog-sync-note');
     if (!note) {
       note = document.createElement('span');
       note.className = 'catalog-sync-note';
       hero.appendChild(note);
     }
     var date = catalog.updatedAt ? new Date(catalog.updatedAt) : new Date();
-    note.textContent = 'Precios sincronizados · versión ' + (catalog.catalogVersion || 1) +
-      (Number.isNaN(date.getTime()) ? '' : ' · ' + date.toLocaleDateString('es-HN'));
+    note.textContent = 'Precios vigentes · versión ' + (catalog.catalogVersion || 1) +
+      (Number.isNaN(date.getTime()) ? '' : ' · actualizado ' + date.toLocaleDateString('es-HN'));
   }
   function applyCatalog(catalog) {
     window.__SUBLI_CATALOG__ = catalog;
@@ -301,6 +444,7 @@
     updatePromotions(catalog);
     updateGlobalWhatsapp(catalog);
     updateSyncNote(catalog);
+    renderHomeCatalog(catalog);
     window.dispatchEvent(new CustomEvent('subli:catalog-updated', { detail: catalog }));
   }
   async function loadCatalog() {
@@ -314,9 +458,14 @@
     } catch (error) {
       // El HTML conserva todos los precios originales como respaldo.
       console.warn('Sublicuentas: se mantiene el catálogo local de respaldo.', error);
+      var grid = document.getElementById('subliLiveProductGrid');
+      var count = document.getElementById('subliLiveCatalogCount');
+      if (grid) grid.innerHTML = '<div class="subli-live-empty">El catálogo en vivo no respondió. Los precios originales continúan disponibles en las categorías.</div>';
+      if (count) count.textContent = 'Modo respaldo';
     }
   }
   function boot() {
+    bindHomeCatalog();
     loadCatalog();
     setInterval(loadCatalog, REFRESH_MS);
     document.addEventListener('visibilitychange', function () {

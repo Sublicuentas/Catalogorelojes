@@ -51,3 +51,521 @@
 @media(min-width:900px){
   #tab-compras .sc-cons-card{max-width:620px!important;padding:42px!important}
 }
+
+/* ===== PORTADA COMERCIAL CON CATÁLOGO EN VIVO ===== */
+#tab-inicio .hero-wrap{
+  margin-top:12px;
+  overflow:hidden;
+  border:1px solid #E9DDD6!important;
+  border-radius:24px!important;
+  background:#FFFFFF!important;
+  box-shadow:0 18px 48px rgba(72,42,31,.10)!important;
+}
+#tab-inicio .hero-top.subli-commerce-hero{
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 118px;
+  gap:14px;
+  align-items:center;
+  overflow:hidden;
+  padding:21px 18px 19px!important;
+  background:
+    radial-gradient(circle at 96% 12%,rgba(226,35,26,.16),transparent 34%),
+    linear-gradient(135deg,#FFFFFF 0%,#FFF9F7 57%,#FFF0EC 100%)!important;
+  text-align:left!important;
+}
+#tab-inicio .hero-top.subli-commerce-hero::after{
+  content:'';
+  position:absolute;
+  right:-32px;
+  bottom:-56px;
+  width:150px;
+  height:150px;
+  border:26px solid rgba(226,35,26,.045);
+  border-radius:50%;
+  pointer-events:none;
+}
+.subli-commerce-copy{position:relative;z-index:2;min-width:0}
+.subli-commerce-live{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  width:max-content;
+  max-width:100%;
+  border:1px solid #F3C8C3;
+  border-radius:999px;
+  background:#FFF;
+  padding:6px 9px;
+  color:#B91C1C;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:1.15px;
+  line-height:1;
+  text-transform:uppercase;
+  box-shadow:0 5px 18px rgba(226,35,26,.08);
+}
+.subli-commerce-live i,
+.subli-live-catalog-head>div>span i{
+  width:7px;
+  height:7px;
+  flex:0 0 auto;
+  border-radius:50%;
+  background:#16A34A;
+  box-shadow:0 0 0 4px rgba(22,163,74,.12);
+  animation:subliLivePulse 1.8s ease-in-out infinite;
+}
+#tab-inicio .hero-top.subli-commerce-hero h1{
+  margin:12px 0 0!important;
+  color:#121318!important;
+  font-family:'Barlow Condensed',sans-serif!important;
+  font-size:31px!important;
+  font-weight:900!important;
+  letter-spacing:-.8px!important;
+  line-height:.95!important;
+  text-transform:uppercase!important;
+}
+#tab-inicio .hero-top.subli-commerce-hero h1 span{
+  color:#E2231A!important;
+}
+#tab-inicio .hero-top.subli-commerce-hero p{
+  max-width:520px;
+  margin:9px 0 0!important;
+  color:#676A73!important;
+  font-size:11.5px!important;
+  font-weight:500;
+  line-height:1.48;
+}
+.subli-commerce-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:14px;
+}
+.subli-commerce-actions button{
+  min-height:38px;
+  border-radius:11px;
+  padding:9px 13px;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:.25px;
+  cursor:pointer;
+  transition:transform .2s ease,box-shadow .2s ease,background .2s ease;
+}
+.subli-commerce-actions button:active{transform:scale(.97)}
+.subli-commerce-primary{
+  border:1px solid #E2231A;
+  background:#E2231A;
+  color:#FFF;
+  box-shadow:0 9px 22px rgba(226,35,26,.23);
+}
+.subli-commerce-primary:hover{background:#C71B14;box-shadow:0 12px 27px rgba(226,35,26,.28)}
+.subli-commerce-primary b{margin-left:6px;font-size:15px}
+.subli-commerce-secondary{
+  border:1px solid #DED6D0;
+  background:#FFF;
+  color:#25262C;
+}
+.subli-commerce-secondary:hover{border-color:#E6AAA5;background:#FFF7F6}
+.subli-commerce-trust{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 13px;
+  margin-top:14px;
+}
+.subli-commerce-trust span{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  color:#6B6E76;
+  font-size:9px;
+  font-weight:700;
+}
+.subli-commerce-trust span::before{content:'✓';color:#16A34A;font-size:10px;font-weight:900}
+.subli-commerce-trust b{color:#26272D;font-weight:900}
+.subli-commerce-showcase{
+  position:relative;
+  z-index:2;
+  display:flex;
+  min-height:164px;
+  align-items:center;
+  justify-content:center;
+}
+.subli-commerce-showcase>span{
+  --turn:0deg;
+  position:absolute;
+  display:flex;
+  width:86px;
+  height:111px;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  border:1px solid rgba(255,255,255,.72);
+  border-radius:20px;
+  background:var(--brand);
+  background:linear-gradient(155deg,var(--brand),color-mix(in srgb,var(--brand),#000 24%));
+  color:#FFF;
+  box-shadow:0 16px 34px color-mix(in srgb,var(--brand),transparent 68%);
+  transform:rotate(var(--turn));
+}
+.subli-commerce-showcase>span:nth-child(1){left:2px;z-index:1}
+.subli-commerce-showcase>span:nth-child(2){right:15px;top:12px;z-index:3}
+.subli-commerce-showcase>span:nth-child(3){right:-14px;bottom:5px;z-index:2}
+.subli-commerce-showcase b{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:25px;
+  font-weight:900;
+  line-height:1;
+}
+.subli-commerce-showcase small{font-size:8px;font-weight:800;opacity:.9}
+#tab-inicio .subli-commerce-hero .catalog-sync-note{
+  margin-top:10px;
+  color:#858992;
+  font-size:9px;
+}
+#tab-inicio .new-carousel{
+  border-top:1px solid #EEE4DE!important;
+  border-radius:0!important;
+}
+
+.subli-live-catalog{
+  margin:24px 0 0;
+  border:1px solid #E8DDD5;
+  border-radius:24px;
+  background:#FFFFFF;
+  padding:18px 14px 15px;
+  box-shadow:0 18px 45px rgba(72,42,31,.08);
+}
+.subli-live-catalog-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+}
+.subli-live-catalog-head>div>span{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#E2231A;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+.subli-live-catalog-head h2{
+  margin:5px 0 0;
+  color:#17181D;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:29px;
+  font-weight:900;
+  letter-spacing:-.55px;
+  line-height:1;
+}
+.subli-live-catalog-head p{
+  margin:5px 0 0;
+  color:#747780;
+  font-size:10.5px;
+  line-height:1.4;
+}
+.subli-live-catalog-head>strong{
+  flex:0 0 auto;
+  border-radius:999px;
+  background:#FEECE9;
+  padding:6px 9px;
+  color:#C51D16;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:10px;
+  font-weight:900;
+}
+.subli-live-search{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:15px;
+  border:1px solid #E5DBD4;
+  border-radius:13px;
+  background:#FAF8F6;
+  padding:0 10px;
+  transition:border-color .2s ease,box-shadow .2s ease,background .2s ease;
+}
+.subli-live-search:focus-within{
+  border-color:#E7A6A1;
+  background:#FFF;
+  box-shadow:0 0 0 4px rgba(226,35,26,.07);
+}
+.subli-live-search>span{font-size:14px;opacity:.66}
+.subli-live-search input{
+  width:100%;
+  min-width:0;
+  border:0;
+  outline:0;
+  background:transparent;
+  padding:12px 0;
+  color:#22242A;
+  font-family:'Barlow',sans-serif;
+  font-size:12px;
+  font-weight:600;
+}
+.subli-live-search input::placeholder{color:#A3A5AB}
+.subli-live-search button{
+  display:none;
+  width:25px;
+  height:25px;
+  flex:0 0 auto;
+  border:0;
+  border-radius:50%;
+  background:#ECE7E3;
+  color:#5C5E65;
+  font-size:18px;
+  line-height:1;
+  cursor:pointer;
+}
+.subli-live-search.has-value button{display:grid;place-items:center}
+.subli-live-filters{
+  display:flex;
+  gap:7px;
+  margin-top:11px;
+  overflow-x:auto;
+  padding:1px 0 5px;
+  scrollbar-width:none;
+}
+.subli-live-filters::-webkit-scrollbar{display:none}
+.subli-live-filters button{
+  flex:0 0 auto;
+  border:1px solid #E7DED8;
+  border-radius:999px;
+  background:#FFF;
+  padding:7px 11px;
+  color:#666971;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:10.5px;
+  font-weight:900;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+.subli-live-filters button.active{
+  border-color:#17181D;
+  background:#17181D;
+  color:#FFF;
+  box-shadow:0 7px 17px rgba(23,24,29,.16);
+}
+.subli-live-product-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+  margin-top:10px;
+}
+.subli-live-product{
+  position:relative;
+  display:flex;
+  min-width:0;
+  min-height:173px;
+  flex-direction:column;
+  overflow:hidden;
+  border:1px solid #E9E1DB;
+  border-radius:17px;
+  background:#FFF;
+  padding:11px;
+  text-align:left;
+  box-shadow:0 7px 20px rgba(53,38,31,.055);
+  transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease;
+}
+.subli-live-product:hover{
+  border-color:#E5B0AC;
+  box-shadow:0 14px 28px rgba(83,48,38,.12);
+  transform:translateY(-3px);
+}
+.subli-live-product-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:7px;
+}
+.subli-live-product-visual{
+  display:grid;
+  width:43px;
+  height:43px;
+  flex:0 0 auto;
+  place-items:center;
+  overflow:hidden;
+  border-radius:13px;
+  background:var(--product-accent,#E2231A);
+  color:#FFF;
+  box-shadow:0 8px 18px color-mix(in srgb,var(--product-accent,#E2231A),transparent 72%);
+}
+.subli-live-product-visual img{width:100%;height:100%;object-fit:cover}
+.subli-live-product-visual b{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:16px;
+  font-weight:900;
+  line-height:1;
+}
+.subli-live-product-status{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  border-radius:999px;
+  background:#EAF8EF;
+  padding:4px 6px;
+  color:#15803D;
+  font-size:7.5px;
+  font-weight:900;
+  white-space:nowrap;
+}
+.subli-live-product-status::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor}
+.subli-live-product-status.limited,
+.subli-live-product-status.on_request{background:#FFF4D8;color:#A45B08}
+.subli-live-product-status.paused,
+.subli-live-product-status.maintenance{background:#FDE9E7;color:#B42318}
+.subli-live-product h3{
+  margin:10px 0 0;
+  overflow:hidden;
+  color:#1B1C21;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:16px;
+  font-weight:900;
+  line-height:1.05;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.subli-live-product p{
+  display:-webkit-box;
+  min-height:28px;
+  margin:4px 0 0;
+  overflow:hidden;
+  color:#777A82;
+  font-size:9px;
+  line-height:1.38;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+}
+.subli-live-product-bottom{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:7px;
+  margin-top:auto;
+  padding-top:10px;
+}
+.subli-live-product-price small{
+  display:block;
+  color:#92949B;
+  font-size:7.5px;
+  font-weight:700;
+  text-transform:uppercase;
+}
+.subli-live-product-price strong{
+  display:block;
+  margin-top:1px;
+  color:#E2231A;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:18px;
+  font-weight:900;
+  line-height:1;
+}
+.subli-live-product button{
+  width:29px;
+  height:29px;
+  flex:0 0 auto;
+  border:0;
+  border-radius:10px;
+  background:#17181D;
+  color:#FFF;
+  font-size:17px;
+  font-weight:900;
+  cursor:pointer;
+  transition:background .2s ease,transform .2s ease;
+}
+.subli-live-product button:hover{background:#E2231A}
+.subli-live-product button:active{transform:scale(.92)}
+.subli-live-product-skeleton{
+  display:block;
+  height:173px;
+  border-radius:17px;
+  background:linear-gradient(100deg,#F4EFEB 20%,#FBF8F6 40%,#F4EFEB 60%);
+  background-size:240% 100%;
+  animation:subliSkeleton 1.25s linear infinite;
+}
+.subli-live-empty{
+  grid-column:1/-1;
+  border:1px dashed #DDD2CA;
+  border-radius:16px;
+  padding:24px 15px;
+  color:#73767E;
+  font-size:11px;
+  text-align:center;
+}
+.subli-live-catalog-foot{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:12px;
+  border-top:1px solid #EEE7E1;
+  padding-top:12px;
+}
+.subli-live-catalog-foot>div{display:flex;align-items:flex-start;gap:8px}
+.subli-live-catalog-foot>div i{
+  width:8px;
+  height:8px;
+  flex:0 0 auto;
+  margin-top:2px;
+  border-radius:50%;
+  background:#16A34A;
+  box-shadow:0 0 0 4px rgba(22,163,74,.10);
+}
+.subli-live-catalog-foot>div span{
+  color:#73767E;
+  font-size:9px;
+  font-weight:600;
+  line-height:1.35;
+}
+.subli-live-catalog-foot>button{
+  min-height:40px;
+  border:0;
+  border-radius:12px;
+  background:#E2231A;
+  color:#FFF;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:12px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 9px 22px rgba(226,35,26,.20);
+}
+.subli-live-catalog-foot>button b{margin-left:6px}
+
+@keyframes subliLivePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.55;transform:scale(.86)}}
+@keyframes subliSkeleton{0%{background-position:100% 0}100%{background-position:-100% 0}}
+
+@media(max-width:420px){
+  #tab-inicio .hero-top.subli-commerce-hero{grid-template-columns:minmax(0,1fr) 94px;padding:18px 14px 17px!important}
+  #tab-inicio .hero-top.subli-commerce-hero h1{font-size:27px!important}
+  .subli-commerce-showcase{min-height:143px}
+  .subli-commerce-showcase>span{width:68px;height:91px;border-radius:16px}
+  .subli-commerce-showcase>span:nth-child(2){right:12px}
+  .subli-commerce-showcase>span:nth-child(3){right:-13px}
+  .subli-commerce-showcase b{font-size:19px}
+  .subli-commerce-showcase small{font-size:7px}
+  .subli-commerce-trust span{font-size:8px}
+}
+@media(min-width:700px){
+  #tab-inicio .hero-top.subli-commerce-hero{grid-template-columns:minmax(0,1fr) 220px;padding:27px 27px 24px!important}
+  #tab-inicio .hero-top.subli-commerce-hero h1{font-size:40px!important}
+  #tab-inicio .hero-top.subli-commerce-hero p{font-size:13px!important}
+  .subli-commerce-showcase>span{width:112px;height:144px}
+  .subli-commerce-showcase>span:nth-child(1){left:8px}
+  .subli-commerce-showcase>span:nth-child(2){right:58px}
+  .subli-commerce-showcase>span:nth-child(3){right:-5px}
+  .subli-live-catalog{padding:22px}
+  .subli-live-product-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+  .subli-live-catalog-foot{flex-direction:row;align-items:center;justify-content:space-between}
+  .subli-live-catalog-foot>button{min-width:210px;padding:0 18px}
+}
+@media(min-width:900px){
+  #tab-inicio .hero-wrap{margin-top:0}
+  #tab-inicio .hero-top.subli-commerce-hero{grid-template-columns:minmax(0,1fr) 185px!important}
+  #tab-inicio .hero-top.subli-commerce-hero h1{font-size:36px!important}
+  .subli-live-catalog{margin-top:24px}
+}

@@ -17,7 +17,8 @@
     cart: readCart(),
     category: 'all',
     query: '',
-    selectedProductId: ''
+    selectedProductId: '',
+    hashProductOpened: false
   };
 
   function byId(id) { return document.getElementById(id); }
@@ -113,6 +114,15 @@
     byId('storeApp').hidden = false;
     renderClient();
     renderAll();
+    openRequestedProduct();
+  }
+  function openRequestedProduct() {
+    if (state.hashProductOpened || !state.catalog) return;
+    var params = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    var productId = params.get('producto');
+    if (!productId || !productById(productId)) return;
+    state.hashProductOpened = true;
+    setTimeout(function () { openProduct(productId); }, 0);
   }
   function renderClient() {
     if (!state.cliente) return;
