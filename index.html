@@ -5758,5 +5758,241 @@ main{padding-bottom:96px!important}
 }
 </style>
 
+
+<style id="pass7-cartelera-final">
+/* PASS 7 · CARTELERA: tarjetas compactas y uniformes */
+#tab-cartelera{
+  background:#F6F7FB!important;
+  color:#171A27!important;
+  padding-bottom:108px!important;
+}
+#tab-cartelera .cartelera-title{
+  color:#171A27!important;
+}
+#tab-cartelera .cartelera-desc{
+  color:#737A87!important;
+}
+
+/* Filtros superiores */
+#tab-cartelera .cart-apps,
+#tab-cartelera .cart-filters,
+#tab-cartelera .cartelera-filters{
+  gap:8px!important;
+  margin-bottom:12px!important;
+}
+#tab-cartelera .cart-app,
+#tab-cartelera .cart-filter{
+  min-height:42px!important;
+  padding:0 15px!important;
+  border-radius:999px!important;
+  white-space:nowrap!important;
+}
+
+/* Grid/listado principal */
+#tab-cartelera .cart-grid,
+#tab-cartelera .cartelera-grid,
+#tab-cartelera .cart-list,
+#tab-cartelera .cartelera-list{
+  align-items:start!important;
+  gap:14px!important;
+}
+
+/* Todas las variantes conocidas de tarjeta */
+#tab-cartelera .cart-card,
+#tab-cartelera .cart-item,
+#tab-cartelera .cartelera-card,
+#tab-cartelera .movie-card{
+  height:auto!important;
+  min-height:0!important;
+  align-self:start!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+  background:#fff!important;
+  border:1px solid #E3E6ED!important;
+  border-radius:18px!important;
+  box-shadow:0 7px 20px rgba(25,30,48,.055)!important;
+}
+
+/* El poster define la altura, no la tarjeta */
+#tab-cartelera .cart-card img,
+#tab-cartelera .cart-item img,
+#tab-cartelera .cartelera-card img,
+#tab-cartelera .movie-card img{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  aspect-ratio:2/3!important;
+  object-fit:cover!important;
+  flex:0 0 auto!important;
+  margin:0!important;
+}
+
+/* Quitar contenedores que reservan altura fija */
+#tab-cartelera .cart-poster,
+#tab-cartelera .cartelera-poster,
+#tab-cartelera .movie-poster{
+  height:auto!important;
+  min-height:0!important;
+  aspect-ratio:2/3!important;
+  overflow:hidden!important;
+  background:#EEF0F5!important;
+}
+#tab-cartelera .cart-poster img,
+#tab-cartelera .cartelera-poster img,
+#tab-cartelera .movie-poster img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+}
+
+/* Cuerpo compacto */
+#tab-cartelera .cart-body,
+#tab-cartelera .cart-info,
+#tab-cartelera .cartelera-info,
+#tab-cartelera .movie-info{
+  flex:0 0 auto!important;
+  min-height:0!important;
+  padding:10px 11px 12px!important;
+}
+#tab-cartelera .cart-card h3,
+#tab-cartelera .cart-item h3,
+#tab-cartelera .cartelera-card h3,
+#tab-cartelera .movie-card h3{
+  color:#1A1D29!important;
+  font-size:15px!important;
+  line-height:1.18!important;
+  margin:0 0 5px!important;
+  display:-webkit-box!important;
+  -webkit-line-clamp:2!important;
+  -webkit-box-orient:vertical!important;
+  overflow:hidden!important;
+}
+#tab-cartelera .cart-card p,
+#tab-cartelera .cart-item p,
+#tab-cartelera .cartelera-card p,
+#tab-cartelera .movie-card p{
+  color:#7B818E!important;
+  font-size:10px!important;
+  line-height:1.3!important;
+  margin:0!important;
+}
+
+/* Badges pegados al poster */
+#tab-cartelera .rating-badge,
+#tab-cartelera .type-badge,
+#tab-cartelera .cart-badge{
+  z-index:3!important;
+  font-size:10px!important;
+  padding:5px 7px!important;
+  border-radius:999px!important;
+}
+
+/* Evitar cualquier bloque fantasma debajo de la imagen */
+#tab-cartelera .cart-card::after,
+#tab-cartelera .cart-item::after,
+#tab-cartelera .cartelera-card::after,
+#tab-cartelera .movie-card::after{
+  display:none!important;
+  content:none!important;
+}
+#tab-cartelera .cart-card > *:empty,
+#tab-cartelera .cart-item > *:empty,
+#tab-cartelera .cartelera-card > *:empty,
+#tab-cartelera .movie-card > *:empty{
+  display:none!important;
+}
+
+/* Móvil */
+@media(max-width:700px){
+  #tab-cartelera{
+    padding-left:0!important;
+    padding-right:0!important;
+    padding-bottom:112px!important;
+  }
+
+  #tab-cartelera .cartelera-wrap,
+  #tab-cartelera .cartelera-container,
+  #tab-cartelera .cartelera-section{
+    padding-left:14px!important;
+    padding-right:14px!important;
+  }
+
+  #tab-cartelera .cart-apps,
+  #tab-cartelera .cart-filters,
+  #tab-cartelera .cartelera-filters{
+    overflow-x:auto!important;
+    flex-wrap:nowrap!important;
+    scrollbar-width:none!important;
+    padding-bottom:3px!important;
+  }
+  #tab-cartelera .cart-apps::-webkit-scrollbar,
+  #tab-cartelera .cart-filters::-webkit-scrollbar,
+  #tab-cartelera .cartelera-filters::-webkit-scrollbar{
+    display:none!important;
+  }
+
+  /* 3 columnas compactas como app */
+  #tab-cartelera .cart-grid,
+  #tab-cartelera .cartelera-grid,
+  #tab-cartelera .cart-list,
+  #tab-cartelera .cartelera-list{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+
+  #tab-cartelera .cart-card,
+  #tab-cartelera .cart-item,
+  #tab-cartelera .cartelera-card,
+  #tab-cartelera .movie-card{
+    width:100%!important;
+    min-width:0!important;
+    border-radius:15px!important;
+  }
+
+  #tab-cartelera .cart-body,
+  #tab-cartelera .cart-info,
+  #tab-cartelera .cartelera-info,
+  #tab-cartelera .movie-info{
+    padding:8px 8px 9px!important;
+  }
+
+  #tab-cartelera .cart-card h3,
+  #tab-cartelera .cart-item h3,
+  #tab-cartelera .cartelera-card h3,
+  #tab-cartelera .movie-card h3{
+    font-size:11px!important;
+    line-height:1.15!important;
+    margin-bottom:4px!important;
+  }
+
+  #tab-cartelera .cart-card p,
+  #tab-cartelera .cart-item p,
+  #tab-cartelera .cartelera-card p,
+  #tab-cartelera .movie-card p{
+    font-size:8px!important;
+  }
+
+  /* Asegurar que el dock no tape última fila */
+  #tab-cartelera .cart-grid,
+  #tab-cartelera .cartelera-grid,
+  #tab-cartelera .cart-list,
+  #tab-cartelera .cartelera-list{
+    margin-bottom:24px!important;
+  }
+}
+
+/* Pantallas muy angostas: mantener legibilidad */
+@media(max-width:380px){
+  #tab-cartelera .cart-grid,
+  #tab-cartelera .cartelera-grid,
+  #tab-cartelera .cart-list,
+  #tab-cartelera .cartelera-list{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+</style>
+
 </body>
 </html>
