@@ -1227,10 +1227,10 @@ body { height: auto !important; min-height: 100vh; }
     <div class="hero-top subli-commerce-hero">
       <div class="subli-commerce-copy">
         <span class="subli-commerce-live"><i></i> Cat&aacute;logo conectado</span>
-        <h1>Explore, compare y elija<br/><span>sin complicaciones</span></h1>
+        <h1>Su entretenimiento<br/><span>en un solo lugar</span></h1>
         <p>Streaming, herramientas, TV digital y más. Revise precios, promociones y disponibilidad desde un solo catálogo.</p>
         <div class="subli-commerce-actions">
-          <button type="button" class="subli-commerce-primary" onclick="abrirSubliStore()">
+          <button type="button" class="subli-commerce-primary" onclick="document.getElementById('subliLiveCatalogSection')?.scrollIntoView({behavior:'smooth',block:'start'})">
             Ver catálogo <b>&rarr;</b>
           </button>
           <button type="button" class="subli-commerce-secondary" onclick="openTabById('promos')">
@@ -1285,8 +1285,7 @@ body { height: auto !important; min-height: 100vh; }
   </section>
   </div>
 
-  <section class="subli-live-catalog" aria-labelledby="subliLiveCatalogTitle">
-    <div class="subli-live-catalog-head">
+  <section id="subliLiveCatalogSection" class="subli-live-catalog" aria-labelledby="subliLiveCatalogTitle"><div class="subli-live-catalog-head">
       <div>
         <span><i></i> Cat&aacute;logo en vivo</span>
         <h2 id="subliLiveCatalogTitle">Servicios destacados</h2>
@@ -1548,25 +1547,6 @@ body { height: auto !important; min-height: 100vh; }
   </div>
 </div>
 
-<div class="tp" id="tab-compras" style="display:none!important">
-<section class="sc-construccion">
-  <div class="sc-cons-glow"></div>
-  <div class="sc-cons-card">
-    <span class="sc-cons-brand"><b>CATÁLOGO</b> SUBLICUENTAS</span>
-    <div class="sc-cons-emoji">🛍️</div>
-    <h1 class="sc-cons-title">Su catálogo digital <b>siempre actualizado</b></h1>
-    <p class="sc-cons-text">Consulte servicios, precios, promociones y disponibilidad desde un catálogo visual actualizado.</p>
-    <div class="sc-cons-features">
-      <span>Precios y disponibilidad sincronizados</span>
-      <span>Planes y precios visibles sin iniciar sesión</span>
-      <span>Promociones y disponibilidad en un solo lugar</span>
-    </div>
-    <button type="button" class="sc-cons-store" onclick="abrirSubliStore()"><span>🛍️</span> Abrir catálogo</button>
-    <a class="sc-cons-wa" href="https://wa.me/50432126332?text=Hola%2C%20quiero%20informaci%C3%B3n%20de%20Sublicuentas" target="_blank" rel="noopener"><span>💬</span> Escríbenos por WhatsApp</a>
-    <small class="sc-cons-foot">Su cuenta mantiene historial, puntos y beneficios.</small>
-  </div>
-</section>
-</div>
 <div class="tp" id="tab-tv" style="display:none!important"><div class="sp"></div><div class="ps fade-in"><div class="ph" onclick="toggle(this)"><div class="pi"><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAB4AHgDASIAAhEBAxEB/8QAGgABAQEAAwEAAAAAAAAAAAAAAAYFAwQHCP/EADYQAAIBAgMEBwYFBQAAAAAAAAABAgMEBQYREiE1sRMxMnOBocEUIkFjcXIVI1FhkUNUgpLh/8QAGgEBAAIDAQAAAAAAAAAAAAAAAAQFAwYHAv/EADARAAEDAgMDCgcAAAAAAAAAAAABAgMEEQUhMQYSQRMUMzRRcYGRobEVImFiweHw/9oADAMBAAIRAxEAPwD5UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANjK0KFTFIxu6UKtJx0amtUtWlqY5rZcjt3VVfLfNGKfo1J+F9cjyvnopf/gmGf2Nv/oee5jsVYYvXowWlNvbh9r3/APPA9Kw+v7RZ0qj7WmkvqtzJvP8AZbdtQvIrfTfRy+j6vPmU1DO9s249dcjpO1OFwT4ZzmmYiK2zskRMl108/A6OXrK2r4ZGdahTnPbktZLecOZrO3t7KlKhRp05Opo3FabtGd7LHCY/fI4M3cPo976MlNe7nNr8Sjlp4vg2/upfdTOyX4EmAC0NDAAAAAAAAAAAABt5UWt/VXynzRiG5lLiFTunzRhqOicWWD9ei7yxwOpsVq1u+p+/Hk/Q7+J2sb2wr20v6kGk/wBH8H/JP3lx7BUp3XwpzjtfvFvR+TKlNNap6p9TNemRWuSRP5UOxYY9k8UlFJnbh9rr/tCMy0nDD+jmtJRqSTX6M4c3cPo976M2LugrTEquytIVn0q+r6/PmY+beH0e89GT4nI+ZHpxNSr4VpsMkp3asS3kpJgAuDnAAAAAAAAAAAAANzKXEKndPmjDNzKXEKndPmjDUdE4ssH69F3m1mJa4RXf05o18p3vtuC0XJ61KX5UvDq8tDJzFwe4/wAeaOhkO96HEalrJ+7XjqvuW/lqVbouUpVXii3N8ir+Z47G1V+WRqNXvVVt65eJV47S2raNZdqlLXwfX6EtmmW1htF/M9GXVSEalOUJLWMk0yAzKpU7KNKfap1tl/wzFQOu5E7CbtbFycMkiaOT1RU/HsTQAL85IAAAAAAAAAAAADUy9d0bO8nUuJOMXBxTS136oyweXsR7Vapnpqh1NK2ZmqFRjGLWdzh1alRqtzlpotlr4onbO4la3VKvT7VOSkvA4QeI4Wxt3U0JFbiU1ZM2d9kcmlvotz0lZqwppPp5L9ujlu8iZzXiNnfSjKyqubbTknFrelp8fAnAR4aGOF2+1VLbEdqqzEYFp5mtsvYi39wACaa0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf/2Q==" alt="netflix"/></div><div class="pinfo"><h2>Netflix</h2><p>2 planes disponibles</p></div><span class="parr">&#8250;</span></div><div class="pw"><div class="pc"><div class="pch"><div class="pnw"><div class="pn">Cuenta Premium</div></div><div class="price">Lps. 130<sub>/mes</sub></div></div><ul class="pf"><li><span class="dot dot"></span>1 dispositivo · Perfil con PIN</li><li><span class="dot dot"></span>Acceso por codigo - no se brinda correo ni clave</li><li><span class="dot dot"></span>Codigo hogar cada 20 dias</li></ul><div class="cw"><a class="cta-btn green" href="https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Netflix%20Compartido%20%28L130%29" target="_blank"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Solicitar por WhatsApp</a></div></div><div class="pc"><div class="pch"><div class="pnw"><div class="pn">VIP ⭐</div><span class="badge bv">Premium</span></div><div class="price">Lps. 150<sub>/mes</sub></div></div><ul class="pf"><li><span class="dot dot"></span>Perfil personal · Se brinda correo y clave</li><li><span class="dot dot"></span>Multidispositivo · Visualiza en uno a la vez</li><li><span class="dot dot"></span>Sin codigo hogar</li></ul><div class="cw"><a class="cta-btn green" href="https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Netflix%20VIP%20%28L150%29" target="_blank"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Solicitar por WhatsApp</a></div></div></div></div><div class="ps fade-in"><div class="ph" onclick="toggle(this)"><div class="pi"><img src="data:image/jpeg;base64,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" alt="disney"/></div><div class="pinfo"><h2>Disney+</h2><p>2 planes disponibles</p></div><span class="parr">&#8250;</span></div><div class="pw"><div class="pc"><div class="pch"><div class="pnw"><div class="pn">Premium</div></div><div class="price">Lps. 100<sub>/mes</sub></div></div><ul class="pf"><li><span class="dot dot"></span>1 dispositivo · Perfil con PIN · Acceso por codigo</li><li><span class="dot dot"></span>Todo el catalogo Disney y Hulu</li><li><span class="dot dot"></span>Todos los canales ESPN y deportes</li></ul><div class="cw"><a class="cta-btn green" href="https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Disney%2B%20Premium%20%28L100%29" target="_blank"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Solicitar por WhatsApp</a></div></div><div class="pc"><div class="pch"><div class="pnw"><div class="pn">Basico</div><span class="badge bp">Popular</span></div><div class="price">Lps. 70<sub>/mes</sub></div></div><ul class="pf"><li><span class="dot dot"></span>1 dispositivo · Perfil con PIN · Acceso por codigo</li><li><span class="dot dot"></span>Todo el catalogo Disney y Hulu</li><li><span class="dot ok"></span>Marvel, Star Wars, Pixar, Hulu, Fox, National Geographic</li><li><span class="dot dn"></span>Sin canales ESPN</li></ul><div class="cw"><a class="cta-btn green" href="https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Disney%2B%20Basico%20%28L60%29" target="_blank"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Solicitar por WhatsApp</a></div></div></div></div><div class="ps fade-in"><div class="ph" onclick="toggle(this)"><div class="pi"><img src="data:image/jpeg;base64,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" alt="hbo"/></div><div class="pinfo"><h2>HBO Max</h2><p>1 plan disponible</p></div><span class="parr">&#8250;</span></div><div class="pw"><div class="pc"><div class="pch"><div class="pnw"><div class="pn">Mensual</div></div><div class="price">Lps. 80<sub>/mes</sub></div></div><ul class="pf"><li><span class="dot dot"></span>1 dispositivo · 30 dias · Full HD</li><li><span class="dot dot"></span>Acceso por codigo - no se brinda correo/clave</li><li><span class="dot dot"></span>Estrenos y originales exclusivos · Garantia</li></ul><div class="cw"><a class="cta-btn green" href="https://wa.me/50432126332?text=Hola!%20Me%20interesa%20HBO%20Max%20%28L80%29" target="_blank"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Solicitar por WhatsApp</a></div></div></div></div><div class="ps fade-in"><div class="ph" onclick="toggle(this)"><div class="pi"><img src="data:image/jpeg;base64,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xzT1NdJC4ummDiQ3keJAxz8Fd6qkp6uLu6qCKePOdsjA4exXijoKOiBFHSwQA8+6jDc+ylHw4xzF4ogm8jOVCTiYkhDDYIFYODXU4/4uVaHutPo+53W330SU5cW4eGF3FuR06EHIK+3RAffO0G43yCN7aJu8hzhjJcNrR544rodypbbMxr7nDSPa3k6oa0geRcslBJRGIR2+SmMTOTYHNLW+jVGPQOY5jHPG1psDqpy8Ra9r5GsIc8UT08L60UKVrrFRERERERERaO/2I3CRtXQ1D6C6Rt2x1MfUf6Xj+Zv/AEt4irlibK3a/krIpXRO3MOVz061uVgqRSastjhxw2qpvtePEA8D6EeSstr1XZLkB8NcoN5/pynu3ezsLb1dLBWQOhqoY5oXfcyRocD6KjXnsxtdW5z7dNLRPP8AJ/mM9jxHus57Nbp/xESN7HB/fVaLH6HUflBjd3GR+uivzXB4yw7h4jiEyuOy9nupKAn5bXROb07qd0R9ivAsOv2Ha2orMeIrhj+5V/VJ24fp3eMqz6ZA7LNQ3zj+12b0PsvjrrnQ0DC6trKeAf7kgafbmuWR6M1lW8K25GNh597WOd+zcrcWrstpI3iS7V0tU7OSyIbGnzJyT+yk3W6uXEcFfLjSidFpIsyT38NFrHX1emL5etlLbq6+Vkjvqc2R7Y4x45JAAHlhTpqyUtF2nVrbSxzKKip/rG4kB7mgbcnzz6K+2y2UdrpxBb6aKni6tYMZ8zzPqsNktEVqin2OdLPUSumnmf8AdI8n9gOQC8HD3GRj3gXdkgV47mz37L13EGiN7IyaqgCb59ewodu62SlEWwsdERERERERERERERERQmApREUKUREREREREREREREREREREREREREREREREREREREREREREREX/9k=" alt="prime"/></div><div class="pinfo"><h2>Prime Video</h2><p>1 plan disponible</p></div><span class="parr">&#8250;</span></div><div class="pw"><div class="pc"><div class="pch"><div class="pnw"><div class="pn">Mensual</div></div><div class="price">Lps. 80<sub>/mes</sub></div></div><ul class="pf"><li><span class="dot dot"></span>1 dispositivo · 30 dias · Acceso por codigo</li><li><span class="dot dot"></span>Full HD · Series y peliculas exclusivas</li><li><span class="dot dw"></span>Solo catalogo Prime - no incluye compras ni rentas</li></ul><div class="cw"><a class="cta-btn green" href="https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Prime%20Video%20%28L80%29" target="_blank"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Solicitar por WhatsApp</a></div></div></div></div><div class="ps fade-in"><div class="ph" onclick="toggle(this)"><div class="pi"><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAB2AHgDASIAAhEBAxEB/8QAHAABAAMAAwEBAAAAAAAAAAAAAAUGBwECBAMI/8QAOhAAAQQBAgMFBAcHBQAAAAAAAQACAwQFESEGEjEHE0FRYXGBkaEUFSIyQlKxJDNiwdHh8BYjVHKC/8QAGwEBAAMBAQEBAAAAAAAAAAAAAAMEBQYCAQf/xAAuEQABAwIEBAUEAwEAAAAAAAABAAIDBBEFEiExQVGRoRNhccHwIoGx8QYy4dH/2gAMAwEAAhEDEQA/AJdERfm6/UERERERERERFxzD8w+KIuUT2IiIiIiIiIiIiIiIiIiIiIiIrjwzwJdyjGWLzjTqu3aC3WR49B4D1PwUr2ccKMlZHl8lGHN11rxOGx/jP8vj5LQ8hdrY6o+zclbFAwalzv8ANyugw/CWuZ41Rty9yubxLGHMf4FNvtfz5BQ+N4NwdBo5aTJnj8c/+4T8dvkpcY6kG6NqVw3yETf6LM8/2iW7D3RYeMVoeglkAdI72DoPmqhayuRuP/ab1qVx8DK79FYkxWkg+iFl/TQKtHg9ZUfXO+3qSStrv8L4W80ibHQBx/FG3kd8W6Kj8Q9nc0DHTYWV07RuYJNOf3HofYVS4rWRqHninuQ/xB72qyYTj/KUnNbdLb0HjzaB49jh196rPraKp+maPKeY+exVplDXUv1QSZhyPz3CqMjHRyOZI1zHtOjmuGhB8iF1Wn8Q47H8Y4p2VwhH1hEPts00c/T8Lh5+RWYdOqyqulNO4a3adjzWvR1YqWm4s4bjkiIiqq4iIiIiIiIik+GsYcvnKlLfkkfrIR4MG7vlt71GK99kUAfmbsxAJjgDR6czv7K1RQiadkZ2JVSvmMFO+Qbgf4tTHd1q/wCGOKNvsDWgfposS4z4ilz+ScWOc2jESIWef8R9T8gtE7Tcg6lwy+KN2klp4h2/L1d8hp71nXA+Gbms9FFM3WtEO9mHmB0b7z8tVuYvM+WVtHFx3+d1z+DQshifWy8Nvfrspbg3giTKxsu5MvhpO3ZG3Z8o8/QfMrTsbiaGNjDKNSGEDxa3c+09Sva1oa0NaAANgAuVq0lBFSts0a8+KyKzEJqtxLzYcuC+dh0ccEj5y0RNaXOLugA66rDeLMtUy2QdJQoQVYWkgPa3lfJ6u0292i1fj7vP9IZPutebu99Py8w1+WqwxY+PTuBbCNt1tfx6naQ6c73spDA5azhcjHbqOOo2ezXaRvi0/wCbKR41r1zkIclQH7HkY+/YNPuv6Pb7df1VeUkLPe8POrPOpr2RLH6Ne0hw+LWlYrJbxOidtuPI/wCj2W9JFllbM3fY+YO3Q27qNREVZWkREREREREV/wCx+QDJ5GLxdC1w9zj/AFVAU9wPkm4viWpNI7lhkJhkPkHePuOiuUEoiqWPO1/zoqWIxGalexu9vxqrd2xE9zim/hL5Cfbo1Ox6JvcZObQc5exmvoAT/NSPavSdY4fjssBJrShzvRrhyn56KE7IbrY7l+k4gOlY2Vvry7H9Qtt4yYqC7jt0ssFhz4OQ3gdet1qCIi6Fc0uk8TJ4XxStD43tLXNPQg9Qsl4g7P8AIVbL3Ypn0uqTq1vMA9g8jr19oWuoqdXQxVbQJOHEK7R18tG4mPY7g7LGsRwHmLk7RbiFOvr9p8hBdp6NB6+1QGartoZe/ThLu6imdGOY6kgHbVfoGWRsMT5JCGsYC5xPgB1X54yVk3cjatHrNK6T4klc7ilFDRxtazcniumwmumrZHuk/qANBzXnREWKt1ERERERERERERa1wVnK/EOGfiMm4OtNjMbg47ys005h6jx+KoVqve4Q4kaRr3kD+eN5+7Kz+42PkVCwTSV5mTQPdHKw8zXtOhafMK7xcT47iHHtocUsMUzf3d2Jv3T5keHr4H0WuKltXG1sjssjdjz9eXqsU0rqORz425o3/wBm8R5gcR5LR8DmKuaoMtU3gg7PYT9pjvIqRWKtxmZ4fn+n4Wf6VW/5FQ941zfJ7Rrp7/irBje0zRoZk6BLxsXwO6/+T0+K2YMVaBkqRld2PosOfB3kl9Kc7e49fn2WlIqLL2lYsM1jqXXu8i1o+eqrGd4/yWQY6Gm1tGF2xLHc0hH/AG8PcpZcXpYxcOufJRQ4NVyusW5RzKn+0rieOOtJiKMgdNJtYe07Mb+X2nx8h7Vl6Hc7ouUrKt9VJ4jvsOS7Cio2UcXhs+55oiIqqtoiIiIiIiIi9mHpHJZWpSD+Tv5Azm010HifgpeOlhr2eqY6lHejDrPcySSSNPO0ajUDTY6hTRwOkFxxNvUqCSobGbEHQXPkFXEVifjsbYq5yepHZiFBjBG2SUO1cZC0k7dNNNl66GAoSNpy2DYMbsZJelax4Bc5p00B02CkFG9xsCPhsonVsbRcg/Bf8KqwTSwSc8EkkT/zRuLT8QvrPatWv380sxA6u+0dPb1Vmr8P42+cbbrOtQUZ455Jo3uD3t7rTXlOmm+q7cKyYx+UuOpV7cdf6un71kkrXOI0H3Tptt5qRtI+4Y51ge+gN+6jfWR2L2tuR21It24KnorXXxGItPw1iM24aV6V9ZzJJAXRvH3SHAbgkhcVeHK7JcPUvmVl27akY8NcByRMJbrpp1JHXyXgUUh2t+7W63C9muiG9/1e/Sx7KqrkAnXQE6bnQdFZW4/EGDI5B0N0U6sja7YBK3nfISdSXabDTTbRSFbHQ4+PLuqOkdWt4U2YxJpzNDiPsnTrpp1X1tE47kW/fuF8fXMA0Bv+tOhVKLXDq0jbXceC4Vl4ze5j8QGuIDsXAD6jdVpQTR+E8sveysQSmVgeRa6IiKJTIiIiL6Vp5KtiKeB5ZLE4PY4eBHRS0vEVh96vcZToQ2YZe+7yKDlMjtPxb79VCopGSvYLNKifCyQ3cLqSxuZsY+xZljZBK2yCJopo+ZjwTruPavRLxJeksyzctdgfVdTEbI9GRxnqGjXZQqL0KiRoyh2i8mmic7MWi6laeeu046LK5jaKZkMerdeYP+8HeYXf6/mbYfLWp0a3PA+u5sEPKC1/U9euyh0QVEgFsyGmiJvl+b+69zL0k1Olj5ZGRVoZjIJA08zS4jUnz0UrnuIX2OLPrOm4PbXc1tcyA6FrR1I26kk+9VxEFQ8Nyg8u2yGmjLsxHAjrv1Ulj8zYpm03uq88Fk80sE8fMxx11B012I1X1m4huyzW5H9z+01vohY1mjWR+DWDwUQi+CeQDKHaL6aeInMW6/P+L2ZLIz5E1jYDNYIG12co0+y3pr67rxoi8OcXG7t1I1oYMrRoiIi8r0iIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIv/2Q==" alt="crunchy"/></div><div class="pinfo"><h2>Crunchyroll</h2><p>1 plan disponible</p></div><span class="parr">&#8250;</span></div><div class="pw"><div class="pc"><div class="pch"><div class="pnw"><div class="pn">Mensual</div></div><div class="price">Lps. 80<sub>/mes</sub></div></div><ul class="pf"><li><span class="dot dot"></span>1 dispositivo · 30 días · Acceso por código · Garantía incluida · Estrenos simultáneos con Japón · Todo el catálogo oficial de anime en HD</li></ul><div class="cw"><a class="cta-btn green" href="https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Crunchyroll%20%28L80%29" target="_blank"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Solicitar por WhatsApp</a></div></div></div></div><div class="ps fade-in"><div class="ph" onclick="toggle(this)"><div class="pi"><img src="data:image/jpeg;base64,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" alt="vix"/></div><div class="pinfo"><h2>Vix</h2><p>1 plan disponible</p></div><span class="parr">&#8250;</span></div><div class="pw"><div class="pc"><div class="pch"><div class="pnw"><div class="pn">Mensual</div></div><div class="price">Lps. 70<sub>/mes</sub></div></div><ul class="pf"><li><span class="dot dot"></span>Se brinda correo y contraseña · 30 días</li><li><span class="dot dot"></span>Peliculas, series y novelas mexicanas de todas las epocas</li><li><span class="dot dot"></span>Garantia incluida</li><li>Canales en vivo · Noticias · Deportes latinos</li></ul><div class="cw"><a class="cta-btn green" href="https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Vix%20%28L70%29" target="_blank"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Solicitar por WhatsApp</a></div></div></div></div><div class="ps fade-in"><div class="ph" onclick="toggle(this)"><div class="pi"><img src="https://i.postimg.cc/fb2LmHC1/paramount.jpg" alt="Paramount+"/></div><div class="pinfo"><h2>Paramount+</h2><p>1 plan disponible</p></div><span class="parr">&#8250;</span></div><div class="pw"><div class="pc"><div class="pch"><div class="pnw"><div class="pn">Mensual</div></div><div class="price">Lps. 80<sub>/mes</sub></div></div><ul class="pf"><li><span class="dot"></span>1 dispositivo · 30 días · Acceso por código · Garantía incluida</li><li>UFC en vivo · Eventos de artes marciales mixtas</li><li>Series Paramount Originals · CBS · Películas de estreno</li></ul><div class="cw"><a class="cta-btn green" href="https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Paramount%2B%20%28L80%29" target="_blank"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Solicitar por WhatsApp</a></div></div></div></div><div class="ps fade-in"><div class="ph" onclick="toggle(this)"><div class="pi"><img src="data:image/jpeg;base64,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" alt="logo"/></div><div class="pinfo"><h2>Viki Rakuten</h2><p>1 plan disponible</p></div><span class="parr">&#8250;</span></div><div class="pw"><div class="pc"><div class="pch"><div class="pnw"><div class="pn">Mensual</div></div><div class="price">Lps. 80<sub>/mes</sub></div></div><ul class="pf"><li><span class="dot"></span>1 dispositivo · 30 dias</li><li><span class="dot"></span>Acceso a todo el catalogo Viki - K-dramas, doramas, anime</li><li><span class="dot"></span>Contenido en idioma natal con subtitulos en espanol</li><li><span class="dot dw"></span>Sin doblaje latino - solo subtitulado · Garantia</li></ul><div class="cw"><a class="cta-btn green" href="https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Viki%20Rakuten%20%28L80%29" target="_blank"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Solicitar por WhatsApp</a></div></div></div></div></div><div class="tp" id="tab-musica" style="display:none!important"><div class="sp"></div><div class="ps fade-in"><div class="ph" onclick="toggle(this)"><div class="pi"><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAB4AHgDASIAAhEBAxEB/8QAHQABAAEFAQEBAAAAAAAAAAAAAAcBAwQGCAUCCf/EADwQAAEEAQMCAgcGAwcFAAAAAAEAAgMEEQUGEiExBxMIIjJBUWGRFBVxgaGxM0JDIzdScrLB0WV0kpPS/8QAGwEBAAIDAQEAAAAAAAAAAAAAAAEFAwQGBwL/xAAwEQACAQMCAwUGBwAAAAAAAAAAAQIDBBEFEiExQRNhobHBFCJRgZHRMkJxkqLh8P/aAAwDAQACEQMRAD8A5UREQBERAEVQCSABkn3BXLNeatKYrMUkMo7skaWkfkVOHjILSIigBEV2tXmtSiKtFJNIRkMjaXH6BSk28IFpFUgg4IwVRQAiIgCIiAIiIAvuJjpZGsYMucQ0D4kr5C3HQdtSQ2dtX5Hh0dyxksx7PE5H45AJWxb287iW2K+Gfm0vUyU6bqPCPZ0PZh0vd9ETP8+FkBsl3HAEgwMfkSCFf8WNL8+GhdhZym8z7O7Hdwd1b+ufqpAwC7lgcsYz8li6jTZdjhZIARHPHN+bTld5PSKUbWpb01+J58i7laxVOVOPUh/eW1XbeipSNmMzJm8ZCRjjIO4Hy+H4LV1NHibX8/acz8ZdBIyQfXif9Sjc7T1QaD97GNnkcefDl6/D/Fj4f7dVy2q6a6Ny4UIvbjP6IrLq32VGqa4YyZOz9qO3DWuzGYwtiHGPAzykIzg/L/lbX4T6Z5FW9dlYWzOk8hue7Q3q79SPovW8NK/kbSrvxh0z3yn64H6Be9ptNlGGWOP2XzSS/wDk4lX2l6TTgqNxjjht/Pl9Eb1taxjsqdcGg61st2p7s1EQPEELoBYaQ3IMjsjj+ZBKjeRpY9zXAhzTgg+4rpDADi4AcsYyod1zbUkkm49QjeGx07RAZj2gTk/hgOCr9b0lU8VKK4tyb8/BZMF5aqPvQXPP3NPREXLFYEREAREQBTVp4YdH2jjHtx4/9L8qFlu+1dwy2tQ23psjA1lSVw559vkCG9PdgEhXGjXMKNRxn+bCX7kbdnUUJNPrjzRLYRAi9GL8wdbojU9KsU3HAmAaT8uQP+yzDHGYzEWDyiOHH3ccYx9F9IsfZx3OeOLWP99SNqzkwdEo/dulVqYORC3jn49Ss5EUwgqcVCPJBJRWEUPZapqYYNA3b2/iyk/j5bMLbD2URbp3DLXubk0yNgdHasD18+zxADunzwFVaxcwt6alPrlfxZrXVRU45ff5M0o91RVVF5yc+EREAREQBZelWjS1OpaH9GVsn0OViIvqMnFqS5olPDyjomvfrWLLoYJGvc2Nkx4nI4uzx/ZZSiHwpuivuF9d5wLMJaP8zeo/QFSfc1BsGq6dSyOdrzDj5Nbn98L0jTtRV1b9tPhxx48PNHQ0LhVae9/HBnoiK0NgIiwKWoMsanqNPI51XR9Pk5gP75XxKpGLSfXh4Z9CG0sJ9S7Y1CtWsiGeRrHeU6f1jgcWkZ/dc/6lZNzUbNk95pXSfU5W1eKd0WNyCBhyK0TWH/MfWP7haYuC17UHc1nRXKDZSX1ftJ7OiCIioTRCIiAIiIAiIgLtWxLUsxWK7yyaNwexw7ghbNpO4rd/emmXtRkBLZGxYaOLWtPToPzytUVWktcC04I6grPRuKlFra+CaeO9H3CpKD4PvOi57LIJ60Lz687ixg+YaXH9Ar6h6HeFrUNwaJPdDGR1XhruP83L1XOP5KYfkvRdP1GF9vcOSfp98nQUK8a2XHoWILMc81iKM5fA8RvHwJaHfsVDmpbjt0N46nf06RoL5HR4cOTXNHQZH5Aq+/eFuhretzU+D47j3Bpd/Ljo1w+eFqBJJJPUlcvq2se0RhGk8OLb9F4FZdXe9JQ5pv8AouWZ5bViSed5fLI4ue49yT3KtIi5xtt5ZXhERQAiIgCIiAIt38HtkR+IO9YdBlvOoNkhkl85sQkI4DOMZHf8VN1z0V6XmS1KO9onam2PzBXlqNB4/EgSFwHzwgOWkU8eHvo9Xde3FuXRdw6m7SbujOg6wwCdk7ZQ8h7SXN6YZ0/Eg4IWbvTwG23tzb+sXY9/1LN6hBJIKRjia972AnhjzSQcjHbKA57W9v8AECV22/sfku+8DH5Rn5erxxjl8eWP+VNd30XdH0+oyzqW+hThcQA+eoyNuSM4yZAM91rFXwN2xNuvUNKd4hUm1q1SCwy1xhxI6R0ocz+Lj1RGD3/m93TOzb3la23dlLG5YZkp1Z087XzIAVF1Nc9FrTodHn1GHeT5oGQOna9tJvBzQ0uzy8zGPmsPSfRp0uztTTdc1Hef2CG1VhsPMtRjWRmRrTx5GQDu7HzWsYzmVF0VQ9HzRtS3rFoWmb1juwu0+S6+zXgjk4ObKxgYQ2Q9+ZOc+5e3L6LOnyy2KlHfEb9QhaHOgdTaSzPbkBJkA5HXCA5aRezvHbtzae5tR0PU/LNulKYnujOWu6AhwPwIIP5rxkAREQBERATR6I/98lP/ALSx/oXS9vYesT+kLT3m18EejVtNNZw5nzJHlr28eOO3rA5J9y4N0jVdQ0a623pF61RtNBaJq0ro3gHuMgg9V7Fzfm7rtd8FvdGuTwPGHRyX5XNcPgRy6oDvDZ+4dO1/xO3g3SpI5m6dVo1JpYyC10odYcQCO/HkB+OR7lHHjVt7U5ts7tsjw92rDAGTTffDJ2fauAPLzceUDzIGccu57rkfQtya3oAmGh6vqGmibHm/ZLD4ueM4zxIzjJ+qz7u/N23qk1W7ufW7FaZpZJFLelcx7T3BBdghAfoJvqlZ1DbleGntvSdxSCVjjU1N7WRNHE+uC5jhyHQdveeqhHQfCeHcvjRatbo29o+jUNMo1rH3Rp7myQzue6RrC7DGjH9m4kY64aOoJXNw8Rd6gADduvgD/qEv/wBK0zfm7WW5bTNz622zKxsckovSh72tJLQTnJA5OwPdk/FAdd+kNt3xA3TQfpO2I6VPbEEPOwftXlyWcDPEgDoxuPZ956n3Ldqlaa/4O6HDV0TT9dlfp1MijqDg2GT1GHLiWuHTuOncLhKTxD3nLG5km7NeexwLXNdqEpBB7g+svmtv/eFWvFXrbp12KCJgZHGy/K1rGgYAADugA9yA7B8PdJuab40ufd2xo22/N2/IGVtKka9kvGzHl7uLGYPrAdj2W4aDX29e33vKfS6cdLddby6dy6Bzkcx8LHxvAPTHQDGOpj6rgs763Ybzbh3NrRttjMIn+3ScwwkEt5ZzgkA4+QVmvvHctbUrWoV9watFftBonsMuSNklDRhoc4HJwO2UBc8RKusUt8a3W3LM+xrEdp7bMz/6js+2PkRgj5ELXVmarqd7V70l3Vbli7ckwHz2JDI92BgZcepwAAsNAEREAREQBERAEREAREQBERAEREAREQBERAf/2Q==" alt="deezer"/></div><div class="pinfo"><h2>Deezer Premium</h2><p>1 plan disponible</p></div><span class="parr">&#8250;</span></div><div class="pw"><div class="pc"><div class="pch"><div class="pnw"><div class="pn">Mensual</div></div><div class="price">Lps. 80<sub>/mes</sub></div></div><ul class="pf">
 <li>+90 millones de canciones · Sin anuncios · Calidad hasta 320kbps</li>
 <li>Podcasts exclusivos · Listas curadas · Descarga offline</li>
@@ -1670,7 +1650,6 @@ body { height: auto !important; min-height: 100vh; }
   <button type="button" class="subli-bottom-btn active" data-tab="inicio"><span class="subli-bottom-icon"></span><small>Inicio</small></button>
   <button type="button" class="subli-bottom-btn" data-tab="cartelera"><span class="subli-bottom-icon"></span><small>Cartelera</small></button>
   <button type="button" class="subli-bottom-btn" data-tab="promos"><span class="subli-bottom-icon"></span><small>Ofertas</small></button>
-  <button type="button" class="subli-bottom-btn" data-tab="compras"><span class="subli-bottom-icon"></span><small>Catálogo</small></button>
   <button type="button" class="subli-bottom-btn subli-bottom-menu" data-tab="menu" aria-label="Abrir men&uacute; completo"><span class="subli-bottom-icon subli-menu-lines"><i></i><i></i><i></i></span><small>Men&uacute;</small></button>
 </nav>
 <script>
@@ -4560,157 +4539,431 @@ footer{
 </style>
 
 
-<style id="subli-phase3-mobile-clean-v2">
-/* FIX definitivo de composición móvil: nada se superpone */
+
+
+
+<style id="subli-unified-interface-v1">
+/* ===========================================
+   INTERFAZ UNIFICADA · FASE 3
+   Una sola experiencia: Inicio = Catálogo
+   =========================================== */
+:root{
+  --ui-bg:#07080E;
+  --ui-surface:#10121B;
+  --ui-surface2:#151824;
+  --ui-line:#292D3A;
+  --ui-red:#F11D24;
+  --ui-red2:#FF3B35;
+  --ui-text:#F7F8FA;
+  --ui-muted:#A9AFBC;
+  --ui-green:#22C55E;
+}
+body{
+  background:var(--ui-bg)!important;
+  color:var(--ui-text)!important;
+}
+main{
+  background:
+    radial-gradient(circle at 15% 0%,rgba(241,29,36,.12),transparent 26%),
+    radial-gradient(circle at 90% 25%,rgba(0,178,238,.05),transparent 22%),
+    var(--ui-bg)!important;
+}
+#tab-inicio{
+  background:transparent!important;
+  color:var(--ui-text)!important;
+}
+#tab-inicio .subli-home-web-hero-grid{
+  display:block!important;
+  max-width:1180px!important;
+  margin:0 auto!important;
+  padding:18px 18px 0!important;
+}
+
+/* HERO COMPACTO */
+#tab-inicio .subli-commerce-hero{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr)!important;
+  min-height:390px!important;
+  height:auto!important;
+  padding:38px 42px!important;
+  margin:0!important;
+  border-radius:28px!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(circle at 78% 44%,rgba(241,29,36,.33),transparent 31%),
+    linear-gradient(125deg,#080910 0%,#10121A 56%,#25090D 100%)!important;
+  border:1px solid #2A2D38!important;
+  box-shadow:0 22px 64px rgba(0,0,0,.28)!important;
+}
+#tab-inicio .subli-commerce-copy{
+  width:auto!important;
+  max-width:660px!important;
+  position:relative!important;
+  z-index:5!important;
+  align-self:center!important;
+}
+#tab-inicio .subli-commerce-live{
+  background:rgba(241,29,36,.13)!important;
+  border:1px solid rgba(255,65,59,.38)!important;
+  color:#FF6661!important;
+  border-radius:999px!important;
+  padding:7px 11px!important;
+  font-family:Inter,Arial,sans-serif!important;
+}
+#tab-inicio .subli-commerce-copy h1{
+  margin:16px 0 13px!important;
+  color:#fff!important;
+  font-family:Inter,Arial,sans-serif!important;
+  font-weight:800!important;
+  font-size:clamp(42px,5.5vw,68px)!important;
+  line-height:.98!important;
+  letter-spacing:-.055em!important;
+  text-transform:none!important;
+}
+#tab-inicio .subli-commerce-copy h1 span{
+  display:block!important;
+  color:var(--ui-red2)!important;
+}
+#tab-inicio .subli-commerce-copy>p{
+  max-width:610px!important;
+  margin:0 0 18px!important;
+  color:#C9CDD6!important;
+  font-family:Inter,Arial,sans-serif!important;
+  font-size:15px!important;
+  line-height:1.6!important;
+}
+#tab-inicio .subli-commerce-actions{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:10px!important;
+  margin:19px 0 15px!important;
+}
+#tab-inicio .subli-commerce-primary,
+#tab-inicio .subli-commerce-secondary{
+  min-height:48px!important;
+  border-radius:13px!important;
+  padding:0 18px!important;
+  font-family:Inter,Arial,sans-serif!important;
+  font-size:12px!important;
+  font-weight:800!important;
+}
+#tab-inicio .subli-commerce-primary{
+  background:var(--ui-red)!important;
+  color:#fff!important;
+  box-shadow:0 10px 25px rgba(241,29,36,.28)!important;
+}
+#tab-inicio .subli-commerce-secondary{
+  background:#1A1D27!important;
+  color:#fff!important;
+  border:1px solid #343844!important;
+}
+#tab-inicio .subli-commerce-trust{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:7px!important;
+  margin:0!important;
+}
+#tab-inicio .subli-commerce-trust span{
+  width:auto!important;height:auto!important;
+  margin:0!important;padding:6px 9px!important;
+  transform:none!important;
+  border-radius:999px!important;
+  background:#171A23!important;
+  border:1px solid #303440!important;
+  box-shadow:none!important;
+  color:#DDE0E7!important;
+  font-family:Inter,Arial,sans-serif!important;
+  font-size:9px!important;
+}
+#tab-inicio .catalog-sync-note{
+  display:block!important;
+  margin-top:10px!important;
+  padding:0!important;
+  background:transparent!important;
+  color:#7E8591!important;
+  font-size:9px!important;
+}
+
+/* SUBLIBOT integrated, never overlapping copy */
+#tab-inicio .subli-commerce-showcase.subli-phase3-showcase{
+  position:relative!important;
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:center!important;
+  width:100%!important;
+  height:315px!important;
+  right:auto!important;bottom:auto!important;top:auto!important;left:auto!important;
+  margin:0!important;padding:0!important;
+  z-index:2!important;
+  background:transparent!important;
+  border:0!important;box-shadow:none!important;
+  overflow:visible!important;
+  transform:none!important;
+}
+#tab-inicio .subli-phase3-showcase>img{
+  position:relative!important;
+  width:auto!important;
+  height:315px!important;
+  max-width:95%!important;
+  object-fit:contain!important;
+  right:auto!important;bottom:auto!important;
+  filter:drop-shadow(0 20px 28px rgba(0,0,0,.45))!important;
+  z-index:2!important;
+}
+#tab-inicio .subli-phase3-glow{
+  position:absolute!important;
+  width:290px!important;height:290px!important;
+  left:50%!important;top:20px!important;
+  transform:translateX(-50%)!important;
+  border-radius:50%!important;
+  background:radial-gradient(circle,rgba(241,29,36,.34),transparent 68%)!important;
+}
+#tab-inicio .subli-phase3-float{display:none!important}
+
+/* Carousels/promos directly after hero */
+#tab-inicio .new-carousel{
+  margin:18px 0 0!important;
+  border-radius:22px!important;
+  overflow:hidden!important;
+  background:#0E1018!important;
+  border:1px solid var(--ui-line)!important;
+  box-shadow:0 16px 40px rgba(0,0,0,.18)!important;
+}
+
+/* Section surfaces unified */
+#tab-inicio .subli-home-category-section,
+#tab-inicio .subli-live-catalog,
+#tab-inicio .subli-home-cartelera,
+#tab-inicio .subli-home-support-grid{
+  max-width:1180px!important;
+  margin:22px auto 0!important;
+  padding-left:18px!important;
+  padding-right:18px!important;
+}
+#tab-inicio .subli-home-category-section,
+#tab-inicio .subli-live-catalog{
+  background:transparent!important;
+}
+#tab-inicio .subli-home-category-section h2,
+#tab-inicio .subli-live-catalog-head h2,
+#tab-inicio .subli-home-heading h2{
+  color:#fff!important;
+  font-family:Inter,Arial,sans-serif!important;
+  font-size:27px!important;
+  font-weight:800!important;
+  letter-spacing:-.035em!important;
+}
+#tab-inicio .subli-home-category-section .subli-eyebrow,
+#tab-inicio .subli-live-catalog-head span,
+#tab-inicio .subli-home-heading span{
+  color:#FF5A54!important;
+}
+
+/* Category tiles like reference */
+#tab-inicio .subli-home-category-grid{
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  gap:11px!important;
+}
+#tab-inicio .subli-home-category-grid .tab-btn{
+  min-height:130px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:14px 10px!important;
+  border-radius:18px!important;
+  background:linear-gradient(180deg,#171A24,#10121B)!important;
+  border:1px solid #303441!important;
+  color:#fff!important;
+  box-shadow:none!important;
+  font-family:Inter,Arial,sans-serif!important;
+}
+#tab-inicio .subli-home-category-grid .tab-btn:hover{
+  border-color:#53596A!important;
+  transform:translateY(-2px)!important;
+}
+#tab-inicio .subli-home-category-grid .tab-ico{
+  width:54px!important;height:54px!important;object-fit:contain!important;
+}
+
+/* Product cards */
+#tab-inicio .subli-live-product-grid{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:12px!important;
+}
+#tab-inicio .subli-live-product{
+  background:linear-gradient(180deg,#161923,#10121A)!important;
+  border:1px solid #303440!important;
+  border-radius:20px!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+#tab-inicio .subli-live-product h3,
+#tab-inicio .subli-live-product strong{
+  color:#fff!important;
+  font-family:Inter,Arial,sans-serif!important;
+}
+#tab-inicio .subli-live-product p,
+#tab-inicio .subli-live-product small{
+  color:#A9AFBC!important;
+}
+#tab-inicio .subli-live-product button{
+  background:var(--ui-red)!important;
+  color:#fff!important;
+  border-radius:10px!important;
+}
+
+/* Promo cards darker */
+#tab-promos,
+#tab-cartelera,
+#tab-tv,
+#tab-musica,
+#tab-iptv,
+#tab-mundial,
+#tab-juegos,
+#tab-ia,
+#tab-diseno,
+#tab-software{
+  background:var(--ui-bg)!important;
+  color:var(--ui-text)!important;
+}
+
+/* Assistant card integrated dark */
+#tab-inicio .mascot{
+  background:linear-gradient(135deg,#12141D,#191C27 65%,#250B0E)!important;
+  border:1px solid #303441!important;
+  box-shadow:none!important;
+}
+#tab-inicio .mtxt .mhead{color:#fff!important}
+#tab-inicio .mtxt .mbrand{color:#FF3B35!important;-webkit-text-fill-color:#FF3B35!important}
+#tab-inicio .mtxt p{color:#B7BCC7!important}
+
+/* Bottom navigation: only 4 items */
+.subli-bottom-nav{
+  grid-template-columns:repeat(4,1fr)!important;
+  max-width:560px!important;
+  background:rgba(13,15,22,.97)!important;
+  border:1px solid #303440!important;
+  box-shadow:0 14px 40px rgba(0,0,0,.38)!important;
+}
+.subli-bottom-btn{
+  color:#9DA3AE!important;
+  font-family:Inter,Arial,sans-serif!important;
+}
+.subli-bottom-btn.active small{color:#FF4A44!important}
+.subli-bottom-menu{display:flex!important}
+
+/* Kill any legacy store/catalog modal UI */
+#sublistoreModal,
+#tab-compras{
+  display:none!important;
+}
+
+/* MOBILE */
 @media(max-width:700px){
+  #tab-inicio .subli-home-web-hero-grid{padding:10px 10px 0!important}
   #tab-inicio .subli-commerce-hero{
-    display:flex!important;
-    flex-direction:column!important;
-    min-height:0!important;
-    height:auto!important;
-    padding:28px 20px 0!important;
-    overflow:hidden!important;
-    background:linear-gradient(180deg,#0B0C12 0%,#15161E 70%,#220C0E 100%)!important;
-    border:1px solid #292A33!important;
-    border-radius:24px!important;
+    display:grid!important;
+    grid-template-columns:1fr 142px!important;
+    min-height:310px!important;
+    padding:22px 18px!important;
+    border-radius:22px!important;
+    gap:8px!important;
   }
   #tab-inicio .subli-commerce-copy{
-    position:relative!important;
-    z-index:5!important;
-    width:100%!important;
-    max-width:100%!important;
-    flex:0 0 auto!important;
+    align-self:center!important;
+    max-width:none!important;
+  }
+  #tab-inicio .subli-commerce-live{
+    font-size:8px!important;padding:5px 8px!important;
   }
   #tab-inicio .subli-commerce-copy h1{
-    color:#fff!important;
-    font-family:Inter,Arial,sans-serif!important;
-    font-size:37px!important;
-    line-height:1.02!important;
-    letter-spacing:-.045em!important;
-    margin:15px 0!important;
+    font-size:30px!important;
+    margin:12px 0 10px!important;
   }
-  #tab-inicio .subli-commerce-copy h1 span{color:#FF3B33!important}
   #tab-inicio .subli-commerce-copy>p{
-    color:#C7C9D0!important;
-    font-family:Inter,Arial,sans-serif!important;
-    font-size:14px!important;
-    line-height:1.58!important;
-    margin:0 0 18px!important;
+    font-size:10.5px!important;
+    line-height:1.45!important;
+    margin-bottom:12px!important;
   }
   #tab-inicio .subli-commerce-actions{
     display:grid!important;
-    grid-template-columns:1fr 1fr!important;
-    gap:8px!important;
-    margin:0 0 16px!important;
+    grid-template-columns:1fr!important;
+    gap:6px!important;
+    margin:11px 0!important;
   }
   #tab-inicio .subli-commerce-primary,
   #tab-inicio .subli-commerce-secondary{
-    width:100%!important;
-    min-height:48px!important;
-    margin:0!important;
-    padding:11px 12px!important;
-    justify-content:center!important;
-    font-family:Inter,Arial,sans-serif!important;
-    font-size:12px!important;
+    min-height:38px!important;
+    padding:0 11px!important;
+    font-size:10px!important;
   }
-  #tab-inicio .subli-commerce-trust{
-    display:flex!important;
-    flex-wrap:wrap!important;
-    gap:6px!important;
-    margin:0 0 8px!important;
-  }
+  #tab-inicio .subli-commerce-secondary{display:none!important}
+  #tab-inicio .subli-commerce-trust{gap:4px!important}
   #tab-inicio .subli-commerce-trust span{
-    display:inline-flex!important;
-    width:auto!important;
-    height:auto!important;
-    padding:6px 8px!important;
-    margin:0!important;
-    font-size:9px!important;
-    color:#ECECF0!important;
-    background:rgba(255,255,255,.07)!important;
-    border:1px solid rgba(255,255,255,.1)!important;
-    border-radius:999px!important;
-    box-shadow:none!important;
-    transform:none!important;
+    font-size:7.2px!important;padding:4px 6px!important
   }
   #tab-inicio .catalog-sync-note{
-    position:relative!important;
-    z-index:6!important;
-    display:block!important;
-    width:100%!important;
-    margin:4px 0 0!important;
-    padding:0!important;
-    color:#999CA5!important;
-    background:transparent!important;
-    font-size:9px!important;
-    line-height:1.35!important;
+    font-size:7px!important;margin-top:6px!important
   }
-
-  /* Sublibot becomes its own clean row under the copy */
   #tab-inicio .subli-commerce-showcase.subli-phase3-showcase{
-    position:relative!important;
-    z-index:2!important;
-    display:flex!important;
-    align-items:flex-end!important;
-    justify-content:center!important;
-    width:100%!important;
-    height:300px!important;
-    min-height:300px!important;
-    right:auto!important;left:auto!important;top:auto!important;bottom:auto!important;
-    margin:8px 0 0!important;
-    padding:0!important;
-    overflow:hidden!important;
-    transform:none!important;
-    background:transparent!important;
-    border:0!important;
-    box-shadow:none!important;
+    height:225px!important;
+    align-self:end!important;
   }
   #tab-inicio .subli-phase3-showcase>img{
-    position:relative!important;
-    z-index:2!important;
-    display:block!important;
-    width:auto!important;
-    height:292px!important;
-    max-width:92%!important;
-    right:auto!important;left:auto!important;top:auto!important;bottom:auto!important;
-    margin:0 auto!important;
-    object-fit:contain!important;
-    filter:drop-shadow(0 18px 22px rgba(0,0,0,.42))!important;
+    height:225px!important;
+    max-width:145px!important;
   }
   #tab-inicio .subli-phase3-glow{
-    position:absolute!important;
-    z-index:1!important;
-    width:250px!important;height:250px!important;
-    left:50%!important;right:auto!important;
-    top:30px!important;bottom:auto!important;
-    transform:translateX(-50%)!important;
-    border-radius:50%!important;
-    background:radial-gradient(circle,rgba(226,35,26,.28),transparent 70%)!important;
+    width:170px!important;height:170px!important;top:34px!important
   }
 
-  /* No floating cards on phones */
-  #tab-inicio .subli-phase3-float{
-    display:none!important;
+  #tab-inicio .new-carousel{margin-top:10px!important;border-radius:18px!important}
+
+  #tab-inicio .subli-home-category-section,
+  #tab-inicio .subli-live-catalog,
+  #tab-inicio .subli-home-cartelera,
+  #tab-inicio .subli-home-support-grid{
+    margin-top:18px!important;
+    padding-left:12px!important;
+    padding-right:12px!important;
+  }
+  #tab-inicio .subli-home-category-section h2,
+  #tab-inicio .subli-live-catalog-head h2,
+  #tab-inicio .subli-home-heading h2{
+    font-size:22px!important
+  }
+  #tab-inicio .subli-home-category-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:8px!important;
+  }
+  #tab-inicio .subli-home-category-grid .tab-btn{
+    min-height:98px!important;
+    border-radius:15px!important;
+    font-size:9px!important;
+  }
+  #tab-inicio .subli-home-category-grid .tab-ico{
+    width:42px!important;height:42px!important;
   }
 
-  /* Hide legacy pseudo/floats that leak into the hero */
-  #tab-inicio .subli-commerce-showcase span,
-  #tab-inicio .subli-commerce-showcase .float-one,
-  #tab-inicio .subli-commerce-showcase .float-two{
-    display:none!important;
+  #tab-inicio .subli-live-product-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+  }
+  #tab-inicio .subli-live-product{
+    border-radius:16px!important;
   }
 
-  /* Carousel gets breathing room */
-  #tab-inicio .new-carousel{
-    margin-top:12px!important;
-    border-radius:20px!important;
-    overflow:hidden!important;
+  .subli-bottom-nav{
+    width:calc(100% - 22px)!important;
+    left:11px!important;
+    right:11px!important;
+    max-width:none!important;
   }
-}
-
-/* Keep desktop composition clean too */
-@media(min-width:701px){
-  #tab-inicio .subli-phase3-float{display:block!important}
 }
 </style>
 
