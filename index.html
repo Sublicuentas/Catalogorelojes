@@ -1279,6 +1279,16 @@ body { height: auto !important; min-height: 100vh; }
   </section>
   </div>
 
+  <section class="subli-app-banner" aria-label="Crea, ahorra y disfruta">
+    <div class="subli-app-banner-glow"></div>
+    <div class="subli-app-banner-txt">
+      <strong>Crea. Ahorra. Disfruta.</strong>
+      <span>Streaming, m&uacute;sica, IA y m&aacute;s en un solo lugar.</span>
+      <button type="button" onclick="document.getElementById('subliLiveCatalogSection')?.scrollIntoView({behavior:'smooth',block:'start'})">Explorar cat&aacute;logo <b>&rarr;</b></button>
+    </div>
+    <div class="subli-app-banner-ico" aria-hidden="true">&#128640;</div>
+  </section>
+
   <section id="subliLiveCatalogSection" class="subli-live-catalog" aria-labelledby="subliLiveCatalogTitle"><div class="subli-live-catalog-head">
       <div>
         <span><i></i> Cat&aacute;logo en vivo</span>
@@ -5921,6 +5931,112 @@ img{max-width:100%}
 @media(max-width:700px){body,main{padding-bottom:104px!important}.subli-bottom-nav{width:calc(100vw - 28px)!important;max-width:650px!important;bottom:14px!important}}
 @media(max-height:650px){.subli-inline-modal{align-items:flex-start!important;padding-top:10px!important}.subli-inline-card{max-height:calc(100vh - 20px)!important}}
 @media(max-width:390px){.subli-bottom-nav{width:calc(100vw - 18px)!important}#tab-inicio .subli-home-category-grid{gap:5px!important}}
+</style>
+
+<style id="app-mockup-style">
+/* ===== HOME estilo app (referencia de captura) ===== */
+#tab-inicio{background:linear-gradient(180deg,#FBF8F4 0%,#F6F1EA 100%)!important}
+
+/* Categorías: iconos redondos con halo de color, como la captura */
+#tab-inicio .subli-category-grid{gap:10px 6px!important}
+#tab-inicio .subli-category-card{gap:6px!important}
+#tab-inicio .subli-category-icon{
+  width:58px!important;height:58px!important;border-radius:50%!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  background:#fff!important;box-shadow:0 6px 14px rgba(20,20,30,.10)!important;
+  border:2px solid transparent!important;
+}
+#tab-inicio .subli-category-icon img{width:28px!important;height:28px!important;object-fit:contain!important}
+#tab-inicio .subli-category-card strong{font-size:10px!important;font-weight:800!important;color:#2B2620!important;text-transform:none!important;letter-spacing:0!important}
+#tab-inicio .subli-category-card:nth-child(8n+1) .subli-category-icon{background:#F1E9FF!important;border-color:#7C3AED!important}
+#tab-inicio .subli-category-card:nth-child(8n+2) .subli-category-icon{background:#FFF0DB!important;border-color:#F59E0B!important}
+#tab-inicio .subli-category-card:nth-child(8n+3) .subli-category-icon{background:#E4F9E9!important;border-color:#16A34A!important}
+#tab-inicio .subli-category-card:nth-child(8n+4) .subli-category-icon{background:#FDE7E8!important;border-color:#E50914!important}
+#tab-inicio .subli-category-card:nth-child(8n+5) .subli-category-icon{background:#E1F6FC!important;border-color:#0EA5E9!important}
+#tab-inicio .subli-category-card:nth-child(8n+6) .subli-category-icon{background:#FDE6F1!important;border-color:#DB2777!important}
+#tab-inicio .subli-category-card:nth-child(8n+7) .subli-category-icon{background:#EDE7FE!important;border-color:#6D28D9!important}
+#tab-inicio .subli-category-card:nth-child(8n+8) .subli-category-icon{background:#E7EAF2!important;border-color:#334155!important}
+
+/* Banner CTA morado/azul, tipo "Create. Learn. Grow. Earn." */
+.subli-app-banner{
+  position:relative;overflow:hidden;
+  margin:16px 0 26px;padding:20px 100px 20px 20px;
+  border-radius:22px;
+  background:linear-gradient(135deg,#5B21B6 0%,#2563EB 100%);
+  box-shadow:0 14px 30px rgba(37,99,235,.28);
+}
+.subli-app-banner-glow{
+  position:absolute;right:-30px;top:-30px;width:150px;height:150px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.22),transparent 70%);
+}
+.subli-app-banner-txt{position:relative;z-index:1;display:flex;flex-direction:column;gap:6px}
+.subli-app-banner-txt strong{color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;line-height:1.05}
+.subli-app-banner-txt span{color:rgba(255,255,255,.85);font-size:12px;line-height:1.4;max-width:220px}
+.subli-app-banner-txt button{
+  margin-top:6px;align-self:flex-start;border:0;border-radius:999px;
+  background:#fff;color:#2563EB;font-family:'Barlow Condensed',sans-serif;
+  font-weight:900;font-size:12px;letter-spacing:.3px;padding:9px 16px;cursor:pointer;
+  display:flex;align-items:center;gap:6px;box-shadow:0 6px 14px rgba(0,0,0,.15);
+}
+.subli-app-banner-txt button b{font-size:15px}
+.subli-app-banner-ico{
+  position:absolute;right:14px;bottom:8px;font-size:56px;line-height:1;
+  filter:drop-shadow(0 8px 14px rgba(0,0,0,.25));
+  transform:rotate(-12deg);
+}
+
+/* Tarjetas del catálogo tipo "Featured Collections" */
+#tab-inicio .subli-live-product{
+  background:#fff!important;border-radius:18px!important;overflow:hidden!important;
+  padding:0!important;box-shadow:0 8px 20px rgba(30,34,52,.08)!important;border:1px solid rgba(0,0,0,.04)!important;
+}
+#tab-inicio .subli-live-product-top{
+  position:relative!important;display:flex!important;align-items:center!important;justify-content:center!important;
+  min-height:84px!important;padding:14px!important;margin:0!important;
+  background:linear-gradient(135deg,var(--product-accent,#E50914) 0%,rgba(0,0,0,.55) 130%)!important;
+}
+#tab-inicio .subli-live-product-visual{
+  width:52px!important;height:52px!important;border-radius:14px!important;background:#fff!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;
+  box-shadow:0 6px 14px rgba(0,0,0,.18)!important;
+}
+#tab-inicio .subli-live-product-visual img{width:38px!important;height:38px!important;object-fit:contain!important}
+#tab-inicio .subli-live-product-status{
+  position:absolute!important;top:8px!important;right:8px!important;
+  font-size:8.5px!important;font-weight:800!important;padding:3px 8px!important;border-radius:999px!important;
+  background:rgba(255,255,255,.92)!important;color:#1A1A1A!important;text-transform:uppercase!important;letter-spacing:.3px!important;
+}
+#tab-inicio .subli-live-product h3{padding:0 12px!important;margin-top:10px!important;font-size:14px!important;color:#1A1D29!important}
+#tab-inicio .subli-live-product p{padding:0 12px!important;color:#7A808D!important;font-size:10.5px!important;min-height:0!important}
+#tab-inicio .subli-live-product-bottom{padding:8px 12px 12px!important}
+#tab-inicio .subli-live-product button{
+  background:linear-gradient(135deg,#7C3AED,#2563EB)!important;color:#fff!important;border-radius:12px!important;
+}
+
+/* Barra de búsqueda tipo pill, filtros como "chips" */
+#tab-inicio .subli-live-search{
+  border-radius:16px!important;background:#fff!important;box-shadow:0 6px 16px rgba(20,20,40,.08)!important;
+}
+#tab-inicio .subli-live-search input{background:transparent!important}
+#tab-inicio .subli-live-filters button{border-radius:999px!important}
+#tab-inicio .subli-live-filters button.active{
+  background:linear-gradient(135deg,#7C3AED,#2563EB)!important;border-color:transparent!important;color:#fff!important;
+}
+
+/* Nav inferior tipo app: icono activo dentro de un chip de color */
+.subli-bottom-nav{
+  background:rgba(255,255,255,.96)!important;
+  box-shadow:0 12px 30px rgba(20,20,40,.14)!important;
+}
+.subli-bottom-icon{border-radius:12px!important;transition:background .2s ease!important}
+.subli-bottom-btn.active .subli-bottom-icon{background:linear-gradient(135deg,#F1E9FF,#E1F6FC)!important}
+.subli-bottom-btn.active small{color:#2563EB!important;font-weight:800!important}
+
+@media(max-width:520px){
+  .subli-app-banner{padding:16px 86px 16px 16px!important;margin:12px 0 20px!important}
+  .subli-app-banner-txt strong{font-size:19px!important}
+  .subli-app-banner-ico{font-size:44px!important;right:10px!important}
+}
 </style>
 </body>
 </html>
