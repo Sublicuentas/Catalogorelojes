@@ -97,12 +97,10 @@
     return '<b>' + escapeHtml(product.visual || product.name.slice(0, 4).toUpperCase()) + '</b>';
   }
   function openSubliProduct(productId) {
-    var target = 'producto=' + encodeURIComponent(productId);
-    if (typeof window.abrirSubliStore === 'function') {
-      window.abrirSubliStore(target);
+    if (typeof window.openInlineCatalogProduct === 'function') {
+      window.openInlineCatalogProduct(productId);
       return;
     }
-    window.location.href = '/store.html#' + target;
   }
   function renderHomeCatalog(catalog) {
     var grid = document.getElementById('subliLiveProductGrid');
@@ -113,7 +111,7 @@
       : homeCatalogState.category.split(',');
     var priority = ['netflix', 'disney', 'hbo-max', 'prime-video', 'crunchyroll', 'canva', 'office-365', 'latin-tv'];
     var products = (catalog.products || []).filter(function (product) {
-      if (!product.active || !product.storeEnabled || product.redemptionOnly) return false;
+      if (!product.active || product.redemptionOnly) return false;
       if (categories.length && categories.indexOf(product.categoryId) === -1) return false;
       var searchable = normalize([
         product.name,
@@ -438,6 +436,7 @@
       (Number.isNaN(date.getTime()) ? '' : ' · actualizado ' + date.toLocaleDateString('es-HN'));
   }
   function applyCatalog(catalog) {
+    homeCatalogState.catalog = catalog;
     window.__SUBLI_CATALOG__ = catalog;
     updateLegacyProducts(catalog);
     updateGaming(catalog);
@@ -474,4 +473,85 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
+
+  function _subliFormatPrice(value) {
+    var catalog = homeCatalogState.catalog || {};
+    var settings = catalog.settings || {};
+    if (value === null || value === undefined || value === '') return 'Consultar';
+    return (settings.currencyLabel || 'Lps.') + ' ' + Number(value).toLocaleString(
+      settings.locale || 'es-HN',
+      { minimumFractionDigits: Number(value)%1 ? 2 : 0, maximumFractionDigits: 2 }
+    );
+  }
+  function _subliProductById(id) {
+    var catalog = homeCatalogState.catalog || {};
+    return (catalog.products || []).find(function(p){ return p.id === id; });
+  }
+  function _subliWhatsapp(text) {
+    var catalog = homeCatalogState.catalog || {}, settings = catalog.settings || {};
+    var phone = String(settings.whatsapp || '50432126332').replace(/\D/g,'');
+    return 'https://wa.me/' + phone + '?text=' + encodeURIComponent(text);
+  }
+  function _subliInlineVisual(product) {
+    if (product.imageUrl) return '<img src="' + escapeHtml(product.imageUrl) + '" alt="' + escapeHtml(product.name||'') + '">';
+    return '<b>' + escapeHtml(product.visual || String(product.name||'').slice(0,4).toUpperCase()) + '</b>';
+  }
+  function _subliUpdateInline() {
+    var modal=document.getElementById('subliInlineProductModal');
+    if(!modal || !modal.dataset.productId) return;
+    var p=_subliProductById(modal.dataset.productId); if(!p) return;
+    var planSel=document.getElementById('subliInlinePlan');
+    var optionSel=document.getElementById('subliInlineOption');
+    var plan=(p.plans||[]).find(function(x){return x.id===planSel.value;}) || (p.plans||[]).filter(function(x){return x.active!==false;})[0];
+    if(!plan) return;
+    if(planSel.value!==plan.id) planSel.value=plan.id;
+    var options=(plan.options||[]).filter(function(o){return o.active!==false;});
+    var wrap=document.getElementById('subliInlineOptionWrap');
+    wrap.hidden=!options.length;
+    if(options.length){
+      var prev=optionSel.value;
+      optionSel.innerHTML=options.map(function(o){
+        return '<option value="'+escapeHtml(o.id)+'">'+escapeHtml(o.label)+' · '+escapeHtml(_subliFormatPrice(o.price))+'</option>';
+      }).join('');
+      if(options.some(function(o){return o.id===prev;})) optionSel.value=prev;
+    } else optionSel.innerHTML='';
+    var option=options.find(function(o){return o.id===optionSel.value;}) || options[0];
+    var price=option ? option.price : plan.price;
+    var features=(p.productFeatures||[]).concat(plan.features||[]);
+    document.getElementById('subliInlineFeatures').innerHTML=features.map(function(f){return '<li>'+escapeHtml(f)+'</li>';}).join('');
+    document.getElementById('subliInlinePrice').textContent=_subliFormatPrice(price)+(option?'':(plan.billingLabel||''));
+    var detail=option ? plan.name+' · '+option.label : plan.name;
+    document.getElementById('subliInlineConsult').href=_subliWhatsapp('Hola, quisiera consultar '+p.name+' — '+detail+' ('+_subliFormatPrice(price)+').');
+  }
+  window.openInlineCatalogProduct=function(productId){
+    var p=_subliProductById(productId); if(!p) return;
+    var modal=document.getElementById('subliInlineProductModal'); if(!modal) return;
+    modal.dataset.productId=productId;
+    document.getElementById('subliInlineVisual').innerHTML=_subliInlineVisual(p);
+    document.getElementById('subliInlineTitle').textContent=p.name||'Servicio';
+    document.getElementById('subliInlineSummary').textContent=p.summary||'';
+    var status=statusOf(p.availability);
+    document.getElementById('subliInlineStatus').textContent=status.label||'Disponible';
+    var plans=(p.plans||[]).filter(function(x){return x.active!==false;});
+    document.getElementById('subliInlinePlan').innerHTML=plans.map(function(plan){return '<option value="'+escapeHtml(plan.id)+'">'+escapeHtml(plan.name)+'</option>';}).join('');
+    document.getElementById('subliInlineOption').innerHTML='';
+    _subliUpdateInline();
+    modal.hidden=false;
+    document.body.style.overflow='hidden';
+  };
+  function _subliCloseInline(){
+    var modal=document.getElementById('subliInlineProductModal');
+    if(modal) modal.hidden=true;
+    document.body.style.overflow='';
+  }
+  document.addEventListener('click',function(e){
+    if(e.target.closest('[data-close-inline-product]')) _subliCloseInline();
+  });
+  document.addEventListener('change',function(e){
+    if(e.target && (e.target.id==='subliInlinePlan'||e.target.id==='subliInlineOption')) _subliUpdateInline();
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape') _subliCloseInline();
+  });
+
 })();
