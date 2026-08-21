@@ -6084,5 +6084,53 @@ footer{padding-bottom:78px!important}
 .subli-bottom-btn.active small{color:#2563EB!important;font-weight:800!important}
 
 </style>
+
+<style id="fix-cards-desktop-final">
+/* === Arreglo: texto de las tarjetas del catálogo se salía de la caja ===
+   La pastilla "DISPONIBLE" competía por el mismo espacio que el título,
+   y las tarjetas eran muy angostas en móvil. */
+#tab-inicio .subli-live-product{
+  position:relative!important;
+}
+#tab-inicio .subli-live-product-status{
+  grid-area:unset!important;
+  position:absolute!important;top:14px!important;right:14px!important;
+  justify-self:unset!important;align-self:unset!important;
+  z-index:2!important;max-width:calc(100% - 84px)!important;
+}
+#tab-inicio .subli-live-product h3{
+  white-space:normal!important;overflow-wrap:break-word!important;word-break:break-word!important;
+  padding:0 58px 0 0!important;
+  display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;
+  overflow:hidden!important;line-height:1.18!important;
+}
+#tab-inicio .subli-live-product p{
+  white-space:normal!important;overflow-wrap:break-word!important;word-break:break-word!important;
+  display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;
+  overflow:hidden!important;
+}
+/* Tarjetas más anchas para que el texto quepa */
+#tab-inicio .subli-live-product-grid{gap:12px!important}
+#tab-inicio .subli-live-product{
+  flex:0 0 216px!important;min-height:172px!important;
+}
+@media(max-width:700px){
+  #tab-inicio .subli-live-product{flex:0 0 208px!important;min-height:168px!important;padding:14px!important}
+  #tab-inicio .subli-live-product h3{font-size:13.5px!important;margin-top:6px!important}
+  #tab-inicio .subli-live-product p{font-size:9.5px!important;min-height:0!important}
+}
+@media(max-width:390px){
+  #tab-inicio .subli-live-product{flex:0 0 194px!important;min-height:164px!important}
+}
+
+/* === Arreglo: caja "Categorías" en escritorio quedaba con espacio
+   vacío abajo porque se estiraba a la altura del hero. === */
+@media (min-width:900px){
+  #tab-inicio .subli-home-categories{
+    height:auto!important;
+    align-self:start!important;
+  }
+}
+</style>
 </body>
 </html>
