@@ -5947,36 +5947,81 @@ img{max-width:100%}
 #tab-inicio .subli-category-card:nth-child(8n+7) .subli-category-icon{background:#EDE7FE!important;border-color:#6D28D9!important}
 #tab-inicio .subli-category-card:nth-child(8n+8) .subli-category-icon{background:#E7EAF2!important;border-color:#334155!important}
 
-/* Tarjetas del catálogo tipo "Featured Collections" */
+/* Tarjetas del catálogo — "Variante 3": ícono + nombre arriba,
+   precio y botón con banderín de color abajo. */
 #tab-inicio .subli-live-product{
-  background:#fff!important;border-radius:18px!important;overflow:hidden!important;
-  padding:0!important;box-shadow:0 8px 20px rgba(30,34,52,.08)!important;border:1px solid rgba(0,0,0,.04)!important;
+  display:grid!important;
+  grid-template-columns:56px minmax(0,1fr)!important;
+  grid-template-rows:auto auto 1fr auto!important;
+  grid-template-areas:
+    "icon title"
+    "icon desc"
+    "icon ."
+    "footer footer"!important;
+  column-gap:12px!important;row-gap:2px!important;
+  background:#fff!important;border-radius:18px!important;
+  border:1.5px solid var(--product-accent,#E50914)!important;
+  padding:16px 16px 0!important;
+  overflow:hidden!important;position:relative!important;
+  box-shadow:0 8px 18px rgba(30,34,52,.07)!important;
 }
 #tab-inicio .subli-live-product-top{
-  position:relative!important;display:flex!important;align-items:center!important;justify-content:center!important;
-  min-height:84px!important;padding:14px!important;margin:0!important;
-  background:linear-gradient(135deg,var(--product-accent,#E50914) 0%,rgba(0,0,0,.55) 130%)!important;
+  grid-area:icon!important;position:static!important;
+  background:transparent!important;padding:0!important;min-height:0!important;
+  display:block!important;
 }
 #tab-inicio .subli-live-product-visual{
-  width:64px!important;height:64px!important;border-radius:16px!important;background:transparent!important;
+  width:52px!important;height:52px!important;border-radius:14px!important;background:transparent!important;
   display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;
-  box-shadow:0 6px 14px rgba(0,0,0,.25)!important;
+  box-shadow:0 3px 8px rgba(0,0,0,.18)!important;
 }
-#tab-inicio .subli-live-product-visual img{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;border-radius:16px!important}
+#tab-inicio .subli-live-product-visual img{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;border-radius:14px!important}
 #tab-inicio .subli-live-product-visual b{
   width:100%!important;height:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;
-  background:#fff!important;color:#1A1A1A!important;font-weight:900!important;border-radius:16px!important;
+  background:var(--product-accent,#E50914)!important;color:#fff!important;font-weight:900!important;border-radius:14px!important;
 }
 #tab-inicio .subli-live-product-status{
-  position:absolute!important;top:8px!important;right:8px!important;
-  font-size:8.5px!important;font-weight:800!important;padding:3px 8px!important;border-radius:999px!important;
-  background:rgba(255,255,255,.92)!important;color:#1A1A1A!important;text-transform:uppercase!important;letter-spacing:.3px!important;
+  grid-area:title!important;position:relative!important;top:auto!important;right:auto!important;
+  justify-self:end!important;align-self:start!important;
+  font-size:8px!important;font-weight:800!important;padding:3px 9px!important;border-radius:999px!important;
+  background:#fdeceb!important;
+  background:color-mix(in srgb, var(--product-accent,#E50914) 12%, #fff)!important;
+  color:var(--product-accent,#E50914)!important;text-transform:uppercase!important;letter-spacing:.3px!important;
+  display:flex!important;align-items:center!important;gap:4px!important;white-space:nowrap!important;
 }
-#tab-inicio .subli-live-product h3{padding:0 12px!important;margin-top:10px!important;font-size:14px!important;color:#1A1D29!important}
-#tab-inicio .subli-live-product p{padding:0 12px!important;color:#7A808D!important;font-size:10.5px!important;min-height:0!important}
-#tab-inicio .subli-live-product-bottom{padding:8px 12px 12px!important}
+#tab-inicio .subli-live-product-status::before{
+  content:'';width:5px;height:5px;border-radius:50%;background:var(--product-accent,#E50914);display:inline-block;
+}
+#tab-inicio .subli-live-product h3{
+  grid-area:title!important;padding:0 60px 0 0!important;margin:2px 0 0!important;
+  font-size:14.5px!important;font-weight:800!important;color:#1A1D29!important;
+}
+#tab-inicio .subli-live-product p{
+  grid-area:desc!important;padding:0!important;margin:2px 0 0!important;
+  color:#7A808D!important;font-size:10px!important;line-height:1.35!important;min-height:0!important;
+}
+#tab-inicio .subli-live-product-bottom{
+  grid-area:footer!important;
+  margin-top:12px!important;padding:10px 0!important;
+  border-top:1px dashed #E7E9EF!important;
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  position:relative!important;
+}
+#tab-inicio .subli-live-product-price small{display:block!important;font-size:8.5px!important;color:#9CA3AF!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:.4px!important}
+#tab-inicio .subli-live-product-price strong{display:block!important;font-size:17px!important;font-weight:900!important;color:#1A1D29!important}
 #tab-inicio .subli-live-product button{
-  background:linear-gradient(135deg,#7C3AED,#2563EB)!important;color:#fff!important;border-radius:12px!important;
+  position:relative!important;z-index:1!important;
+  width:36px!important;height:36px!important;min-height:36px!important;padding:0!important;
+  border-radius:50%!important;background:var(--product-accent,#E50914)!important;color:#fff!important;
+  box-shadow:0 6px 14px rgba(0,0,0,.25)!important;
+  box-shadow:0 6px 14px color-mix(in srgb, var(--product-accent,#E50914) 45%, transparent)!important;
+}
+/* banderín decorativo detrás del botón, como en la referencia */
+#tab-inicio .subli-live-product-bottom::after{
+  content:'';position:absolute!important;right:-14px!important;bottom:-14px!important;
+  width:46px!important;height:46px!important;border-radius:14px 0 0 0!important;
+  background:var(--product-accent,#E50914)!important;opacity:.18!important;
+  transform:rotate(-45deg)!important;z-index:0!important;
 }
 
 /* Barra de búsqueda tipo pill, filtros como "chips" */
