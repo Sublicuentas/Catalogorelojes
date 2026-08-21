@@ -1227,8 +1227,8 @@ body { height: auto !important; min-height: 100vh; }
     <div class="hero-top subli-commerce-hero">
       <div class="subli-commerce-copy">
         <span class="subli-commerce-live"><i></i> Cat&aacute;logo conectado</span>
-        <h1>Todo su entretenimiento<br/><span>en un solo lugar</span></h1>
-        <p>Streaming, TV digital, gaming y herramientas con precios vigentes, promociones y disponibilidad actualizada.</p>
+        <h1>Explore, compare y elija<br/><span>sin complicaciones</span></h1>
+        <p>Streaming, herramientas, TV digital y más. Revise precios, promociones y disponibilidad desde un solo catálogo.</p>
         <div class="subli-commerce-actions">
           <button type="button" class="subli-commerce-primary" onclick="abrirSubliStore()">
             Ver catálogo <b>&rarr;</b>
@@ -4556,6 +4556,161 @@ footer{
   }
   #tab-inicio .subli-phase3-float b{font-size:9.5px!important}
   #tab-inicio .subli-phase3-float small{font-size:7.5px!important}
+}
+</style>
+
+
+<style id="subli-phase3-mobile-clean-v2">
+/* FIX definitivo de composición móvil: nada se superpone */
+@media(max-width:700px){
+  #tab-inicio .subli-commerce-hero{
+    display:flex!important;
+    flex-direction:column!important;
+    min-height:0!important;
+    height:auto!important;
+    padding:28px 20px 0!important;
+    overflow:hidden!important;
+    background:linear-gradient(180deg,#0B0C12 0%,#15161E 70%,#220C0E 100%)!important;
+    border:1px solid #292A33!important;
+    border-radius:24px!important;
+  }
+  #tab-inicio .subli-commerce-copy{
+    position:relative!important;
+    z-index:5!important;
+    width:100%!important;
+    max-width:100%!important;
+    flex:0 0 auto!important;
+  }
+  #tab-inicio .subli-commerce-copy h1{
+    color:#fff!important;
+    font-family:Inter,Arial,sans-serif!important;
+    font-size:37px!important;
+    line-height:1.02!important;
+    letter-spacing:-.045em!important;
+    margin:15px 0!important;
+  }
+  #tab-inicio .subli-commerce-copy h1 span{color:#FF3B33!important}
+  #tab-inicio .subli-commerce-copy>p{
+    color:#C7C9D0!important;
+    font-family:Inter,Arial,sans-serif!important;
+    font-size:14px!important;
+    line-height:1.58!important;
+    margin:0 0 18px!important;
+  }
+  #tab-inicio .subli-commerce-actions{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+    margin:0 0 16px!important;
+  }
+  #tab-inicio .subli-commerce-primary,
+  #tab-inicio .subli-commerce-secondary{
+    width:100%!important;
+    min-height:48px!important;
+    margin:0!important;
+    padding:11px 12px!important;
+    justify-content:center!important;
+    font-family:Inter,Arial,sans-serif!important;
+    font-size:12px!important;
+  }
+  #tab-inicio .subli-commerce-trust{
+    display:flex!important;
+    flex-wrap:wrap!important;
+    gap:6px!important;
+    margin:0 0 8px!important;
+  }
+  #tab-inicio .subli-commerce-trust span{
+    display:inline-flex!important;
+    width:auto!important;
+    height:auto!important;
+    padding:6px 8px!important;
+    margin:0!important;
+    font-size:9px!important;
+    color:#ECECF0!important;
+    background:rgba(255,255,255,.07)!important;
+    border:1px solid rgba(255,255,255,.1)!important;
+    border-radius:999px!important;
+    box-shadow:none!important;
+    transform:none!important;
+  }
+  #tab-inicio .catalog-sync-note{
+    position:relative!important;
+    z-index:6!important;
+    display:block!important;
+    width:100%!important;
+    margin:4px 0 0!important;
+    padding:0!important;
+    color:#999CA5!important;
+    background:transparent!important;
+    font-size:9px!important;
+    line-height:1.35!important;
+  }
+
+  /* Sublibot becomes its own clean row under the copy */
+  #tab-inicio .subli-commerce-showcase.subli-phase3-showcase{
+    position:relative!important;
+    z-index:2!important;
+    display:flex!important;
+    align-items:flex-end!important;
+    justify-content:center!important;
+    width:100%!important;
+    height:300px!important;
+    min-height:300px!important;
+    right:auto!important;left:auto!important;top:auto!important;bottom:auto!important;
+    margin:8px 0 0!important;
+    padding:0!important;
+    overflow:hidden!important;
+    transform:none!important;
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+  }
+  #tab-inicio .subli-phase3-showcase>img{
+    position:relative!important;
+    z-index:2!important;
+    display:block!important;
+    width:auto!important;
+    height:292px!important;
+    max-width:92%!important;
+    right:auto!important;left:auto!important;top:auto!important;bottom:auto!important;
+    margin:0 auto!important;
+    object-fit:contain!important;
+    filter:drop-shadow(0 18px 22px rgba(0,0,0,.42))!important;
+  }
+  #tab-inicio .subli-phase3-glow{
+    position:absolute!important;
+    z-index:1!important;
+    width:250px!important;height:250px!important;
+    left:50%!important;right:auto!important;
+    top:30px!important;bottom:auto!important;
+    transform:translateX(-50%)!important;
+    border-radius:50%!important;
+    background:radial-gradient(circle,rgba(226,35,26,.28),transparent 70%)!important;
+  }
+
+  /* No floating cards on phones */
+  #tab-inicio .subli-phase3-float{
+    display:none!important;
+  }
+
+  /* Hide legacy pseudo/floats that leak into the hero */
+  #tab-inicio .subli-commerce-showcase span,
+  #tab-inicio .subli-commerce-showcase .float-one,
+  #tab-inicio .subli-commerce-showcase .float-two{
+    display:none!important;
+  }
+
+  /* Carousel gets breathing room */
+  #tab-inicio .new-carousel{
+    margin-top:12px!important;
+    border-radius:20px!important;
+    overflow:hidden!important;
+  }
+}
+
+/* Keep desktop composition clean too */
+@media(min-width:701px){
+  #tab-inicio .subli-phase3-float{display:block!important}
 }
 </style>
 
