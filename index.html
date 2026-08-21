@@ -6140,5 +6140,18 @@ footer{padding-bottom:78px!important}
   }
 }
 </style>
+
+<style id="fix-sublibot-bubble">
+/* Arreglo: el mensaje del usuario en SubliBot partía palabras cortas
+   (ej. "Horario") en 2 líneas aunque cabían perfecto en una. */
+.sb-msg.u .sb-bub{
+  overflow-wrap:break-word!important;
+  word-break:normal!important;
+  white-space:normal!important;
+  width:-webkit-fit-content!important;
+  width:fit-content!important;
+  max-width:82%!important;
+}
+</style>
 </body>
 </html>
