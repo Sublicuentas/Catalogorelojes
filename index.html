@@ -5158,5 +5158,291 @@ header,.subli-header,.site-header{
 }
 </style>
 
+
+<style id="marketplace-pass4-compact">
+/* PASS 4: compactación fina sin cambiar arquitectura */
+:root{
+  --p4-bg:#F6F7FB;
+  --p4-card:#FFFFFF;
+  --p4-line:#E4E7EE;
+  --p4-text:#151826;
+  --p4-muted:#747A87;
+  --p4-purple:#7C3AED;
+  --p4-blue:#2563EB;
+}
+
+/* dock siempre completo, centrado y sin tapar contenido */
+.subli-bottom-nav{
+  left:50%!important;
+  right:auto!important;
+  transform:translateX(-50%)!important;
+  width:min(94vw,660px)!important;
+  max-width:660px!important;
+  grid-template-columns:repeat(4,1fr)!important;
+  padding:8px 10px!important;
+  border-radius:25px!important;
+  min-height:74px!important;
+}
+.subli-bottom-btn{
+  min-width:0!important;
+  padding:6px 4px!important;
+}
+.subli-bottom-btn small{
+  font-size:10px!important;
+}
+body{padding-bottom:96px!important}
+main{padding-bottom:96px!important}
+
+/* hero un poco más compacto */
+#tab-inicio .subli-commerce-hero{
+  min-height:360px!important;
+  padding:32px 36px!important;
+}
+#tab-inicio .subli-commerce-copy h1{
+  margin:13px 0 11px!important;
+}
+#tab-inicio .subli-commerce-copy>p{
+  margin-bottom:13px!important;
+}
+#tab-inicio .subli-commerce-actions{
+  margin:13px 0 11px!important;
+}
+#tab-inicio .subli-final-bot{
+  height:290px!important;
+}
+#tab-inicio .subli-final-bot img{
+  height:282px!important;
+}
+#tab-inicio .subli-final-bot-glow{
+  width:250px!important;height:250px!important;
+}
+
+/* banner promocional del home más contenido */
+#tab-inicio .new-carousel{
+  margin-top:12px!important;
+}
+#tab-inicio .new-carousel,
+#tab-inicio .nc-track,
+#tab-inicio .nc-card{
+  border-radius:20px!important;
+}
+#tab-inicio .nc-card{
+  max-height:330px!important;
+  overflow:hidden!important;
+}
+#tab-inicio .nc-card img{
+  width:100%!important;
+  height:auto!important;
+  max-height:330px!important;
+  object-fit:cover!important;
+}
+
+/* categorías: tarjetas suaves tipo app */
+#tab-inicio .subli-home-category-grid{
+  gap:9px!important;
+}
+#tab-inicio .subli-home-category-grid .tab-btn{
+  min-height:92px!important;
+  padding:10px 7px!important;
+  border-radius:17px!important;
+  background:linear-gradient(180deg,#fff,#FAFBFD)!important;
+  border:1px solid #E4E7EE!important;
+  box-shadow:0 6px 18px rgba(25,30,50,.045)!important;
+}
+#tab-inicio .subli-home-category-grid .tab-ico{
+  width:40px!important;
+  height:40px!important;
+  margin-bottom:2px!important;
+}
+#tab-inicio .subli-home-category-grid .tab-btn{
+  font-size:9.5px!important;
+  line-height:1.15!important;
+}
+
+/* servicios destacados más compactos */
+#tab-inicio .subli-live-catalog{
+  padding-top:18px!important;
+  padding-bottom:18px!important;
+  border-radius:22px!important;
+}
+#tab-inicio .subli-live-catalog-head{
+  margin-bottom:10px!important;
+}
+#tab-inicio .subli-live-catalog-head h2{
+  margin-bottom:4px!important;
+}
+#tab-inicio .subli-live-catalog-head p{
+  margin:0!important;
+}
+#tab-inicio .subli-live-catalog-search{
+  margin:10px 0 8px!important;
+}
+#tab-inicio .subli-live-category-row{
+  margin-bottom:10px!important;
+}
+#tab-inicio .subli-live-product-grid{
+  gap:8px!important;
+}
+#tab-inicio .subli-live-product{
+  min-height:0!important;
+  padding:14px!important;
+  border-radius:17px!important;
+}
+#tab-inicio .subli-live-product-visual{
+  width:64px!important;
+  height:64px!important;
+  margin-bottom:10px!important;
+}
+#tab-inicio .subli-live-product h3{
+  margin:0 0 5px!important;
+}
+#tab-inicio .subli-live-product p{
+  min-height:0!important;
+  margin:0 0 10px!important;
+  line-height:1.35!important;
+}
+#tab-inicio .subli-live-product-bottom{
+  margin-top:10px!important;
+}
+
+/* cartelera horizontal: sin espacios muertos */
+#tab-inicio .subli-home-cartelera{
+  margin-top:18px!important;
+}
+#tab-inicio .subli-home-cartelera-grid{
+  align-items:flex-start!important;
+}
+#tab-inicio .subli-home-cartelera-card{
+  height:auto!important;
+  min-height:0!important;
+}
+#tab-inicio .subli-home-cartelera-card img{
+  aspect-ratio:2/3!important;
+  object-fit:cover!important;
+}
+#tab-inicio .subli-home-cartelera-card h3{
+  margin-top:8px!important;
+  margin-bottom:4px!important;
+}
+#tab-inicio .subli-home-cartelera-card p{
+  margin:0!important;
+}
+
+/* Sublibot section: que no quede detrás del dock */
+#tab-inicio .mascot{
+  margin-bottom:22px!important;
+  overflow:hidden!important;
+}
+#tab-inicio .mbot{
+  align-self:flex-end!important;
+}
+
+/* móvil */
+@media(max-width:700px){
+  body{padding-bottom:102px!important}
+  main{padding-bottom:102px!important}
+  .subli-bottom-nav{
+    width:calc(100vw - 28px)!important;
+    min-height:72px!important;
+    border-radius:24px!important;
+  }
+
+  #tab-inicio .subli-commerce-hero{
+    grid-template-columns:minmax(0,1fr) 128px!important;
+    min-height:285px!important;
+    padding:18px 15px!important;
+    gap:4px!important;
+  }
+  #tab-inicio .subli-commerce-copy h1{
+    font-size:28px!important;
+    margin:9px 0 7px!important;
+  }
+  #tab-inicio .subli-commerce-copy>p{
+    font-size:10px!important;
+    line-height:1.42!important;
+    margin-bottom:8px!important;
+  }
+  #tab-inicio .subli-commerce-actions{
+    margin:8px 0!important;
+  }
+  #tab-inicio .subli-commerce-primary{
+    min-height:37px!important;
+  }
+  #tab-inicio .subli-final-bot{
+    height:202px!important;
+    border-radius:18px!important;
+  }
+  #tab-inicio .subli-final-bot img{
+    height:198px!important;
+    max-width:132px!important;
+  }
+  #tab-inicio .subli-final-bot-glow{
+    width:155px!important;height:155px!important;
+  }
+
+  #tab-inicio .nc-card,
+  #tab-inicio .nc-card img{
+    max-height:280px!important;
+  }
+
+  #tab-inicio .subli-home-category-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:7px!important;
+  }
+  #tab-inicio .subli-home-category-grid .tab-btn{
+    min-height:82px!important;
+    padding:8px 5px!important;
+    border-radius:15px!important;
+    font-size:8px!important;
+  }
+  #tab-inicio .subli-home-category-grid .tab-ico{
+    width:34px!important;height:34px!important;
+  }
+
+  #tab-inicio .subli-live-catalog{
+    padding:15px 10px!important;
+    border-radius:20px!important;
+  }
+  #tab-inicio .subli-live-catalog-head h2{
+    font-size:26px!important;
+    line-height:1.0!important;
+  }
+  #tab-inicio .subli-live-product-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  #tab-inicio .subli-live-product{
+    padding:12px!important;
+  }
+  #tab-inicio .subli-live-product-visual{
+    width:58px!important;height:58px!important;
+  }
+  #tab-inicio .subli-live-product h3{
+    font-size:16px!important;
+  }
+  #tab-inicio .subli-live-product p{
+    font-size:10px!important;
+  }
+  #tab-inicio .subli-live-product-bottom strong{
+    font-size:20px!important;
+  }
+  #tab-inicio .subli-live-product-bottom button{
+    width:46px!important;height:46px!important;
+  }
+
+  #tab-inicio .subli-home-cartelera-card{
+    min-width:180px!important;
+    width:180px!important;
+  }
+  #tab-inicio .subli-home-cartelera-card img{
+    width:180px!important;
+    height:270px!important;
+  }
+
+  #tab-inicio .mascot{
+    margin-bottom:30px!important;
+  }
+}
+</style>
+
 </body>
 </html>
