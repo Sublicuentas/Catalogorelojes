@@ -5958,11 +5958,15 @@ img{max-width:100%}
   background:linear-gradient(135deg,var(--product-accent,#E50914) 0%,rgba(0,0,0,.55) 130%)!important;
 }
 #tab-inicio .subli-live-product-visual{
-  width:52px!important;height:52px!important;border-radius:14px!important;background:#fff!important;
+  width:64px!important;height:64px!important;border-radius:16px!important;background:transparent!important;
   display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;
-  box-shadow:0 6px 14px rgba(0,0,0,.18)!important;
+  box-shadow:0 6px 14px rgba(0,0,0,.25)!important;
 }
-#tab-inicio .subli-live-product-visual img{width:38px!important;height:38px!important;object-fit:contain!important}
+#tab-inicio .subli-live-product-visual img{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;border-radius:16px!important}
+#tab-inicio .subli-live-product-visual b{
+  width:100%!important;height:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;
+  background:#fff!important;color:#1A1A1A!important;font-weight:900!important;border-radius:16px!important;
+}
 #tab-inicio .subli-live-product-status{
   position:absolute!important;top:8px!important;right:8px!important;
   font-size:8.5px!important;font-weight:800!important;padding:3px 8px!important;border-radius:999px!important;
@@ -6019,10 +6023,10 @@ img{max-width:100%}
    (antes del footer), dejando un hueco enorme en cada sección. Se mueve
    ese despeje al final real de la página (footer), no en medio. */
 main{padding-bottom:24px!important}
-footer{padding-bottom:104px!important}
+footer{padding-bottom:78px!important}
 @media(max-width:700px){
   main{padding-bottom:24px!important}
-  footer{padding-bottom:96px!important}
+  footer{padding-bottom:74px!important}
 }
 
 /* Nav inferior tipo app: icono activo dentro de un chip de color */
