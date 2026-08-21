@@ -6143,14 +6143,24 @@ footer{padding-bottom:78px!important}
 
 <style id="fix-sublibot-bubble">
 /* Arreglo: el mensaje del usuario en SubliBot partía palabras cortas
-   (ej. "Horario") en 2 líneas aunque cabían perfecto en una. */
+   (ej. "Horario") en 2 líneas aunque cabían perfecto en una.
+   Causa real: max-width en % sobre un contenedor de ancho "encógete
+   al contenido" genera una referencia circular. Se resuelve fijando
+   el ancho máximo en vw (relativo a pantalla, sin ambigüedad). */
+.sb-msg.u{
+  align-self:flex-end!important;
+  width:-webkit-fit-content!important;
+  width:fit-content!important;
+  max-width:78vw!important;
+}
 .sb-msg.u .sb-bub{
+  width:-webkit-fit-content!important;
+  width:fit-content!important;
+  max-width:100%!important;
   overflow-wrap:break-word!important;
   word-break:normal!important;
   white-space:normal!important;
-  width:-webkit-fit-content!important;
-  width:fit-content!important;
-  max-width:82%!important;
+  display:inline-block!important;
 }
 </style>
 </body>
