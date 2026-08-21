@@ -143,7 +143,7 @@
       catalogCount.textContent = resultCount + (resultCount === 1 ? ' resultado' : ' resultados');
     }
     if (!visible.length) {
-      grid.innerHTML = '<div class="subli-live-empty">No encontramos ese servicio. Pruebe con otra palabra o consulte en SubliStore.</div>';
+      grid.innerHTML = '<div class="subli-live-empty">No encontramos ese servicio. Pruebe con otra palabra o consulte el catálogo completo.</div>';
       return;
     }
     grid.innerHTML = visible.map(function (product) {
