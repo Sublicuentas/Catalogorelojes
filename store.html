@@ -4,139 +4,64 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#111218">
-  <title>SubliStore · Sublicuentas</title>
+  <meta name="description" content="Catálogo visual de servicios, precios, promociones y disponibilidad.">
+  <title>Catálogo · Sublicuentas</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Barlow:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/store.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/store.css?v=20260821-1">
 </head>
 <body>
-  <section class="store-auth" id="authGate">
-    <div class="auth-visual">
-      <button type="button" class="back-catalog auth-back" data-close-store>← Volver al catálogo</button>
-      <div class="auth-copy">
-        <span class="eyebrow">TIENDA DIGITAL</span>
-        <div class="store-brand"><b>SUBLI</b>CUENTAS</div>
-        <h1>Todo su entretenimiento, en un solo lugar.</h1>
-        <p>Compre servicios, forme combos y acumule puntos en cada pedido confirmado.</p>
-        <div class="auth-benefits">
-          <span>✓ Precios siempre actualizados</span>
-          <span>✓ Compra y comprobante en un solo flujo</span>
-          <span>✓ Canjes exclusivos con puntos</span>
-        </div>
-      </div>
+  <header class="catalog-header">
+    <div class="catalog-header-inner">
+      <button type="button" class="back-catalog" data-close-catalog>← Volver</button>
+      <a class="catalog-brand" href="/store.html"><b>SUBLI</b>CUENTAS <small>CATÁLOGO</small></a>
+      <a class="header-consult" id="headerConsult" target="_blank" rel="noopener">Consultar</a>
     </div>
-    <div class="auth-panel">
-      <div class="auth-card">
-        <div class="auth-tabs">
-          <button type="button" class="active" data-auth-tab="login">Ingresar</button>
-          <button type="button" data-auth-tab="register">Crear cuenta</button>
-        </div>
-        <form id="loginForm" class="auth-form active">
-          <span class="eyebrow">BIENVENIDO DE NUEVO</span>
-          <h2>Ingrese a SubliStore</h2>
-          <p>Consulte sus puntos y prepare su compra.</p>
-          <label>Correo o WhatsApp<input id="loginEmail" autocomplete="username" placeholder="correo@ejemplo.com o 9999-9999" required></label>
-          <label>Contraseña
-            <span class="password-field">
-              <input id="loginPassword" type="password" autocomplete="current-password" required>
-              <button type="button" data-toggle-password="loginPassword">Ver</button>
-            </span>
-          </label>
-          <button class="store-primary wide" type="submit">Ingresar</button>
-          <div class="auth-message" id="loginMessage"></div>
-        </form>
-        <form id="registerForm" class="auth-form">
-          <span class="eyebrow">NUEVO CLIENTE</span>
-          <h2>Cree su cuenta</h2>
-          <p>Sus datos se utilizan únicamente para gestionar pedidos y beneficios.</p>
-          <label>Nombre completo<input id="registerName" autocomplete="name" required></label>
-          <label>WhatsApp
-            <span class="phone-field"><b>+504</b><input id="registerPhone" inputmode="tel" autocomplete="tel" required></span>
-          </label>
-          <label>Correo electrónico<input id="registerEmail" type="email" autocomplete="email" required></label>
-          <label>Fecha de nacimiento<input id="registerBirthDate" type="date" autocomplete="bday" required></label>
-          <label>Contraseña
-            <span class="password-field">
-              <input id="registerPassword" type="password" minlength="8" autocomplete="new-password" required>
-              <button type="button" data-toggle-password="registerPassword">Ver</button>
-            </span>
-          </label>
-          <small class="password-note">Mínimo 8 caracteres.</small>
-          <button class="store-primary wide" type="submit">Crear mi cuenta</button>
-          <div class="auth-message" id="registerMessage"></div>
-        </form>
-      </div>
-    </div>
-  </section>
+  </header>
 
-  <div class="store-app" id="storeApp" hidden>
-    <header class="store-header">
-      <div class="store-header-inner">
-        <button type="button" class="back-catalog" data-close-store>← Catálogo</button>
-        <a class="store-brand compact" href="/store.html"><b>SUBLI</b>CUENTAS <small>STORE</small></a>
-        <div class="header-actions">
-          <button type="button" class="points-button" id="pointsButton"><span>◆</span><b id="clientPoints">0</b> pts</button>
-          <button type="button" class="profile-button" id="profileButton"><span id="clientAvatar">🦊</span><b id="clientFirstName">Perfil</b></button>
-          <button type="button" class="cart-button" id="openCart" aria-label="Abrir carrito">🛒<b id="cartCount">0</b></button>
+  <main>
+    <section class="catalog-hero">
+      <div>
+        <span class="eyebrow">CATÁLOGO EN VIVO</span>
+        <h1>Precios claros, promociones y disponibilidad real.</h1>
+        <p>Explore nuestros servicios y compare planes. Este catálogo es informativo; para solicitar un servicio consulte directamente con su asesor.</p>
+        <div class="hero-actions">
+          <button type="button" class="catalog-primary" id="exploreProducts">Ver servicios</button>
+          <a class="catalog-secondary" id="heroConsult" target="_blank" rel="noopener">Consultar disponibilidad</a>
         </div>
       </div>
-      <div class="profile-menu" id="profileMenu" hidden>
-        <strong id="profileFullName">Cliente</strong>
-        <small id="profileEmail"></small>
-        <button type="button" id="logoutButton">Cerrar sesión</button>
+      <div class="hero-dashboard">
+        <article><span>✓</span><div><strong>Precios sincronizados</strong><small>Actualizados desde el panel central.</small></div></article>
+        <article><span>🔥</span><div><strong>Ofertas visibles</strong><small>Promociones activas en un solo lugar.</small></div></article>
+        <article><span>●</span><div><strong>Disponibilidad real</strong><small>Disponible, pocas unidades, bajo pedido o pausado.</small></div></article>
       </div>
-    </header>
+    </section>
 
-    <main>
-      <section class="store-hero">
-        <div>
-          <span class="eyebrow">SUBLISTORE ACTUALIZADA</span>
-          <h1>Servicios digitales con precio claro y disponibilidad real.</h1>
-          <p>Elija su plan, agregue al carrito y envíe su comprobante desde el mismo pedido.</p>
-          <button type="button" class="store-primary" id="exploreProducts">Explorar productos</button>
-        </div>
-        <div class="hero-dashboard">
-          <article><span>✓</span><div><strong>Catálogo sincronizado</strong><small>Los cambios del panel aparecen aquí.</small></div></article>
-          <article><span>◆</span><div><strong>Beneficios por puntos</strong><small>Canjee servicios seleccionados.</small></div></article>
-          <article><span>⚡</span><div><strong>Pedido más rápido</strong><small>El precio se valida antes de comprar.</small></div></article>
-        </div>
-      </section>
+    <section class="promo-section" id="promoSection" hidden>
+      <div class="section-heading">
+        <div><span class="eyebrow">OFERTAS DESTACADAS</span><h2>Promociones activas</h2></div>
+        <div class="promo-arrows"><button id="promoPrev" type="button">←</button><button id="promoNext" type="button">→</button></div>
+      </div>
+      <div class="promo-track" id="promoTrack"></div>
+    </section>
 
-      <section class="promo-section" id="promoSection" hidden>
-        <div class="section-heading">
-          <div><span class="eyebrow">TIEMPO LIMITADO</span><h2>Promociones activas</h2></div>
-          <div class="promo-arrows"><button id="promoPrev" type="button">←</button><button id="promoNext" type="button">→</button></div>
-        </div>
-        <div class="promo-track" id="promoTrack"></div>
-      </section>
+    <section class="catalog-section" id="catalogSection">
+      <div class="section-heading catalog-heading">
+        <div><span class="eyebrow">CATÁLOGO CENTRAL</span><h2>Todos los servicios</h2></div>
+        <label class="catalog-search">⌕<input id="storeSearch" type="search" placeholder="Buscar Netflix, Disney, antivirus…"></label>
+      </div>
+      <div class="category-scroll" id="categoryFilters"></div>
+      <div class="product-grid" id="productGrid"></div>
+      <div class="empty-products" id="emptyProducts" hidden>No encontramos servicios con ese filtro.</div>
+    </section>
+  </main>
 
-      <section class="catalog-section" id="catalogSection">
-        <div class="section-heading catalog-heading">
-          <div><span class="eyebrow">CATÁLOGO CENTRAL</span><h2>Todos los servicios</h2></div>
-          <label class="store-search">⌕<input id="storeSearch" type="search" placeholder="¿Qué servicio busca?"></label>
-        </div>
-        <div class="category-scroll" id="categoryFilters"></div>
-        <div class="product-grid" id="productGrid"></div>
-        <div class="empty-products" id="emptyProducts" hidden>No encontramos servicios con ese filtro.</div>
-      </section>
-
-      <section class="rewards-section" id="rewardsSection">
-        <div class="rewards-copy">
-          <span class="eyebrow">PUNTOS SUBLI</span>
-          <h2>Sus compras también le dan beneficios.</h2>
-          <p>Cuando su pedido sea confirmado, se acreditan puntos. Los canjes disponibles se calculan con el mismo catálogo central.</p>
-        </div>
-        <div class="reward-grid" id="rewardGrid"></div>
-      </section>
-    </main>
-
-    <footer>
-      <div class="store-brand compact"><b>SUBLI</b>CUENTAS</div>
-      <p>Conectamos tu entretenimiento.</p>
-      <small>© 2026 Sublicuentas · Honduras</small>
-    </footer>
-  </div>
+  <footer>
+    <div class="catalog-brand"><b>SUBLI</b>CUENTAS <small>CATÁLOGO</small></div>
+    <p>Precios, promociones y disponibilidad en un solo lugar.</p>
+    <small>© 2026 Sublicuentas · Honduras</small>
+  </footer>
 
   <div class="modal-backdrop" id="productModal" hidden>
     <section class="product-modal-card" role="dialog" aria-modal="true" aria-labelledby="productModalTitle">
@@ -152,70 +77,13 @@
       <ul class="modal-features" id="productFeatures"></ul>
       <div class="modal-product-footer">
         <div><small>Precio vigente</small><strong id="productModalPrice"></strong></div>
-        <button type="button" class="store-primary" id="addSelectedProduct">Agregar al carrito</button>
+        <a class="catalog-primary" id="consultSelectedProduct" target="_blank" rel="noopener">Consultar este servicio</a>
       </div>
+      <small class="catalog-disclaimer">Catálogo informativo. La disponibilidad se confirma con su asesor.</small>
     </section>
   </div>
 
-  <aside class="cart-drawer" id="cartDrawer" aria-hidden="true">
-    <div class="cart-head">
-      <div><span class="eyebrow">SU COMPRA</span><h2>Carrito</h2></div>
-      <button type="button" id="closeCart">×</button>
-    </div>
-    <div class="cart-items" id="cartItems"></div>
-    <div class="cart-empty" id="cartEmpty">Su carrito está vacío.</div>
-    <div class="cart-summary">
-      <div><span>Subtotal</span><b id="cartSubtotal">Lps. 0</b></div>
-      <div class="discount-line"><span>Descuento por combo</span><b id="cartDiscount">- Lps. 0</b></div>
-      <div class="cart-total"><span>Total</span><strong id="cartTotal">Lps. 0</strong></div>
-      <small id="comboHint"></small>
-      <button type="button" class="store-primary wide" id="openCheckout">Continuar con el pedido</button>
-    </div>
-  </aside>
-  <button type="button" class="drawer-backdrop" id="drawerBackdrop" hidden aria-label="Cerrar carrito"></button>
-
-  <div class="modal-backdrop" id="checkoutModal" hidden>
-    <section class="checkout-card" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
-      <button type="button" class="modal-close" data-close-modal="checkoutModal">×</button>
-      <span class="eyebrow">ÚLTIMO PASO</span>
-      <h2 id="checkoutTitle">Confirme su pedido</h2>
-      <p>El servidor verificará nuevamente cada precio antes de registrar la compra.</p>
-      <form id="checkoutForm">
-        <label>Dispositivo principal
-          <select id="checkoutDevice" required>
-            <option value="">Seleccione</option>
-            <option>Smart TV</option>
-            <option>Celular</option>
-            <option>Computadora</option>
-            <option>Tableta</option>
-            <option>TV Box / Stick</option>
-            <option>No aplica</option>
-          </select>
-        </label>
-        <label>Método de pago<select id="checkoutPayment" required></select></label>
-        <div class="payment-instructions" id="paymentInstructions"></div>
-        <label>Comprobante de pago
-          <span class="file-field"><input id="checkoutReceipt" type="file" accept="image/*"><b id="receiptName">Seleccione una imagen</b></span>
-        </label>
-        <label>Notas para el asesor<textarea id="checkoutNotes" placeholder="ID del juego, dispositivo, observaciones…"></textarea></label>
-        <div class="checkout-total"><span>Total validado al enviar</span><strong id="checkoutTotal">Lps. 0</strong></div>
-        <button class="store-primary wide" id="submitCheckout" type="submit">Enviar pedido</button>
-        <div class="checkout-message" id="checkoutMessage"></div>
-      </form>
-    </section>
-  </div>
-
-  <div class="modal-backdrop success-backdrop" id="successModal" hidden>
-    <section class="success-card">
-      <span>✓</span>
-      <h2>Pedido recibido</h2>
-      <p id="successMessage">Un asesor confirmará su pago.</p>
-      <strong id="successPurchaseId"></strong>
-      <button type="button" class="store-primary wide" data-close-modal="successModal">Seguir comprando</button>
-    </section>
-  </div>
-
-  <div class="store-toast-stack" id="storeToastStack" aria-live="polite"></div>
-  <script src="/assets/store.js" defer></script>
+  <div class="catalog-toast-stack" id="storeToastStack" aria-live="polite"></div>
+  <script src="/assets/store.js?v=20260821-1" defer></script>
 </body>
 </html>
