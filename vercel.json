@@ -1,31 +1,110 @@
 {
   "version": 2,
   "builds": [
-    { "src": "*.html", "use": "@vercel/static" },
-    { "src": "assets/**", "use": "@vercel/static" },
-    { "src": "api/chat.js", "use": "@vercel/node" },
-    { "src": "api/cartelera.js", "use": "@vercel/node" },
-    { "src": "api/partidos.js", "use": "@vercel/node" },
-    { "src": "api/agenda.js", "use": "@vercel/node" },
-    { "src": "api/catalogo.js", "use": "@vercel/node" },
-    { "src": "api/admin-catalogo.js", "use": "@vercel/node" },
-    { "src": "api/store-auth.js", "use": "@vercel/node" },
-    { "src": "api/checkout.js", "use": "@vercel/node" },
-    { "src": "api/canjear.js", "use": "@vercel/node" }
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "assets/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "api/chat.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/cartelera.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/partidos.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/agenda.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/catalogo.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/admin-catalogo.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/catalog-sync.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/store-auth.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/checkout.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/canjear.js",
+      "use": "@vercel/node"
+    }
   ],
   "routes": [
-    { "src": "/store/?", "dest": "/store.html" },
-    { "src": "/admin/?", "dest": "/admin.html" },
-    { "src": "/api/chat", "dest": "/api/chat.js" },
-    { "src": "/api/cartelera", "dest": "/api/cartelera.js" },
-    { "src": "/api/partidos", "dest": "/api/partidos.js" },
-    { "src": "/api/agenda", "dest": "/api/agenda.js" },
-    { "src": "/api/catalogo", "dest": "/api/catalogo.js" },
-    { "src": "/api/admin-catalogo", "dest": "/api/admin-catalogo.js" },
-    { "src": "/api/store-auth", "dest": "/api/store-auth.js" },
-    { "src": "/api/checkout", "dest": "/api/checkout.js" },
-    { "src": "/api/canjear", "dest": "/api/canjear.js" },
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/index.html" }
+    {
+      "src": "/store/?",
+      "dest": "/store.html"
+    },
+    {
+      "src": "/admin/?",
+      "dest": "/admin.html"
+    },
+    {
+      "src": "/api/chat",
+      "dest": "/api/chat.js"
+    },
+    {
+      "src": "/api/cartelera",
+      "dest": "/api/cartelera.js"
+    },
+    {
+      "src": "/api/partidos",
+      "dest": "/api/partidos.js"
+    },
+    {
+      "src": "/api/agenda",
+      "dest": "/api/agenda.js"
+    },
+    {
+      "src": "/api/catalogo",
+      "dest": "/api/catalogo.js"
+    },
+    {
+      "src": "/api/admin-catalogo",
+      "dest": "/api/admin-catalogo.js"
+    },
+    {
+      "src": "/api/catalog-sync",
+      "dest": "/api/catalog-sync.js"
+    },
+    {
+      "src": "/api/store-auth",
+      "dest": "/api/store-auth.js"
+    },
+    {
+      "src": "/api/checkout",
+      "dest": "/api/checkout.js"
+    },
+    {
+      "src": "/api/canjear",
+      "dest": "/api/canjear.js"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
   ]
 }
