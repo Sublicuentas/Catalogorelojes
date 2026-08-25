@@ -358,6 +358,69 @@ export default async function carteleraHandler(req, res) {
         });
     }
 
+    // Buscador: cualquier título (película, serie, novela o anime) y en qué
+    // app está disponible en Honduras ahora mismo. Independiente de las 6
+    // plataformas fijas de arriba: si TMDB reporta el título en HN, se
+    // muestra el nombre real de la app (aunque no la vendamos nosotros).
+    const searchQuery = req.query && req.query.q ? String(req.query.q).trim() : '';
+    if (searchQuery) {
+      const searchData = await getJSON('search/multi', {
+        language: LANG,
+        query: searchQuery,
+        include_adult: 'false',
+        page: '1'
+      });
+
+      if (searchData.success === false || searchData.status_code) {
+        return reply(200, {
+          error: searchData.status_message || 'No se pudo buscar en TMDB.'
+        });
+      }
+
+      const rawResults = ((searchData.results || [])
+        .filter(function (item) {
+          return (item.media_type === 'movie' || item.media_type === 'tv') &&
+            (item.title || item.name) && item.poster_path;
+        }))
+        .slice(0, 24);
+
+      const results = await Promise.all(rawResults.map(async function (item) {
+        const type = item.media_type;
+        let providerNames = [];
+        try {
+          const providersData = await getJSON(type + '/' + item.id + '/watch/providers', {});
+          const hnEntry = ((providersData || {}).results || {})[REGION] || {};
+          const flat = [].concat(hnEntry.flatrate || [], hnEntry.free || [], hnEntry.ads || []);
+          providerNames = Array.from(new Set(flat.map(function (p) { return p.provider_name; })));
+        } catch (error) {
+          providerNames = [];
+        }
+
+        const provider = providerNames.some(function (name) {
+          return /netflix/i.test(name);
+        }) ? 'netflix' : '';
+
+        return {
+          id: item.id,
+          type,
+          cat: mediaCategory(item, type, provider),
+          title: item.title || item.name || '',
+          year: mediaYear(item),
+          rating: item.vote_average ? Number(item.vote_average).toFixed(1) : '',
+          poster: IMG + 'w342' + item.poster_path,
+          providers: providerNames
+        };
+      }));
+
+      res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=1800');
+      return reply(200, {
+        query: searchQuery,
+        region: REGION,
+        count: results.length,
+        results
+      });
+    }
+
     if (req.query && req.query.debug) {
       const test = await timedFetch(
         apiUrl('configuration', {}),
