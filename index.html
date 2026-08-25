@@ -6379,5 +6379,97 @@ footer{padding-bottom:78px!important}
   #tab-cartelera .cartelera-search .cart-search-go{font-size:10.5px;padding:0 13px}
 }
 </style>
+
+<style id="pass11-ofertas-pop-sticker">
+/* PASS 11 — Ofertas: mismo look (rojo/negro/blanco de marca + colores por
+   plataforma que ya existían), pero en formato "sticker" con más energía:
+   bordes gruesos, sombra dura, ligera rotación, medallón que se menea y
+   textura de puntos de fondo. No se inventan descuentos falsos. */
+#tab-promos{
+  background-image:radial-gradient(rgba(229,9,20,.07) 1.5px,transparent 1.5px)!important;
+  background-size:15px 15px!important;
+}
+
+#tab-promos .promo-fire-header{
+  transform:rotate(-1deg)!important;
+  border:2.5px solid #E50914!important;
+  filter:drop-shadow(5px 5px 0 rgba(0,0,0,.35))!important;
+}
+
+#tab-promos .promo-market-heading b{
+  border:1.5px solid #1A1A1A!important;
+  border-radius:8px!important;
+  padding:3px 9px!important;
+  transform:rotate(2deg)!important;
+  display:inline-block!important;
+}
+
+#tab-promos .promo-card{
+  border-width:3px!important;
+  border-radius:18px!important;
+  overflow:visible!important;
+}
+/* La barra de color a la izquierda (de un pass anterior) llegaba hasta las
+   esquinas; al quitar overflow:hidden se vería un filo cuadrado asomando
+   fuera de la esquina redondeada. Se acorta para que no la toque. */
+#tab-promos .promo-card::before{
+  top:14px!important;bottom:14px!important;
+  border-radius:3px!important;
+}
+#tab-promos .subli-promos-web-grid>.promo-card:nth-child(odd),
+#tab-promos>.promo-card:nth-child(odd){
+  transform:rotate(-1.1deg)!important;
+}
+#tab-promos .subli-promos-web-grid>.promo-card:nth-child(even),
+#tab-promos>.promo-card:nth-child(even){
+  transform:rotate(1.1deg)!important;
+}
+#tab-promos .promo-card:active{transform:scale(.97)!important}
+#tab-promos .promo-card[data-color="red"]{filter:drop-shadow(5px 5px 0 rgba(229,9,20,.35))!important}
+#tab-promos .promo-card[data-color="blue"]{filter:drop-shadow(5px 5px 0 rgba(14,165,233,.35))!important}
+#tab-promos .promo-card[data-color="purple"]{filter:drop-shadow(5px 5px 0 rgba(124,58,237,.35))!important}
+#tab-promos .promo-card[data-color="orange"]{filter:drop-shadow(5px 5px 0 rgba(249,115,22,.35))!important}
+#tab-promos .promo-card[data-color="green"]{filter:drop-shadow(5px 5px 0 rgba(5,150,105,.35))!important}
+
+/* Medallón "en oferta" — puramente decorativo con ::after, sin tocar el HTML */
+#tab-promos .promo-card::after{
+  content:'\1F525';
+  position:absolute;
+  top:-14px;right:14px;
+  width:34px;height:34px;
+  background:#1A1A1A;
+  border:2.5px solid #E50914;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;
+  transform:rotate(10deg);
+  animation:pass11Wiggle 2.4s ease-in-out infinite;
+  z-index:3;
+}
+@keyframes pass11Wiggle{
+  0%,100%{transform:rotate(10deg)}
+  50%{transform:rotate(-8deg)}
+}
+@media(prefers-reduced-motion:reduce){
+  #tab-promos .promo-card::after{animation:none!important}
+}
+
+#tab-promos .promo-conditions span{
+  border:1.5px solid #1A1A1A!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  font-weight:800!important;
+}
+
+#tab-promos .promo-cta{
+  border:2px solid #0d3a24!important;
+  box-shadow:3px 3px 0 rgba(20,20,23,.85)!important;
+  transition:transform .12s ease, box-shadow .12s ease!important;
+}
+#tab-promos .promo-cta:active{
+  transform:translate(2px,2px)!important;
+  box-shadow:1px 1px 0 rgba(20,20,23,.85)!important;
+}
+</style>
 </body>
 </html>
