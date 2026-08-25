@@ -1396,6 +1396,11 @@ body { height: auto !important; min-height: 100vh; }
     <h2 class="cartelera-title">&#127916; Cartelera</h2>
     <p class="cartelera-desc">Qu&eacute; ver ahora: tendencias semanales, estrenos recientes y series con temporada actual en tus plataformas favoritas.</p>
   </div>
+  <div class="cartelera-search" id="carteleraSearchBox">
+    <input type="search" id="carteleraSearchInput" placeholder="Buscar pel&iacute;cula, serie, novela o anime en Honduras..." onkeydown="if(event.key==='Enter'){event.preventDefault();window.searchCartelera();}">
+    <button type="button" class="cart-search-go" onclick="window.searchCartelera()">Buscar</button>
+    <button type="button" class="cart-search-clear" onclick="window.clearCarteleraSearch()" aria-label="Limpiar b&uacute;squeda">&times;</button>
+  </div>
   <div class="cartelera-apps" id="carteleraApps">
     <button class="cart-app active" data-provider="netflix" style="--ca:#E50914" onclick="loadCartelera('netflix',this)">Netflix</button>
     <button class="cart-app" data-provider="disney" style="--ca:#0EA5E9" onclick="loadCartelera('disney',this)">Disney+</button>
@@ -2512,7 +2517,7 @@ function sbCerrar() {
     }
 
     updateStatus();
-    grid.innerHTML=list.map(function(it){
+    grid.innerHTML=list.map(function(it,idx){
       var poster=it.poster
         ? '<img class="cart-poster" loading="lazy" decoding="async" src="'+esc(it.poster)+'" alt="'+esc(it.title)+'">'
         : '<div class="cart-poster"></div>';
@@ -2521,7 +2526,7 @@ function sbCerrar() {
         ? '<span class="cart-type">Serie</span>'
         : '<span class="cart-type">Pel&iacute;cula</span>';
       var subtitle=it.subtitle||it.reason||it.year||'Contenido actual';
-      return '<div class="cart-card" onclick="openDetail('+Number(it.id)+',\''+(it.type==='tv'?'tv':'movie')+'\')">'+
+      return '<div class="cart-card" style="--i:'+idx+'" onclick="openDetail('+Number(it.id)+',\''+(it.type==='tv'?'tv':'movie')+'\')">'+
         poster+rating+type+
         '<div class="cart-meta"><div class="cart-name">'+esc(it.title)+'</div>'+
         '<div class="cart-sub">'+esc(subtitle)+'</div></div></div>';
@@ -2529,6 +2534,7 @@ function sbCerrar() {
   }
 
   window.setCartFilter=function(filter,button){
+    exitCarteleraSearch();
     CUR.filter=filter;
     document.querySelectorAll('#carteleraFilter .cart-filter').forEach(function(item){
       item.classList.remove('active');
@@ -2541,6 +2547,7 @@ function sbCerrar() {
   };
 
   window.loadCartelera=function(provider,button){
+    exitCarteleraSearch();
     CUR.provider=provider;
     document.querySelectorAll('#carteleraApps .cart-app').forEach(function(item){
       item.classList.remove('active');
@@ -2593,6 +2600,83 @@ function sbCerrar() {
   }
 
   window.refreshCartelera=function(){ loadAll(true); };
+
+  /* ── Buscador: qué hay disponible (y en qué app) en Honduras ── */
+  var searchInput=document.getElementById('carteleraSearchInput');
+  var searchBox=document.getElementById('carteleraSearchBox');
+  var searchSeq=0;
+  var searchActive=false;
+
+  function exitCarteleraSearch(){
+    if(!searchActive) return;
+    searchActive=false;
+    searchSeq++;
+    if(searchInput) searchInput.value='';
+    if(searchBox) searchBox.classList.remove('has-query');
+  }
+  window.clearCarteleraSearch=function(){
+    exitCarteleraSearch();
+    var activeBtn=document.querySelector('#carteleraApps .cart-app[data-provider="'+CUR.provider+'"]')||document.querySelector('#carteleraApps .cart-app');
+    window.loadCartelera(CUR.provider,activeBtn);
+  };
+
+  function renderSearchResults(items,query){
+    document.querySelectorAll('#carteleraApps .cart-app, #carteleraFilter .cart-filter').forEach(function(item){
+      item.classList.remove('active');
+    });
+    if(!items.length){
+      status.innerHTML='Sin resultados para &laquo;'+esc(query)+'&raquo; en Honduras. '+
+        '<button type="button" class="cart-refresh" onclick="window.clearCarteleraSearch()">&larr; Volver</button>';
+      grid.innerHTML='';
+      return;
+    }
+    status.innerHTML=items.length+' resultado'+(items.length===1?'':'s')+' para &laquo;'+esc(query)+'&raquo; en Honduras &middot; '+
+      '<button type="button" class="cart-refresh" onclick="window.clearCarteleraSearch()">&larr; Volver a tendencias</button>';
+    grid.innerHTML=items.map(function(it,idx){
+      var poster=it.poster
+        ? '<img class="cart-poster" loading="lazy" decoding="async" src="'+esc(it.poster)+'" alt="'+esc(it.title)+'">'
+        : '<div class="cart-poster"></div>';
+      var rating=it.rating?'<span class="cart-badge">&#9733; '+esc(it.rating)+'</span>':'';
+      var type=it.type==='tv'
+        ? '<span class="cart-type">Serie</span>'
+        : '<span class="cart-type">Pel&iacute;cula</span>';
+      var plats=(it.providers&&it.providers.length)
+        ? '<div class="cart-providers">'+it.providers.map(function(p){return '<span class="cart-plat">'+esc(p)+'</span>';}).join('')+'</div>'
+        : '<div class="cart-providers"><span class="cart-plat none">No disponible en HN</span></div>';
+      return '<div class="cart-card" style="--i:'+idx+'" onclick="openDetail('+Number(it.id)+',\''+(it.type==='tv'?'tv':'movie')+'\')">'+
+        poster+rating+type+
+        '<div class="cart-meta"><div class="cart-name">'+esc(it.title)+'</div>'+
+        '<div class="cart-sub">'+esc(it.year||'')+'</div>'+plats+'</div></div>';
+    }).join('');
+  }
+
+  window.searchCartelera=function(){
+    var query=(searchInput&&searchInput.value||'').trim();
+    if(!query){ window.clearCarteleraSearch(); return; }
+    var seq=++searchSeq;
+    searchActive=true;
+    if(searchBox) searchBox.classList.add('has-query');
+    status.textContent='';
+    skeleton();
+    fetch('/api/cartelera?q='+encodeURIComponent(query))
+      .then(function(response){ return response.json(); })
+      .then(function(payload){
+        if(seq!==searchSeq) return;
+        if(payload.error){
+          status.innerHTML='No se pudo buscar. <b>'+esc(payload.error)+'</b> '+
+            '<button type="button" class="cart-refresh" onclick="window.clearCarteleraSearch()">&larr; Volver</button>';
+          grid.innerHTML='';
+          return;
+        }
+        renderSearchResults(payload.results||[],query);
+      })
+      .catch(function(){
+        if(seq!==searchSeq) return;
+        status.innerHTML='No se pudo completar la b&uacute;squeda. Intente de nuevo. '+
+          '<button type="button" class="cart-refresh" onclick="window.clearCarteleraSearch()">&larr; Volver</button>';
+        grid.innerHTML='';
+      });
+  };
 
   var tabButton=document.querySelector('.tab-btn[onclick*="cartelera"]');
   if(tabButton){
@@ -6192,6 +6276,107 @@ footer{padding-bottom:78px!important}
 }
 #tab-inicio .subli-final-bot-glow{
   background:radial-gradient(circle,rgba(229,9,20,.14),transparent 70%)!important;
+}
+</style>
+
+<style id="pass10-cartelera-responsive-flip-search">
+/* PASS 10 — Cartelera:
+   1) Las tarjetas quedaban fijas en 2-3 columnas en TODOS los tamaños (móvil y
+      escritorio) porque un pass anterior forzaba grid-template-columns sin
+      media query. Se restaura el escalado responsive real.
+   2) Efecto flip sutil al aparecer cada tarjeta.
+   3) Buscador: qué hay disponible (y en qué app) en Honduras. */
+#tab-cartelera .cartelera-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+}
+@media(min-width:480px){
+  #tab-cartelera .cartelera-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+}
+@media(min-width:640px){
+  #tab-cartelera .cartelera-grid{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+}
+@media(min-width:900px){
+  #tab-cartelera .cartelera-grid{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+}
+@media(min-width:1150px){
+  #tab-cartelera .cartelera-grid{grid-template-columns:repeat(7,minmax(0,1fr))!important}
+}
+@media(min-width:1400px){
+  #tab-cartelera .cartelera-grid{grid-template-columns:repeat(8,minmax(0,1fr))!important}
+}
+
+#tab-cartelera .cart-card{
+  animation:cartFlipIn .5s cubic-bezier(.22,.7,.32,1) both;
+  animation-delay:calc(min(var(--i,0),14) * 30ms);
+  transform-style:preserve-3d;
+  backface-visibility:hidden;
+}
+@keyframes cartFlipIn{
+  from{opacity:0;transform:perspective(700px) rotateY(-12deg) scale(.96)}
+  to{opacity:1;transform:perspective(700px) rotateY(0deg) scale(1)}
+}
+@media(prefers-reduced-motion:reduce){
+  #tab-cartelera .cart-card{animation:none!important}
+}
+
+#tab-cartelera .cartelera-search{
+  display:flex;
+  gap:8px;
+  margin:2px 2px 12px;
+}
+#tab-cartelera .cartelera-search input{
+  flex:1;
+  min-width:0;
+  border:1px solid #d9d9d9;
+  border-radius:999px;
+  padding:10px 16px;
+  font:600 13px 'Barlow',sans-serif;
+  color:#1A1A1A;
+  background:#fff;
+}
+#tab-cartelera .cartelera-search input:focus{outline:none;border-color:#E50914}
+#tab-cartelera .cartelera-search .cart-search-go{
+  flex:0 0 auto;
+  border:none;
+  background:#1A1A1A;
+  color:#fff;
+  border-radius:999px;
+  padding:0 18px;
+  font:800 12px 'Barlow Condensed',sans-serif;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  cursor:pointer;
+}
+#tab-cartelera .cartelera-search .cart-search-go:active{transform:scale(.96)}
+#tab-cartelera .cartelera-search .cart-search-clear{
+  flex:0 0 auto;
+  border:1px solid #d9d9d9;
+  background:#fff;
+  color:#555;
+  border-radius:999px;
+  width:36px;
+  height:36px;
+  font-size:18px;
+  line-height:1;
+  cursor:pointer;
+  display:none;
+}
+#tab-cartelera .cartelera-search.has-query .cart-search-clear{display:block}
+#tab-cartelera .cart-providers{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+#tab-cartelera .cart-plat{
+  font-size:8.5px;
+  font-weight:800;
+  padding:2px 6px;
+  border-radius:6px;
+  background:rgba(0,0,0,.06);
+  color:#333;
+  text-transform:uppercase;
+  letter-spacing:.3px;
+}
+#tab-cartelera .cart-plat.none{background:transparent;color:#b3221e;padding:0}
+@media(max-width:390px){
+  #tab-cartelera .cartelera-search input{font-size:12px;padding:9px 14px}
+  #tab-cartelera .cartelera-search .cart-search-go{font-size:10.5px;padding:0 13px}
 }
 </style>
 </body>
