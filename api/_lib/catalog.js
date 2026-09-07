@@ -25,6 +25,14 @@ function cleanAvailability(value) {
   return AVAILABILITY[value] ? value : 'available';
 }
 
+function cleanBadgeTone(value, fallback = 'trend') {
+  return ['trend', 'offer', 'new', 'popular', 'exclusive'].includes(value) ? value : fallback;
+}
+
+function cleanActionType(value) {
+  return ['tab', 'product', 'url', 'none'].includes(value) ? value : 'none';
+}
+
 function cleanImageUrl(value) {
   const url = cleanText(value, 1200);
   if (!url) return '';
@@ -96,6 +104,8 @@ function cleanProduct(product, fallbackIndex) {
     visual: cleanText(product && product.visual, 20),
     imageUrl: cleanImageUrl(product && product.imageUrl),
     summary: cleanText(product && product.summary, 360),
+    badge: cleanText(product && product.badge, 60),
+    badgeTone: cleanBadgeTone(product && product.badgeTone),
     productFeatures: Array.isArray(product && product.productFeatures)
       ? product.productFeatures.map((feature) => cleanText(feature, 240)).filter(Boolean).slice(0, 12)
       : [],
@@ -117,6 +127,8 @@ function cleanPromotion(promotion, fallbackIndex) {
     accent: /^#[0-9a-f]{6}$/i.test(String(promotion && promotion.accent || ''))
       ? String(promotion.accent)
       : '#E2231A',
+    badge: cleanText(promotion && promotion.badge, 60),
+    badgeTone: cleanBadgeTone(promotion && promotion.badgeTone, 'offer'),
     productIds: Array.isArray(promotion && promotion.productIds)
       ? promotion.productIds.map(cleanId).filter(Boolean).slice(0, 8)
       : [],
@@ -126,6 +138,28 @@ function cleanPromotion(promotion, fallbackIndex) {
     options: Array.isArray(promotion && promotion.options)
       ? promotion.options.map(cleanOption).filter((option) => option.label)
       : []
+  };
+}
+
+function cleanCarouselSlide(slide, fallbackIndex) {
+  return {
+    id: cleanId(slide && slide.id) || `banner-${fallbackIndex + 1}`,
+    title: cleanText(slide && slide.title, 160),
+    subtitle: cleanText(slide && slide.subtitle, 320),
+    badge: cleanText(slide && slide.badge, 60),
+    buttonLabel: cleanText(slide && slide.buttonLabel, 60),
+    imageUrl: cleanImageUrl(slide && slide.imageUrl),
+    imageFit: slide && slide.imageFit === 'contain' ? 'contain' : 'cover',
+    active: slide && slide.active !== false,
+    order: Number.isFinite(Number(slide && slide.order)) ? Number(slide.order) : fallbackIndex * 10,
+    actionType: cleanActionType(slide && slide.actionType),
+    actionValue: cleanText(slide && slide.actionValue, 1200),
+    accentFrom: /^#[0-9a-f]{6}$/i.test(String(slide && slide.accentFrom || ''))
+      ? String(slide.accentFrom)
+      : '#E2231A',
+    accentTo: /^#[0-9a-f]{6}$/i.test(String(slide && slide.accentTo || ''))
+      ? String(slide.accentTo)
+      : '#7A0C08'
   };
 }
 
@@ -182,6 +216,9 @@ export function normalizeCatalog(input) {
   const promotions = Array.isArray(source.promotions)
     ? source.promotions.map(cleanPromotion).filter((promotion) => promotion.id)
     : fallback.promotions;
+  const carousel = Array.isArray(source.carousel)
+    ? source.carousel.map(cleanCarouselSlide).filter((slide) => slide.id)
+    : [];
 
   return {
     schemaVersion: 1,
@@ -190,7 +227,8 @@ export function normalizeCatalog(input) {
     settings: cleanSettings(source.settings),
     categories,
     products,
-    promotions
+    promotions,
+    carousel
   };
 }
 
@@ -200,6 +238,7 @@ export function validateCatalog(input) {
   const productIds = new Set();
   const categoryIds = new Set();
   const promotionIds = new Set();
+  const carouselIds = new Set();
 
   catalog.categories.forEach((category) => {
     if (categoryIds.has(category.id)) errors.push(`Categoría duplicada: ${category.id}`);
@@ -242,6 +281,15 @@ export function validateCatalog(input) {
     }
   });
 
+  catalog.carousel.forEach((slide) => {
+    if (carouselIds.has(slide.id)) errors.push(`Banner duplicado: ${slide.id}`);
+    carouselIds.add(slide.id);
+    if (!slide.title && !slide.imageUrl) errors.push(`El banner ${slide.id} necesita título o imagen`);
+    if (slide.actionType === 'url' && slide.actionValue && !/^https?:\/\//i.test(slide.actionValue)) {
+      errors.push(`URL externa inválida en ${slide.title || slide.id}`);
+    }
+  });
+
   return { catalog, errors };
 }
 
@@ -271,6 +319,9 @@ export function publicCatalog(input, now = new Date()) {
       .filter((category) => category.active)
       .sort((a, b) => a.order - b.order),
     products,
+    carousel: catalog.carousel
+      .filter((slide) => slide.active)
+      .sort((a, b) => a.order - b.order),
     promotions: catalog.promotions
       .filter((promotion) => (
         isPromotionActive(promotion, now) &&
