@@ -1167,7 +1167,7 @@ main { min-height: 0 !important; }
 body { height: auto !important; min-height: 100vh; }
 </style>
 
-<link rel="stylesheet" href="/assets/catalog-sync.css">
+<link rel="stylesheet" href="/assets/catalog-sync.css?v=20260907-4">
 <style id="hide-legacy-store-tab">#tab-compras{display:none!important}</style>
 </head>
 <body>
@@ -4421,7 +4421,7 @@ footer{
 })();
 </script>
 
-<script src="/assets/catalog-sync.js" defer></script>
+<script src="/assets/catalog-sync.js?v=20260907-4" defer></script>
 
 <div id="subliInlineProductModal" class="subli-inline-modal" hidden>
   <div class="subli-inline-backdrop" data-close-inline-product></div>
@@ -6505,6 +6505,10 @@ footer{padding-bottom:78px!important}
 .offers-filter{
   min-height:50px;
   padding:10px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
   border:0;
   border-right:1px solid #e8e2ee;
   border-radius:18px;
@@ -6513,6 +6517,7 @@ footer{padding-bottom:78px!important}
   font:800 14px/1 Inter,Arial,sans-serif;
   cursor:pointer;
 }
+.offers-filter svg{width:22px;height:22px;stroke:currentColor;stroke-width:1.9}
 .offers-filter:last-child{border-right:0}
 .offers-filter.active{
   background:linear-gradient(135deg,#7447f8,#8e3ff1);
@@ -6600,7 +6605,7 @@ footer{padding-bottom:78px!important}
 }
 #tab-promos .promo-card[hidden]{display:none!important}
 #tab-promos .promo-card::before{
-  content:'🔥 OFERTA'!important;
+  content:attr(data-promo-badge)!important;
   position:absolute!important;
   top:0!important;left:0!important;bottom:auto!important;
   width:auto!important;height:30px!important;
@@ -6758,10 +6763,11 @@ footer{padding-bottom:78px!important}
   function setupOffers(){
     var grid=document.querySelector('#tab-promos .subli-promos-web-grid');
     if(!grid || grid.querySelector('.offers-category-bar'))return;
+    if(typeof window.enhanceOfferCards==='function')window.enhanceOfferCards(grid);
     var bar=document.createElement('nav');
     bar.className='offers-category-bar';
     bar.setAttribute('aria-label','Filtrar ofertas');
-    bar.innerHTML='<button class="offers-filter active" data-offer-filter="all">▦&nbsp; Todas</button><button class="offers-filter" data-offer-filter="streaming">▷&nbsp; Streaming</button><button class="offers-filter" data-offer-filter="musica">♫&nbsp; Música</button><button class="offers-filter" data-offer-filter="combos">✦&nbsp; Combos</button>';
+    bar.innerHTML='<button class="offers-filter active" data-offer-filter="all"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Todas</span></button><button class="offers-filter" data-offer-filter="streaming"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4V8Z"/></svg><span>Streaming</span></button><button class="offers-filter" data-offer-filter="musica"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18V5l10-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg><span>Música</span></button><button class="offers-filter" data-offer-filter="combos"><svg viewBox="0 0 24 24" fill="none"><path d="m12 3 1.2 3.8L17 8l-3.8 1.2L12 13l-1.2-3.8L7 8l3.8-1.2L12 3ZM5 14l.9 2.1L8 17l-2.1.9L5 20l-.9-2.1L2 17l2.1-.9L5 14Zm14-2 .9 2.1L22 15l-2.1.9L19 18l-.9-2.1L16 15l2.1-.9L19 12Z"/></svg><span>Combos</span></button>';
     grid.insertBefore(bar,grid.firstChild);
     var cards=Array.prototype.slice.call(grid.querySelectorAll('.promo-card'));
     cards.forEach(function(card){card.dataset.offerCategory=category(card);});
@@ -6775,6 +6781,130 @@ footer{padding-bottom:78px!important}
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setupOffers);
   else setupOffers();
+})();
+</script>
+
+<style id="offers-reference-fidelity-v13">
+/* V13 · Fidelidad a la maqueta: tarjetas compactas, duración e iconografía. */
+#tab-promos .promo-card,
+#tab-promos .promo-fire-header + .promo-market-heading + .promo-card{
+  min-height:420px!important;
+  padding-top:37px!important;
+  align-content:start!important;
+}
+#tab-promos .promo-card-icon:has(.offer-combo-logo){
+  width:116px!important;
+  grid-template-columns:repeat(2,1fr)!important;
+  display:grid!important;
+  gap:4px!important;
+}
+#tab-promos .promo-card-icon img+img{display:block!important}
+#tab-promos .promo-card-icon .offer-combo-logo{
+  position:static!important;
+  width:48px!important;height:48px!important;
+  max-width:48px!important;max-height:48px!important;
+}
+.offer-duration-pill{
+  width:max-content;
+  max-width:100%;
+  margin:8px auto 1px;
+  padding:6px 10px;
+  border:1px solid #e5d9f7;
+  border-radius:999px;
+  background:#fbf8ff;
+  color:#7443e9;
+  font:800 9px/1 Inter,Arial,sans-serif;
+  white-space:normal;
+}
+.offer-duration-pill svg{width:13px;height:13px;vertical-align:-3px;margin-right:4px;stroke:currentColor}
+#tab-promos .promo-conditions span{gap:7px!important}
+.offer-condition-icon{
+  width:16px;height:16px;min-width:16px;
+  color:#7946ee;
+}
+.offer-condition-icon svg{display:block;width:100%;height:100%;stroke:currentColor}
+#tab-promos .promo-cta span{white-space:nowrap}
+#tab-promos .promo-price-row{align-self:end!important}
+#tab-promos .promo-cta{align-self:end!important}
+
+@media(max-width:700px){
+  #tab-promos .promo-card,
+  #tab-promos .promo-fire-header + .promo-market-heading + .promo-card{
+    grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr)!important;
+    min-height:365px!important;
+    padding:31px 7px 8px!important;
+  }
+  #tab-promos .promo-card-header,
+  #tab-promos .promo-conditions{grid-column:1/-1!important}
+  #tab-promos .promo-card-icon:has(.offer-combo-logo){width:82px!important}
+  #tab-promos .promo-card-icon .offer-combo-logo{width:34px!important;height:34px!important;max-width:34px!important;max-height:34px!important}
+  .offer-duration-pill{margin-top:6px;padding:5px 7px;font-size:7px}
+  .offer-duration-pill svg{width:10px;height:10px;vertical-align:-2px}
+  .offer-condition-icon{width:13px;height:13px;min-width:13px}
+  #tab-promos .promo-price-row{grid-column:1!important;height:38px!important;padding:3px!important}
+  #tab-promos .promo-cta{grid-column:2!important;height:38px!important;padding:0 5px!important}
+}
+</style>
+
+<script id="offers-reference-fidelity-v13-js">
+(function(){
+  var icons={
+    calendar:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>',
+    device:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M10 18h4"/></svg>',
+    key:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="8" cy="15" r="4"/><path d="m11 12 8-8m-3 3 3 3m-6 0 3 3"/></svg>',
+    shield:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 3 4 6v6c0 5 3.4 8 8 9 4.6-1 8-4 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>',
+    whatsapp:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.08-1.76-.88-2.92-1.57-4.09-3.57-.31-.53.31-.49.88-1.63.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-2.72 2.97 1.98 7.35 2.35 7.85 3.64 4.97 8.85 4.19 10.04 3.54.69-.38 1.75-1.32 2-2.61.25-1.29.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35Z"/></svg>'
+  };
+  function norm(v){return String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
+  function logoMarkup(title){
+    var t=norm(title), rows=[];
+    function add(src,combo){rows.push('<img '+(combo?'class="offer-combo-logo" ':'')+'src="'+src+'" alt="">');}
+    var combo=t.indexOf('disney')>=0&&t.indexOf('crunchy')>=0;
+    if(combo){add('/assets/disney.webp',true);add('/assets/crunchyroll.webp',true);}
+    else if(t.indexOf('crunchy')>=0)add('/assets/crunchyroll.webp');
+    else if(t.indexOf('hbo')>=0||t.indexOf('max')>=0)add('/assets/hbo-max.webp');
+    else if(t.indexOf('prime')>=0)add('/assets/prime-video.webp');
+    else if(t.indexOf('vix')>=0)add('/assets/vix.webp');
+    else if(t.indexOf('spotify')>=0)add('/assets/spotify.webp');
+    else if(t.indexOf('disney')>=0)add('/assets/disney.webp');
+    return rows.join('');
+  }
+  function direct(node,selector){return Array.prototype.filter.call(node.children,function(child){return child.matches(selector);});}
+  function prepareCard(card,optionIndex){
+    var prices=direct(card,'.promo-price-row'), ctas=direct(card,'.promo-cta');
+    var duration=prices[optionIndex]&&prices[optionIndex].querySelector('.promo-duration');
+    prices.forEach(function(row,i){if(i!==optionIndex)row.remove();});
+    ctas.forEach(function(link,i){if(i!==optionIndex)link.remove();});
+    var titleNode=card.querySelector('.promo-card-info h3');
+    var title=titleNode?titleNode.textContent:'';
+    var logo=card.querySelector('.promo-card-icon');
+    var markup=logoMarkup(title);
+    if(logo&&markup)logo.innerHTML=markup;
+    if(titleNode&&duration){
+      var pill=document.createElement('div');pill.className='offer-duration-pill';
+      pill.innerHTML=icons.calendar+'<span>'+duration.textContent.trim()+'</span>';
+      titleNode.insertAdjacentElement('afterend',pill);
+    }
+    card.querySelectorAll('.promo-conditions span').forEach(function(item,i){
+      var clean=item.textContent.replace(/^[\s✅✓☑️]+/u,'').trim();
+      var type=i===0?'device':i===1?'key':'shield';
+      item.innerHTML='<i class="offer-condition-icon">'+icons[type]+'</i><span>'+clean+'</span>';
+    });
+    var cta=direct(card,'.promo-cta')[0];
+    if(cta)cta.innerHTML=icons.whatsapp+'<span>Solicitar</span>';
+    return card;
+  }
+  window.enhanceOfferCards=function(grid){
+    if(!grid||grid.dataset.offerEnhanced==='1')return;
+    grid.dataset.offerEnhanced='1';
+    var originals=Array.prototype.slice.call(grid.querySelectorAll('.promo-card'));
+    originals.forEach(function(original){
+      var count=Math.max(direct(original,'.promo-price-row').length,1);
+      var fragment=document.createDocumentFragment();
+      for(var i=0;i<count;i++)fragment.appendChild(prepareCard(original.cloneNode(true),i));
+      original.parentNode.insertBefore(fragment,original);original.remove();
+    });
+  };
 })();
 </script>
 </body>
