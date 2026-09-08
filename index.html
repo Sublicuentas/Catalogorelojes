@@ -1167,7 +1167,7 @@ main { min-height: 0 !important; }
 body { height: auto !important; min-height: 100vh; }
 </style>
 
-<link rel="stylesheet" href="/assets/catalog-sync.css?v=20260907-4">
+<link rel="stylesheet" href="/assets/catalog-sync.css?v=20260908-OFERTAS-V14">
 <style id="hide-legacy-store-tab">#tab-compras{display:none!important}</style>
 </head>
 <body>
@@ -1421,137 +1421,12 @@ body { height: auto !important; min-height: 100vh; }
 </div>
 
 <div class="tp" id="tab-promos" style="display:none!important">
-  <div class="subli-promos-web-grid">
-  <div class="promo-fire-header fade-in">
-    <div class="c2-bg"></div>
-    <div class="c2-glow1"></div>
-    <div class="c2-glow2"></div>
-    <div class="c2-inner">
-      <div class="c2-top">
-        <div class="c2-pill">🔥 Tiempo limitado</div>
-        <div class="c2-dots"><div class="c2-dot"></div><div class="c2-dot"></div><div class="c2-dot"></div></div>
-      </div>
-      <div class="c2-title">OFERTAS<em>ACTIVAS</em></div>
-      <div class="c2-line"></div>
-      <div class="c2-chips">
-        <span><i class="ck-ico">&#10003;</i>1 Dispositivo</span>
-        <span><i class="ck-ico">&#10003;</i>Garantía incluida</span>
-        <span><i class="ck-ico">&#10003;</i>Pago seguro</span>
-      </div>
+  <div class="subli-promos-web-grid" id="subliPromotionsRoot">
+    <div class="subli-offers-loading">
+      <span>🔥</span>
+      <strong>Cargando ofertas vigentes…</strong>
+      <small>Los precios y promociones se sincronizan con el panel administrativo.</small>
     </div>
-  </div>
-
-  <div class="promo-market-heading">
-    <div>
-      <span>Selección especial</span>
-      <h2>Promociones destacadas</h2>
-      <p>Planes y combos con precio especial por tiempo limitado.</p>
-    </div>
-    <b>Actualizadas</b>
-  </div>
-
-  <!-- DISNEY + CRUNCHYROLL COMBO -->
-  <div class="promo-card fade-in" data-color="purple">
-    <div class="promo-card-header">
-      <div class="promo-card-icon" style="position:relative;width:52px;height:52px;">
-        <img src="data:image/jpeg;base64,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" style="position:absolute;top:0;left:0;width:34px;height:34px;object-fit:cover;border-radius:10px;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.25);z-index:2"/>
-        <img src="data:image/jpeg;base64,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" style="position:absolute;bottom:0;right:0;width:34px;height:34px;object-fit:cover;border-radius:10px;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.25);z-index:1"/>
-      </div>
-      <div class="promo-card-info">
-        <h3>Disney+ Premium (sin ESPN) + Crunchyroll Mega Fan</h3>
-        <p>Combo 2x1: todo el catálogo Disney (sin ESPN) y todo el anime de Crunchyroll en un solo pago.</p>
-      </div>
-    </div>
-    <div class="promo-conditions">
-      <span>✅ 1 pantalla vigente</span>
-      <span>✅ Acceso por código</span>
-      <span>✅ Calidad 4K FHD</span>
-    </div>
-    <div class="promo-price-row"><div class="promo-duration">Combo mensual</div><div class="promo-price-pulse">110</div></div><a class="promo-cta" href="https://wa.me/50432126332?text=Hola%21%20Me%20interesa%20el%20combo%20Disney%2B%20Premium%20sin%20ESPN%20%2B%20Crunchyroll%20Mega%20Fan%20%28L110%29" target="_blank"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Solicitar por WhatsApp</a>
-  </div>
-
-  <!-- HBO MAX -->
-  <div class="promo-card fade-in" data-color="purple">
-    <div class="promo-card-header">
-      <div class="promo-card-icon"><img src="data:image/jpeg;base64,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" style="width:48px;height:48px;object-fit:cover;border-radius:12px;display:block"/></div>
-      <div class="promo-card-info">
-        <h3>HBO Max</h3>
-        <p>Game of Thrones, The Last of Us, Succession y los mejores estrenos HBO en resolución 4K.</p>
-      </div>
-    </div>
-    <div class="promo-conditions">
-      <span>✅ 1 dispositivo vigente</span>
-      <span>✅ Acceso por código</span>
-      <span>✅ Servicio garantizado</span>
-    </div>
-    <div class="promo-price-row"><div class="promo-duration">3 meses</div><div class="promo-price-pulse">210</div></div><a class="promo-cta" href="https://wa.me/50432126332?text=Hola%21%20Me%20interesa%20la%20promo%20HBO%20Max%203%20meses" target="_blank"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Solicitar por WhatsApp</a><div class="promo-price-row"><div class="promo-duration">4 meses + 3 dias</div><div class="promo-price-pulse">270</div></div><a class="promo-cta" href="https://wa.me/50432126332?text=Hola%21%20Me%20interesa%20la%20promo%20HBO%20Max%204%20meses%20%2B%203%20dias" target="_blank"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Solicitar por WhatsApp</a>
-  </div>
-
-  <!-- PRIME VIDEO -->
-  <div class="promo-card fade-in" data-color="blue">
-    <div class="promo-card-header">
-      <div class="promo-card-icon"><img src="data:image/jpeg;base64,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xzT1NdJC4ummDiQ3keJAxz8Fd6qkp6uLu6qCKePOdsjA4exXijoKOiBFHSwQA8+6jDc+ylHw4xzF4ogm8jOVCTiYkhDDYIFYODXU4/4uVaHutPo+53W330SU5cW4eGF3FuR06EHIK+3RAffO0G43yCN7aJu8hzhjJcNrR544rodypbbMxr7nDSPa3k6oa0geRcslBJRGIR2+SmMTOTYHNLW+jVGPQOY5jHPG1psDqpy8Ra9r5GsIc8UT08L60UKVrrFRERERERERaO/2I3CRtXQ1D6C6Rt2x1MfUf6Xj+Zv/AEt4irlibK3a/krIpXRO3MOVz061uVgqRSastjhxw2qpvtePEA8D6EeSstr1XZLkB8NcoN5/pynu3ezsLb1dLBWQOhqoY5oXfcyRocD6KjXnsxtdW5z7dNLRPP8AJ/mM9jxHus57Nbp/xESN7HB/fVaLH6HUflBjd3GR+uivzXB4yw7h4jiEyuOy9nupKAn5bXROb07qd0R9ivAsOv2Ha2orMeIrhj+5V/VJ24fp3eMqz6ZA7LNQ3zj+12b0PsvjrrnQ0DC6trKeAf7kgafbmuWR6M1lW8K25GNh597WOd+zcrcWrstpI3iS7V0tU7OSyIbGnzJyT+yk3W6uXEcFfLjSidFpIsyT38NFrHX1emL5etlLbq6+Vkjvqc2R7Y4x45JAAHlhTpqyUtF2nVrbSxzKKip/rG4kB7mgbcnzz6K+2y2UdrpxBb6aKni6tYMZ8zzPqsNktEVqin2OdLPUSumnmf8AdI8n9gOQC8HD3GRj3gXdkgV47mz37L13EGiN7IyaqgCb59ewodu62SlEWwsdERERERERERERERERQmApREUKUREREREREREREREREREREREREREREREREREREREREREREREX/9k=" style="width:48px;height:48px;object-fit:cover;border-radius:12px;display:block"/></div>
-      <div class="promo-card-info">
-        <h3>Prime Video</h3>
-        <p>Series y películas exclusivas Amazon Originals, estrenos semanales y contenido para toda la familia.</p>
-      </div>
-    </div>
-    <div class="promo-conditions">
-      <span>✅ 1 dispositivo vigente</span>
-      <span>✅ Acceso por código</span>
-      <span>✅ Servicio garantizado</span>
-    </div>
-    <div class="promo-price-row"><div class="promo-duration">3 meses</div><div class="promo-price-pulse">210</div></div><a class="promo-cta" href="https://wa.me/50432126332?text=Hola%21%20Me%20interesa%20la%20promo%20Prime%20Video%203%20meses" target="_blank"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Solicitar por WhatsApp</a><div class="promo-price-row"><div class="promo-duration">4 meses + 3 dias</div><div class="promo-price-pulse">270</div></div><a class="promo-cta" href="https://wa.me/50432126332?text=Hola%21%20Me%20interesa%20la%20promo%20Prime%20Video%204%20meses%20%2B%203%20dias" target="_blank"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Solicitar por WhatsApp</a>
-  </div>
-
-  <!-- CRUNCHYROLL MEGA FAN -->
-  <div class="promo-card fade-in" data-color="red">
-    <div class="promo-card-header">
-      <div class="promo-card-icon"><img src="data:image/jpeg;base64,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" style="width:48px;height:48px;object-fit:cover;border-radius:12px;display:block"/></div>
-      <div class="promo-card-info">
-        <h3>Crunchyroll Mega Fan</h3>
-        <p>Plan Mega Fan: todo el catálogo de anime, simulcasts y descargas sin anuncios.</p>
-      </div>
-    </div>
-    <div class="promo-conditions">
-      <span>✅ 1 dispositivo vigente</span>
-      <span>✅ Acceso por código</span>
-      <span>✅ Servicio garantizado</span>
-    </div>
-    <div class="promo-price-row"><div class="promo-duration">Paga 2 meses, lleva 3</div><div class="promo-price-pulse">160</div></div><a class="promo-cta" href="https://wa.me/50432126332?text=Hola%21%20Me%20interesa%20Crunchyroll%20Mega%20Fan%20-%20Paga%202%20lleva%203%20%28L160%29" target="_blank"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Solicitar por WhatsApp</a><div class="promo-price-row"><div class="promo-duration">12 meses</div><div class="promo-price-pulse">600</div></div><a class="promo-cta" href="https://wa.me/50432126332?text=Hola%21%20Me%20interesa%20Crunchyroll%20Mega%20Fan%2012%20meses%20%28L600%29" target="_blank"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Solicitar por WhatsApp</a>
-  </div>
-
-  <!-- VIX PREMIUM -->
-  <div class="promo-card fade-in" data-color="orange">
-    <div class="promo-card-header">
-      <div class="promo-card-icon"><img src="data:image/jpeg;base64,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" style="width:48px;height:48px;object-fit:cover;border-radius:12px;display:block"/></div>
-      <div class="promo-card-info">
-        <h3>Vix Premium</h3>
-        <p>Series, películas, novelas mexicanas y deportes en español. Lo mejor del entretenimiento latino sin interrupciones.</p>
-      </div>
-    </div>
-    <div class="promo-conditions">
-      <span>✅ 1 dispositivo vigente</span>
-      <span>✅ Servicio garantizado</span>
-    </div>
-    <div class="promo-price-row">
-      <div class="promo-duration">3 meses</div>
-      <div class="promo-price-pulse">120</div>
-    </div>
-    <a class="promo-cta" href="https://wa.me/50432126332?text=Hola!%20Me%20interesa%20Vix%20Premium%203%20meses%20L120" target="_blank">
-      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-      Solicitar por WhatsApp
-    </a>
-  </div>
-
-  
-
-  
-
-  
-
-  
-
   </div>
 </div>
 
@@ -4421,7 +4296,7 @@ footer{
 })();
 </script>
 
-<script src="/assets/catalog-sync.js?v=20260907-4" defer></script>
+<script src="/assets/catalog-sync.js?v=20260908-OFERTAS-V14" defer></script>
 
 <div id="subliInlineProductModal" class="subli-inline-modal" hidden>
   <div class="subli-inline-backdrop" data-close-inline-product></div>
@@ -6751,38 +6626,7 @@ footer{padding-bottom:78px!important}
 }
 </style>
 
-<script id="offers-reference-layout-v12-js">
-(function(){
-  function normal(v){return String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
-  function category(card){
-    var text=normal(card.textContent);
-    if(text.indexOf('combo')>=0 || text.indexOf(' + ')>=0 || text.indexOf('2x1')>=0)return 'combos';
-    if(/spotify|deezer|youtube premium|musica/.test(text))return 'musica';
-    return 'streaming';
-  }
-  function setupOffers(){
-    var grid=document.querySelector('#tab-promos .subli-promos-web-grid');
-    if(!grid || grid.querySelector('.offers-category-bar'))return;
-    if(typeof window.enhanceOfferCards==='function')window.enhanceOfferCards(grid);
-    var bar=document.createElement('nav');
-    bar.className='offers-category-bar';
-    bar.setAttribute('aria-label','Filtrar ofertas');
-    bar.innerHTML='<button class="offers-filter active" data-offer-filter="all"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Todas</span></button><button class="offers-filter" data-offer-filter="streaming"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4V8Z"/></svg><span>Streaming</span></button><button class="offers-filter" data-offer-filter="musica"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18V5l10-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg><span>Música</span></button><button class="offers-filter" data-offer-filter="combos"><svg viewBox="0 0 24 24" fill="none"><path d="m12 3 1.2 3.8L17 8l-3.8 1.2L12 13l-1.2-3.8L7 8l3.8-1.2L12 3ZM5 14l.9 2.1L8 17l-2.1.9L5 20l-.9-2.1L2 17l2.1-.9L5 14Zm14-2 .9 2.1L22 15l-2.1.9L19 18l-.9-2.1L16 15l2.1-.9L19 12Z"/></svg><span>Combos</span></button>';
-    grid.insertBefore(bar,grid.firstChild);
-    var cards=Array.prototype.slice.call(grid.querySelectorAll('.promo-card'));
-    cards.forEach(function(card){card.dataset.offerCategory=category(card);});
-    bar.addEventListener('click',function(event){
-      var button=event.target.closest('[data-offer-filter]');
-      if(!button)return;
-      bar.querySelectorAll('.offers-filter').forEach(function(item){item.classList.toggle('active',item===button);});
-      var filter=button.dataset.offerFilter;
-      cards.forEach(function(card){card.hidden=filter!=='all' && card.dataset.offerCategory!==filter;});
-    });
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setupOffers);
-  else setupOffers();
-})();
-</script>
+<script id="offers-reference-layout-v12-js">/* desactivado: Ofertas V14 se renderiza desde el catálogo */</script>
 
 <style id="offers-reference-fidelity-v13">
 /* V13 · Fidelidad a la maqueta: tarjetas compactas, duración e iconografía. */
@@ -6846,66 +6690,11 @@ footer{padding-bottom:78px!important}
 }
 </style>
 
-<script id="offers-reference-fidelity-v13-js">
-(function(){
-  var icons={
-    calendar:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>',
-    device:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M10 18h4"/></svg>',
-    key:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="8" cy="15" r="4"/><path d="m11 12 8-8m-3 3 3 3m-6 0 3 3"/></svg>',
-    shield:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 3 4 6v6c0 5 3.4 8 8 9 4.6-1 8-4 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>',
-    whatsapp:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.08-1.76-.88-2.92-1.57-4.09-3.57-.31-.53.31-.49.88-1.63.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-2.72 2.97 1.98 7.35 2.35 7.85 3.64 4.97 8.85 4.19 10.04 3.54.69-.38 1.75-1.32 2-2.61.25-1.29.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35Z"/></svg>'
-  };
-  function norm(v){return String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
-  function logoMarkup(title){
-    var t=norm(title), rows=[];
-    function add(src,combo){rows.push('<img '+(combo?'class="offer-combo-logo" ':'')+'src="'+src+'" alt="">');}
-    var combo=t.indexOf('disney')>=0&&t.indexOf('crunchy')>=0;
-    if(combo){add('/assets/disney.webp',true);add('/assets/crunchyroll.webp',true);}
-    else if(t.indexOf('crunchy')>=0)add('/assets/crunchyroll.webp');
-    else if(t.indexOf('hbo')>=0||t.indexOf('max')>=0)add('/assets/hbo-max.webp');
-    else if(t.indexOf('prime')>=0)add('/assets/prime-video.webp');
-    else if(t.indexOf('vix')>=0)add('/assets/vix.webp');
-    else if(t.indexOf('spotify')>=0)add('/assets/spotify.webp');
-    else if(t.indexOf('disney')>=0)add('/assets/disney.webp');
-    return rows.join('');
-  }
-  function direct(node,selector){return Array.prototype.filter.call(node.children,function(child){return child.matches(selector);});}
-  function prepareCard(card,optionIndex){
-    var prices=direct(card,'.promo-price-row'), ctas=direct(card,'.promo-cta');
-    var duration=prices[optionIndex]&&prices[optionIndex].querySelector('.promo-duration');
-    prices.forEach(function(row,i){if(i!==optionIndex)row.remove();});
-    ctas.forEach(function(link,i){if(i!==optionIndex)link.remove();});
-    var titleNode=card.querySelector('.promo-card-info h3');
-    var title=titleNode?titleNode.textContent:'';
-    var logo=card.querySelector('.promo-card-icon');
-    var markup=logoMarkup(title);
-    if(logo&&markup)logo.innerHTML=markup;
-    if(titleNode&&duration){
-      var pill=document.createElement('div');pill.className='offer-duration-pill';
-      pill.innerHTML=icons.calendar+'<span>'+duration.textContent.trim()+'</span>';
-      titleNode.insertAdjacentElement('afterend',pill);
-    }
-    card.querySelectorAll('.promo-conditions span').forEach(function(item,i){
-      var clean=item.textContent.replace(/^[\s✅✓☑️]+/u,'').trim();
-      var type=i===0?'device':i===1?'key':'shield';
-      item.innerHTML='<i class="offer-condition-icon">'+icons[type]+'</i><span>'+clean+'</span>';
-    });
-    var cta=direct(card,'.promo-cta')[0];
-    if(cta)cta.innerHTML=icons.whatsapp+'<span>Solicitar</span>';
-    return card;
-  }
-  window.enhanceOfferCards=function(grid){
-    if(!grid||grid.dataset.offerEnhanced==='1')return;
-    grid.dataset.offerEnhanced='1';
-    var originals=Array.prototype.slice.call(grid.querySelectorAll('.promo-card'));
-    originals.forEach(function(original){
-      var count=Math.max(direct(original,'.promo-price-row').length,1);
-      var fragment=document.createDocumentFragment();
-      for(var i=0;i<count;i++)fragment.appendChild(prepareCard(original.cloneNode(true),i));
-      original.parentNode.insertBefore(fragment,original);original.remove();
-    });
-  };
-})();
-</script>
+<script id="offers-reference-fidelity-v13-js">/* desactivado: Ofertas V14 se renderiza desde el catálogo */</script>
+
+<style id="offers-managed-root-final-v14">
+#tab-promos .subli-promos-web-grid{display:block!important;grid-template-columns:none!important;max-width:1180px!important;margin:0 auto!important;padding:18px 14px 96px!important;overflow:visible!important;}
+#tab-promos .subli-promos-web-grid::before,#tab-promos .subli-promos-web-grid::after{content:none!important;}
+</style>
 </body>
 </html>

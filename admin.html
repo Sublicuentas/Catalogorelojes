@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Barlow:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/admin.css">
+  <link rel="stylesheet" href="/assets/admin.css?v=20260908-OFERTAS-V2">
 </head>
 <body>
   <div class="admin-login" id="adminLogin">
@@ -150,6 +150,14 @@
               <div><small>Calendario comercial</small><h2>Promociones</h2></div>
               <button class="secondary" id="newPromotion" type="button">+ Nueva</button>
             </div>
+            <div class="list-tools promo-list-tools">
+              <input id="promotionSearch" type="search" placeholder="Buscar promoción">
+              <select id="promotionStatusFilter">
+                <option value="">Todas</option>
+                <option value="active">Activas</option>
+                <option value="paused">Pausadas</option>
+              </select>
+            </div>
             <div class="admin-list" id="promotionList"></div>
           </div>
           <div class="editor-panel" id="promotionEditor">
@@ -192,6 +200,6 @@
   </div>
 
   <div class="toast-stack" id="toastStack" aria-live="polite"></div>
-  <script src="/assets/admin.js" defer></script>
+  <script src="/assets/admin.js?v=20260908-OFERTAS-V2" defer></script>
 </body>
 </html>
