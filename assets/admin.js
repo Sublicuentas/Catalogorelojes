@@ -390,21 +390,38 @@
   }
 
   function renderPromotionList() {
+    var searchNode = byId('promotionSearch');
+    var statusNode = byId('promotionStatusFilter');
+    var query = searchNode ? searchNode.value.trim().toLowerCase() : '';
+    var status = statusNode ? statusNode.value : '';
     var promotions = state.catalog.promotions.slice().sort(function (a, b) {
       return Number(a.order || 0) - Number(b.order || 0);
+    }).filter(function (promotion) {
+      var searchable = [promotion.title, promotion.description, promotion.badge]
+        .concat((promotion.productIds || []).map(function (id) {
+          var product = productById(id);
+          return product ? product.name : id;
+        })).join(' ').toLowerCase();
+      var statusMatches = !status || (status === 'active' ? promotion.active : !promotion.active);
+      return statusMatches && (!query || searchable.includes(query));
     });
     byId('promotionList').innerHTML = promotions.length ? promotions.map(function (promotion) {
-      var price = promotion.options && promotion.options[0] ? promotion.options[0].price : null;
-      return '<button type="button" class="list-item' +
+      var prices = (promotion.options || []).map(function (option) { return numberValue(option.price); })
+        .filter(function (price) { return price !== null; });
+      var lowest = prices.length ? Math.min.apply(Math, prices) : null;
+      var productCount = (promotion.productIds || []).length;
+      return '<button type="button" class="list-item promotion-list-item' +
         (state.selectedPromotionId === promotion.id ? ' active' : '') +
         '" data-promotion-id="' + escapeHtml(promotion.id) + '">' +
         '<span class="item-visual" style="background:' + escapeHtml(promotion.accent || '#E2231A') + '">%</span>' +
         '<span><strong>' + escapeHtml(promotion.title) + '</strong><small>' +
-        escapeHtml(formatPrice(price)) + (promotion.endsAt ? ' · Hasta ' + escapeHtml(promotion.endsAt.slice(0, 10)) : '') +
+        (lowest === null ? 'Precio pendiente' : 'Desde ' + escapeHtml(formatPrice(lowest))) +
+        ' · ' + (promotion.options || []).length + ((promotion.options || []).length === 1 ? ' precio' : ' precios') +
+        (productCount ? ' · ' + productCount + (productCount === 1 ? ' servicio' : ' servicios') : '') +
         '</small></span><em class="item-status ' +
         (promotion.active ? 'status-available' : 'status-paused') + '">' +
         (promotion.active ? 'Activa' : 'Pausada') + '</em></button>';
-    }).join('') : '<div class="empty-list">No hay promociones.</div>';
+    }).join('') : '<div class="empty-list">No se encontraron promociones.</div>';
     byId('promotionList').querySelectorAll('[data-promotion-id]').forEach(function (button) {
       button.addEventListener('click', function () {
         state.selectedPromotionId = button.getAttribute('data-promotion-id');
@@ -425,74 +442,168 @@
     var date = new Date(value);
     return Number.isNaN(date.getTime()) ? '' : date.toISOString();
   }
+  function badgeToneOptions(selected) {
+    var options = [
+      ['offer', 'Oferta'],
+      ['trend', 'En tendencia'],
+      ['new', 'Nuevo'],
+      ['popular', 'Popular'],
+      ['exclusive', 'Exclusivo']
+    ];
+    return options.map(function (option) {
+      return '<option value="' + option[0] + '"' + (selected === option[0] ? ' selected' : '') + '>' + option[1] + '</option>';
+    }).join('');
+  }
+  function promotionProductPreviewMarkup(promotion) {
+    var products = (promotion.productIds || []).map(productById).filter(Boolean).slice(0, 3);
+    if (!products.length) return '<span class="promotion-preview-logo fallback">%</span>';
+    return products.map(function (product) {
+      if (product.imageUrl) {
+        return '<span class="promotion-preview-logo"><img src="' + escapeHtml(product.imageUrl) + '" alt=""></span>';
+      }
+      return '<span class="promotion-preview-logo text" style="--preview-accent:' + escapeHtml(product.accent || '#E2231A') + '">' +
+        escapeHtml(product.visual || product.name.slice(0, 2).toUpperCase()) + '</span>';
+    }).join('');
+  }
+  function renderPromotionPreview(promotion) {
+    var preview = byId('promoAdminPreview');
+    if (!preview || !promotion) return;
+    var firstOption = (promotion.options || []).find(function (option) {
+      return option.price !== null && option.price !== undefined;
+    });
+    preview.style.setProperty('--promo-preview-accent', promotion.accent || '#E2231A');
+    preview.innerHTML = '<div class="promotion-preview-top"><span class="promotion-preview-badge ' +
+      escapeHtml(promotion.badgeTone || 'offer') + '">' + escapeHtml(promotion.badge || 'OFERTA') +
+      '</span><small>Vista previa</small></div><div class="promotion-preview-main"><div class="promotion-preview-logos">' +
+      promotionProductPreviewMarkup(promotion) + '</div><div><strong>' + escapeHtml(promotion.title || 'Nueva promoción') +
+      '</strong><p>' + escapeHtml(promotion.description || 'Agregue una descripción corta para el cliente.') +
+      '</p></div></div><div class="promotion-preview-bottom"><span>' +
+      escapeHtml(firstOption ? firstOption.label : 'Duración') +
+      (firstOption && firstOption.bonus ? ' · ' + escapeHtml(firstOption.bonus) : '') + '</span><b>' +
+      escapeHtml(firstOption && firstOption.price !== null ? formatPrice(firstOption.price) : 'Precio pendiente') + '</b></div>';
+  }
+  function promotionProductsMarkup(promotion) {
+    var grouped = {};
+    state.catalog.products.filter(function (product) { return product.active; }).forEach(function (product) {
+      var category = categoryName(product.categoryId) || 'Otros';
+      if (!grouped[category]) grouped[category] = [];
+      grouped[category].push(product);
+    });
+    return Object.keys(grouped).sort().map(function (category) {
+      return '<div class="promotion-product-group"><h4>' + escapeHtml(category) + '</h4><div class="promotion-product-grid">' +
+        grouped[category].map(function (product) {
+          var search = (product.name + ' ' + category).toLowerCase();
+          return '<label class="promotion-product-choice" data-promotion-product-search="' + escapeHtml(search) + '">' +
+            '<input type="checkbox" data-promo-product="' + escapeHtml(product.id) + '"' +
+            ((promotion.productIds || []).includes(product.id) ? ' checked' : '') + '>' +
+            visualMarkup(product, 'promotion-product-visual') + '<span><strong>' + escapeHtml(product.name) +
+            '</strong><small>' + escapeHtml(category) + '</small></span></label>';
+        }).join('') + '</div></div>';
+    }).join('');
+  }
+  function promoOptionMarkup(option, index, total) {
+    return '<div class="promo-admin-option" data-promo-option="' + index + '">' +
+      '<div class="promo-admin-option-head"><strong>Precio ' + (index + 1) + '</strong>' +
+      '<button type="button" class="danger promo-option-remove" data-remove-promo-option="' + index + '"' +
+      (total <= 1 ? ' disabled title="Debe conservar al menos un precio"' : '') + '>Eliminar</button></div>' +
+      '<div class="promo-admin-option-grid">' +
+      '<label class="field">Duración o plan<input data-promo-option-field="label" value="' +
+        escapeHtml(option.label || '') + '" placeholder="Ej. 3 meses"></label>' +
+      '<label class="field">Precio<input data-promo-option-field="price" type="number" min="0" step="0.01" value="' +
+        escapeHtml(option.price === null || option.price === undefined ? '' : option.price) + '" placeholder="0"></label>' +
+      '<label class="field">Beneficio opcional<input data-promo-option-field="bonus" value="' +
+        escapeHtml(option.bonus || '') + '" placeholder="Ej. +3 días"></label></div></div>';
+  }
 
   function renderPromotionEditor() {
     var promotion = promotionById(state.selectedPromotionId);
     if (!promotion) {
-      byId('promotionEditor').innerHTML = '<div class="empty-editor"><span>◇</span><h3>Seleccione una promoción</h3></div>';
+      byId('promotionEditor').innerHTML = '<div class="empty-editor"><span>◇</span><h3>Seleccione una promoción</h3><p>Edítela sin tocar código.</p></div>';
       return;
     }
-    var products = state.catalog.products.filter(function (product) { return product.active; }).map(function (product) {
-      return '<label class="switch-line"><input class="switch" type="checkbox" data-promo-product="' +
-        escapeHtml(product.id) + '"' + ((promotion.productIds || []).includes(product.id) ? ' checked' : '') +
-        '>' + escapeHtml(product.name) + '</label>';
+    promotion.options = Array.isArray(promotion.options) ? promotion.options : [];
+    promotion.productIds = Array.isArray(promotion.productIds) ? promotion.productIds : [];
+    promotion.features = Array.isArray(promotion.features) ? promotion.features : [];
+    if (!promotion.options.length) promotion.options.push({ id: 'option-' + Date.now(), label: 'Promoción', price: null, bonus: '' });
+    var options = promotion.options.map(function (option, index) {
+      return promoOptionMarkup(option, index, promotion.options.length);
     }).join('');
-    var options = (promotion.options || []).map(function (option, index) {
-      return '<div class="option-row" data-promo-option="' + index + '">' +
-        '<input data-promo-option-field="label" value="' + escapeHtml(option.label) + '" placeholder="Duración">' +
-        '<input data-promo-option-field="price" type="number" min="0" step="0.01" value="' +
-          escapeHtml(option.price === null ? '' : option.price) + '">' +
-        '<input data-promo-option-field="bonus" value="' + escapeHtml(option.bonus || '') + '" placeholder="Beneficio">' +
-        '<button type="button" data-remove-promo-option="' + index + '">×</button></div>';
-    }).join('');
+    var selectedProducts = promotion.productIds.length;
+
     byId('promotionEditor').innerHTML =
-      '<div class="editor-head"><span class="item-visual" style="background:' +
+      '<div class="editor-head promotion-editor-head"><span class="item-visual" style="background:' +
         escapeHtml(promotion.accent || '#E2231A') + '">%</span><div><h2>' +
-        escapeHtml(promotion.title) + '</h2><p>ID: ' + escapeHtml(promotion.id) + '</p></div>' +
-        '<div class="editor-head-actions"><button type="button" class="danger" id="archivePromotion">' +
-        (promotion.active ? 'Pausar' : 'Activar') + '</button></div></div>' +
-      '<div class="field-grid">' +
-        '<label class="field full">Título<input id="prTitle" value="' + escapeHtml(promotion.title) + '"></label>' +
-        '<label class="field full">Descripción<textarea id="prDescription">' + escapeHtml(promotion.description || '') + '</textarea></label>' +
-        '<label class="field">Inicio<input id="prStarts" type="datetime-local" value="' + escapeHtml(dateTimeValue(promotion.startsAt)) + '"></label>' +
-        '<label class="field">Final<input id="prEnds" type="datetime-local" value="' + escapeHtml(dateTimeValue(promotion.endsAt)) + '"></label>' +
-        '<label class="field">Color<input id="prAccent" type="color" value="' + escapeHtml(promotion.accent || '#E2231A') + '"></label>' +
-        '<label class="field">Orden<input id="prOrder" type="number" value="' + escapeHtml(promotion.order || 0) + '"></label>' +
-        '<label class="field full">Beneficios, uno por línea<textarea id="prFeatures">' +
-          escapeHtml((promotion.features || []).join('\n')) + '</textarea></label>' +
-      '</div>' +
-      '<label class="switch-line"><input class="switch" type="checkbox" id="prActive"' +
-        (promotion.active ? ' checked' : '') + '>Promoción activa</label>' +
-      '<div class="section-title"><h3>Precios promocionales</h3><button type="button" class="secondary" id="addPromoOption">+ Opción</button></div>' +
-      '<div id="promoOptions">' + options + '</div>' +
-      '<div class="section-title"><h3>Servicios incluidos</h3></div><div class="field-grid">' + products + '</div>';
+        escapeHtml(promotion.title) + '</h2><p>Edición central · ID: ' + escapeHtml(promotion.id) + '</p></div>' +
+        '<div class="editor-head-actions"><button type="button" class="ghost" id="archivePromotion">' +
+        (promotion.active ? 'Pausar' : 'Activar') + '</button><button type="button" class="danger" id="deletePromotion">Eliminar</button></div></div>' +
+      '<div class="promotion-admin-preview" id="promoAdminPreview"></div>' +
+      '<section class="promotion-form-section"><div class="promotion-section-heading"><div><small>1</small><span><strong>Información</strong><em>Lo que verá el cliente.</em></span></div></div>' +
+      '<div class="field-grid promotion-basic-grid">' +
+        '<label class="field full">Título<input id="prTitle" maxlength="160" value="' + escapeHtml(promotion.title) + '"></label>' +
+        '<label class="field full">Descripción<textarea id="prDescription" maxlength="420" placeholder="Explique la oferta en una o dos líneas.">' + escapeHtml(promotion.description || '') + '</textarea></label>' +
+        '<label class="field">Etiqueta<input id="prBadge" maxlength="60" value="' + escapeHtml(promotion.badge || 'OFERTA') + '" placeholder="OFERTA"></label>' +
+        '<label class="field">Estilo de etiqueta<select id="prBadgeTone">' + badgeToneOptions(promotion.badgeTone || 'offer') + '</select></label>' +
+        '<label class="field">Color de acento<input id="prAccent" type="color" value="' + escapeHtml(promotion.accent || '#E2231A') + '"></label>' +
+        '<label class="field">Orden<input id="prOrder" type="number" min="0" value="' + escapeHtml(promotion.order || 0) + '"></label>' +
+      '</div></section>' +
+      '<section class="promotion-form-section"><div class="promotion-section-heading"><div><small>2</small><span><strong>Vigencia</strong><em>Puede dejar las fechas vacías.</em></span></div></div>' +
+      '<div class="field-grid promotion-date-grid"><label class="field">Inicio<input id="prStarts" type="datetime-local" value="' + escapeHtml(dateTimeValue(promotion.startsAt)) + '"></label>' +
+      '<label class="field">Final<input id="prEnds" type="datetime-local" value="' + escapeHtml(dateTimeValue(promotion.endsAt)) + '"></label></div>' +
+      '<label class="switch-line promotion-active-switch"><input class="switch" type="checkbox" id="prActive"' +
+        (promotion.active ? ' checked' : '') + '><span><strong>Promoción activa</strong><small>Se mostrará en Ofertas cuando esté dentro de la vigencia.</small></span></label></section>' +
+      '<section class="promotion-form-section"><div class="promotion-section-heading"><div><small>3</small><span><strong>Beneficios</strong><em>Uno por línea; máximo 10.</em></span></div></div>' +
+      '<label class="field promotion-features-field">Beneficios<textarea id="prFeatures" placeholder="1 dispositivo vigente\nAcceso por código\nServicio garantizado">' +
+        escapeHtml(promotion.features.join('\n')) + '</textarea></label></section>' +
+      '<section class="promotion-form-section"><div class="promotion-section-heading promotion-section-with-action"><div><small>4</small><span><strong>Precios y duraciones</strong><em>Cada precio se muestra dentro de la misma tarjeta.</em></span></div>' +
+      '<button type="button" class="secondary" id="addPromoOption">+ Añadir precio</button></div><div id="promoOptions" class="promo-admin-options">' + options + '</div></section>' +
+      '<section class="promotion-form-section promotion-products-section"><div class="promotion-section-heading"><div><small>5</small><span><strong>Servicios incluidos</strong><em>Seleccione qué productos forman esta promoción.</em></span></div>' +
+      '<b id="promoSelectedCount">' + selectedProducts + ' seleccionados</b></div>' +
+      '<div class="promotion-product-tools"><input id="prProductSearch" type="search" placeholder="Buscar servicio para agregar…"></div>' +
+      '<div class="promotion-product-groups" id="promotionProductGroups">' + promotionProductsMarkup(promotion) + '</div></section>';
+
+    renderPromotionPreview(promotion);
 
     [
       ['prTitle', 'title', function (value) { return value; }],
       ['prDescription', 'description', function (value) { return value; }],
+      ['prBadge', 'badge', function (value) { return value; }],
+      ['prBadgeTone', 'badgeTone', function (value) { return value; }],
       ['prStarts', 'startsAt', isoValue],
       ['prEnds', 'endsAt', isoValue],
       ['prAccent', 'accent', function (value) { return value; }],
       ['prOrder', 'order', function (value) { return Number(value) || 0; }],
       ['prFeatures', 'features', function (value) {
-        return value.split('\n').map(function (line) { return line.trim(); }).filter(Boolean);
+        return value.split('\n').map(function (line) { return line.trim(); }).filter(Boolean).slice(0, 10);
       }]
     ].forEach(function (binding) {
-      byId(binding[0]).addEventListener('input', function (event) {
+      var node = byId(binding[0]);
+      var eventName = node.tagName === 'SELECT' ? 'change' : 'input';
+      node.addEventListener(eventName, function (event) {
         promotion[binding[1]] = binding[2](event.target.value);
         setDirty();
-        if (binding[1] === 'title') renderPromotionList();
+        renderPromotionPreview(promotion);
+        if (['title', 'order', 'endsAt'].includes(binding[1])) renderPromotionList();
       });
     });
     byId('prActive').addEventListener('change', function (event) {
-      promotion.active = event.target.checked; setDirty(); renderPromotionList(); renderStats();
+      promotion.active = event.target.checked;
+      setDirty(); renderPromotionList(); renderStats(); renderPromotionPreview(promotion);
     });
     byId('archivePromotion').addEventListener('click', function () {
-      promotion.active = !promotion.active; setDirty(); renderPromotionList(); renderPromotionEditor(); renderStats();
+      promotion.active = !promotion.active;
+      setDirty(); renderPromotionList(); renderPromotionEditor(); renderStats();
+    });
+    byId('deletePromotion').addEventListener('click', function () {
+      if (!window.confirm('¿Eliminar la promoción "' + promotion.title + '"? Se borrará al guardar y publicar.')) return;
+      var index = state.catalog.promotions.findIndex(function (item) { return item.id === promotion.id; });
+      if (index !== -1) state.catalog.promotions.splice(index, 1);
+      state.selectedPromotionId = state.catalog.promotions[index] ? state.catalog.promotions[index].id :
+        (state.catalog.promotions[index - 1] ? state.catalog.promotions[index - 1].id : '');
+      setDirty(); renderPromotionList(); renderPromotionEditor(); renderStats();
     });
     byId('addPromoOption').addEventListener('click', function () {
-      promotion.options.push({ id: 'option-' + Date.now(), label: 'Nueva opción', price: null, bonus: '' });
-      setDirty(); renderPromotionEditor();
+      promotion.options.push({ id: 'option-' + Date.now(), label: 'Nueva duración', price: null, bonus: '' });
+      setDirty(); renderPromotionEditor(); renderPromotionList();
     });
     byId('promoOptions').querySelectorAll('[data-promo-option]').forEach(function (row) {
       var index = Number(row.getAttribute('data-promo-option'));
@@ -501,14 +612,15 @@
         input.addEventListener('input', function () {
           var field = input.getAttribute('data-promo-option-field');
           option[field] = field === 'price' ? numberValue(input.value) : input.value;
-          setDirty(); renderPromotionList();
+          setDirty(); renderPromotionList(); renderPromotionPreview(promotion);
         });
       });
     });
     byId('promoOptions').querySelectorAll('[data-remove-promo-option]').forEach(function (button) {
       button.addEventListener('click', function () {
+        if (promotion.options.length <= 1) return;
         promotion.options.splice(Number(button.getAttribute('data-remove-promo-option')), 1);
-        setDirty(); renderPromotionEditor();
+        setDirty(); renderPromotionEditor(); renderPromotionList();
       });
     });
     byId('promotionEditor').querySelectorAll('[data-promo-product]').forEach(function (input) {
@@ -517,7 +629,18 @@
         var selected = new Set(promotion.productIds || []);
         if (input.checked) selected.add(id); else selected.delete(id);
         promotion.productIds = Array.from(selected);
-        setDirty();
+        byId('promoSelectedCount').textContent = promotion.productIds.length + ' seleccionados';
+        setDirty(); renderPromotionPreview(promotion); renderPromotionList();
+      });
+    });
+    byId('prProductSearch').addEventListener('input', function (event) {
+      var query = event.target.value.trim().toLowerCase();
+      byId('promotionProductGroups').querySelectorAll('[data-promotion-product-search]').forEach(function (choice) {
+        choice.hidden = Boolean(query) && !choice.getAttribute('data-promotion-product-search').includes(query);
+      });
+      byId('promotionProductGroups').querySelectorAll('.promotion-product-group').forEach(function (group) {
+        var visible = Array.from(group.querySelectorAll('.promotion-product-choice')).some(function (choice) { return !choice.hidden; });
+        group.hidden = !visible;
       });
     });
   }
@@ -956,6 +1079,8 @@
       endsAt: '',
       order: state.catalog.promotions.length * 10 + 10,
       accent: '#E2231A',
+      badge: 'OFERTA',
+      badgeTone: 'offer',
       productIds: [],
       features: [],
       options: [{ id: 'option-1', label: 'Promoción', price: null, bonus: '' }]
@@ -1012,6 +1137,8 @@
     byId('newPromotion').addEventListener('click', newPromotion);
     byId('productSearch').addEventListener('input', renderProductList);
     byId('productCategoryFilter').addEventListener('change', renderProductList);
+    byId('promotionSearch').addEventListener('input', renderPromotionList);
+    byId('promotionStatusFilter').addEventListener('change', renderPromotionList);
     byId('orderStatusFilter').addEventListener('change', renderOrdersList);
     byId('refreshOrders').addEventListener('click', loadOrders);
     byId('clientSearch').addEventListener('input', renderClientList);

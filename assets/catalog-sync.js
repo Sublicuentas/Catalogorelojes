@@ -546,58 +546,153 @@
       updateWhatsapp(panel.querySelector('.cta-btn'), catalog, product, plan || product.plans[0], null);
     });
   }
-  function promoByTitle(catalog, title, index) {
-    var key = normalize(title);
-    return catalog.promotions.find(function (promotion) {
-      var candidate = normalize(promotion.title);
-      return key.includes(candidate) || candidate.includes(key);
-    }) || catalog.promotions[index];
+  var offerState = { filter: 'all' };
+
+  function promotionProducts(catalog, promotion) {
+    var ids = promotion.productIds || [];
+    return ids.map(function (id) {
+      return (catalog.products || []).find(function (product) { return product.id === id; });
+    }).filter(Boolean);
   }
+
+  function promotionCategory(catalog, promotion) {
+    var products = promotionProducts(catalog, promotion);
+    if (products.length > 1) return 'combos';
+    var categoryId = products[0] ? normalize(products[0].categoryId) : '';
+    if (categoryId === 'music' || categoryId === 'musica') return 'musica';
+    if (categoryId === 'streaming') return 'streaming';
+    return 'otros';
+  }
+
+  function promotionLogoMarkup(catalog, promotion) {
+    var products = promotionProducts(catalog, promotion).slice(0, 3);
+    if (!products.length) {
+      return '<span class="subli-offer-logo-fallback">%</span>';
+    }
+    return products.map(function (product) {
+      if (product.imageUrl) {
+        return '<span class="subli-offer-logo"><img src="' + escapeHtml(product.imageUrl) +
+          '" alt="' + escapeHtml(product.name) + '" loading="lazy" decoding="async"></span>';
+      }
+      return '<span class="subli-offer-logo subli-offer-logo-text" style="--offer-logo-accent:' +
+        escapeHtml(safeAccent(product.accent)) + '">' +
+        escapeHtml(product.visual || product.name.slice(0, 2).toUpperCase()) + '</span>';
+    }).join('');
+  }
+
+  function promotionBadgeClass(tone) {
+    return ['trend', 'offer', 'new', 'popular', 'exclusive'].indexOf(tone) !== -1 ? tone : 'offer';
+  }
+
+  function offerOptionMarkup(catalog, promotion, option) {
+    var phone = (catalog.settings || {}).whatsapp || '50432126332';
+    var label = option.label || 'Promoción';
+    var bonus = option.bonus || '';
+    var message = 'Hola! Me interesa ' + promotion.title + ' · ' + label +
+      (bonus ? ' · ' + bonus : '') + ' (' + priceText(option.price, catalog) + ')';
+    return '<div class="subli-offer-option">' +
+      '<div class="subli-offer-option-copy"><strong>' + escapeHtml(label) + '</strong>' +
+      (bonus ? '<small>' + escapeHtml(bonus) + '</small>' : '') + '</div>' +
+      '<div class="subli-offer-option-price"><small>' +
+      escapeHtml((catalog.settings || {}).currencyLabel || 'Lps.') + '</small><b>' +
+      escapeHtml(formatNumber(option.price, catalog)) + '</b></div>' +
+      '<a class="subli-offer-option-cta" target="_blank" rel="noopener" href="https://wa.me/' +
+      escapeHtml(phone) + '?text=' + encodeURIComponent(message) + '" aria-label="Solicitar ' +
+      escapeHtml(promotion.title + ' ' + label) + '"><span>Solicitar</span><b>›</b></a></div>';
+  }
+
+  function offerCardMarkup(catalog, promotion) {
+    var category = promotionCategory(catalog, promotion);
+    var features = (promotion.features || []).slice(0, 4);
+    var options = (promotion.options || []).filter(function (option) {
+      return option && option.active !== false && option.price !== null && option.price !== undefined;
+    });
+    var endsAt = promotion.endsAt ? new Date(promotion.endsAt) : null;
+    var dateLabel = endsAt && !Number.isNaN(endsAt.getTime())
+      ? 'Hasta ' + endsAt.toLocaleDateString('es-HN', { day: '2-digit', month: '2-digit', year: 'numeric' })
+      : 'Tiempo limitado';
+    return '<article class="subli-offer-card" data-offer-category="' + escapeHtml(category) +
+      '" style="--offer-accent:' + escapeHtml(safeAccent(promotion.accent)) + '">' +
+      '<div class="subli-offer-card-top"><span class="subli-offer-badge ' +
+      escapeHtml(promotionBadgeClass(promotion.badgeTone)) + '">' +
+      escapeHtml(promotion.badge || 'OFERTA') + '</span><span class="subli-offer-date">' +
+      escapeHtml(dateLabel) + '</span></div>' +
+      '<div class="subli-offer-identity"><div class="subli-offer-logos">' +
+      promotionLogoMarkup(catalog, promotion) + '</div><div><h3>' + escapeHtml(promotion.title) +
+      '</h3>' + (promotion.description ? '<p>' + escapeHtml(promotion.description) + '</p>' : '') +
+      '</div></div>' +
+      (features.length ? '<div class="subli-offer-features">' + features.map(function (feature) {
+        return '<span><i>✓</i>' + escapeHtml(feature) + '</span>';
+      }).join('') + '</div>' : '') +
+      '<div class="subli-offer-options">' + (options.length ? options.map(function (option) {
+        return offerOptionMarkup(catalog, promotion, option);
+      }).join('') : '<div class="subli-offer-no-price">Precio pendiente de publicación.</div>') + '</div></article>';
+  }
+
+  function offerFilterMarkup(promotions, catalog) {
+    var present = new Set(promotions.map(function (promotion) {
+      return promotionCategory(catalog, promotion);
+    }));
+    var items = [
+      { id: 'all', label: 'Todas', icon: '▦' },
+      { id: 'streaming', label: 'Streaming', icon: '▶' },
+      { id: 'musica', label: 'Música', icon: '♫' },
+      { id: 'combos', label: 'Combos', icon: '✦' },
+      { id: 'otros', label: 'Otros', icon: '＋' }
+    ];
+    return items.filter(function (item) { return item.id === 'all' || present.has(item.id); })
+      .map(function (item) {
+        return '<button type="button" class="subli-offer-filter' +
+          (offerState.filter === item.id ? ' active' : '') + '" data-managed-offer-filter="' +
+          item.id + '"><span>' + item.icon + '</span>' + escapeHtml(item.label) + '</button>';
+      }).join('');
+  }
+
+  function applyOfferFilter(root) {
+    if (!root) return;
+    root.querySelectorAll('.subli-offer-card').forEach(function (card) {
+      card.hidden = offerState.filter !== 'all' && card.getAttribute('data-offer-category') !== offerState.filter;
+    });
+    root.querySelectorAll('[data-managed-offer-filter]').forEach(function (button) {
+      button.classList.toggle('active', button.getAttribute('data-managed-offer-filter') === offerState.filter);
+    });
+    var count = root.querySelectorAll('.subli-offer-card:not([hidden])').length;
+    var counter = root.querySelector('[data-offer-count]');
+    if (counter) counter.textContent = count + (count === 1 ? ' oferta' : ' ofertas');
+  }
+
   function updatePromotions(catalog) {
-    var cards = document.querySelectorAll('#tab-promos .subli-promos-web-grid > .promo-card');
-    cards.forEach(function (card, index) {
-      var titleNode = card.querySelector('.promo-card-info h3');
-      var promotion = promoByTitle(catalog, titleNode && titleNode.textContent, index);
-      if (!promotion) {
-        card.hidden = true;
-        return;
-      }
-      card.hidden = false;
-      card.setAttribute('data-catalog-promotion', promotion.id);
-      card.setAttribute('data-promo-badge', promotion.badge || '🔥 OFERTA');
-      if (titleNode) titleNode.textContent = promotion.title;
-      var description = card.querySelector('.promo-card-info p');
-      if (description) description.textContent = promotion.description || '';
-      var conditions = card.querySelector('.promo-conditions');
-      if (conditions) {
-        conditions.innerHTML = (promotion.features || []).map(function (feature) {
-          return '<span>✅ ' + escapeHtml(feature) + '</span>';
-        }).join('');
-      }
-      var rows = card.querySelectorAll('.promo-price-row');
-      rows.forEach(function (row, optionIndex) {
-        var option = promotion.options[optionIndex];
-        if (!option) {
-          row.hidden = true;
-          var orphanLink = row.nextElementSibling;
-          if (orphanLink && orphanLink.classList.contains('promo-cta')) orphanLink.hidden = true;
-          return;
-        }
-        row.hidden = false;
-        var duration = row.querySelector('.promo-duration');
-        var price = row.querySelector('.promo-price-pulse');
-        if (duration) duration.textContent = option.label + (option.bonus ? ' · ' + option.bonus : '');
-        if (price) price.textContent = formatNumber(option.price, catalog);
-        var link = row.nextElementSibling;
-        if (link && link.classList.contains('promo-cta')) {
-          link.hidden = false;
-          link.href = 'https://wa.me/' + (catalog.settings.whatsapp || '50432126332') +
-            '?text=' + encodeURIComponent('Hola! Me interesa ' + promotion.title + ' · ' +
-            option.label + ' (' + priceText(option.price, catalog) + ')');
-        }
+    var root = document.getElementById('subliPromotionsRoot') ||
+      document.querySelector('#tab-promos .subli-promos-web-grid');
+    if (!root) return;
+    var promotions = (catalog.promotions || []).slice().sort(function (a, b) {
+      return Number(a.order || 0) - Number(b.order || 0);
+    });
+    var availableFilters = new Set(promotions.map(function (promotion) {
+      return promotionCategory(catalog, promotion);
+    }));
+    if (offerState.filter !== 'all' && !availableFilters.has(offerState.filter)) offerState.filter = 'all';
+
+    root.innerHTML = '<section class="subli-offers-head">' +
+      '<div><span class="subli-offers-kicker">OFERTAS VIGENTES</span><h2>Ofertas</h2>' +
+      '<p>Una promoción por tarjeta. Todos los precios se administran desde el panel.</p></div>' +
+      '<strong data-offer-count>' + promotions.length + (promotions.length === 1 ? ' oferta' : ' ofertas') + '</strong></section>' +
+      '<nav class="subli-offer-filters" aria-label="Filtrar ofertas">' + offerFilterMarkup(promotions, catalog) + '</nav>' +
+      (promotions.length
+        ? '<div class="subli-offers-grid">' + promotions.map(function (promotion) {
+            return offerCardMarkup(catalog, promotion);
+          }).join('') + '</div>'
+        : '<div class="subli-offers-empty"><span>◇</span><strong>No hay ofertas activas</strong><small>Cuando publique una promoción desde el panel aparecerá aquí automáticamente.</small></div>');
+
+    root.querySelectorAll('[data-managed-offer-filter]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        offerState.filter = button.getAttribute('data-managed-offer-filter') || 'all';
+        applyOfferFilter(root);
       });
     });
+    applyOfferFilter(root);
   }
+
   function updateGlobalWhatsapp(catalog) {
     var phone = catalog.settings.whatsapp || '50432126332';
     document.querySelectorAll('a[href*="wa.me/"]').forEach(function (anchor) {
