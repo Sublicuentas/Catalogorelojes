@@ -62,7 +62,7 @@
     var data=await api('/api/catalogo');
     state.catalog=data.catalog || {};
     state.catalog.categories=(state.catalog.categories || []).filter(function(c){return c.active !== false;}).sort(function(a,b){return (a.order||0)-(b.order||0);});
-    state.catalog.products=(state.catalog.products || []).filter(function(p){return p.active !== false && !p.redemptionOnly;}).sort(function(a,b){return (a.order||0)-(b.order||0);});
+    state.catalog.products=(state.catalog.products || []).filter(function(p){return p.active !== false && !p.redemptionOnly && p.storeEnabled !== false;}).sort(function(a,b){return (a.order||0)-(b.order||0);});
     state.catalog.promotions=(state.catalog.promotions || []).filter(function(p){return p.active !== false;}).sort(function(a,b){return (a.order||0)-(b.order||0);});
     renderAll();
     configureConsultLinks();
@@ -91,9 +91,12 @@
       return !query || hay.includes(query);
     });
     byId('emptyProducts').hidden=products.length>0;
+    var resultCount=byId('storeResultCount');
+    if(resultCount)resultCount.textContent=products.length+' '+(products.length===1?'servicio':'servicios')+(state.category!=='all'||query?' encontrados':' disponibles');
     byId('productGrid').innerHTML=products.map(function(p){
       var status=statusOf(p.availability), price=productMinimumPrice(p);
       return '<article class="product-card" style="--accent:'+escapeHtml(p.accent||'#E2231A')+'">'+
+        (p.badge?'<span class="product-badge">'+escapeHtml(p.badge)+'</span>':'')+
         '<div class="product-visual">'+visualContent(p)+'</div>'+
         '<div class="product-body"><div class="product-top"><span class="availability-pill '+status.className+'">'+escapeHtml(status.label)+'</span><small>'+escapeHtml(categoryName(p.categoryId))+'</small></div>'+
         '<h3>'+escapeHtml(p.name)+'</h3><p>'+escapeHtml(p.summary||'')+'</p>'+
@@ -138,7 +141,13 @@
   function updateProductSelection(){
     var p=productById(state.selectedProductId); if(!p)return;
     var plan=(p.plans||[]).find(function(x){return x.id===byId('productPlanSelect').value;}) || (p.plans||[]).filter(function(x){return x.active!==false;})[0];
-    if(!plan)return;
+    if(!plan){
+      byId('productOptionWrap').hidden=true;
+      byId('productFeatures').innerHTML=(p.productFeatures||[]).map(function(f){return '<li>'+escapeHtml(f)+'</li>';}).join('');
+      byId('productModalPrice').textContent='Consultar';
+      byId('consultSelectedProduct').href=whatsappUrl('Hola, quisiera consultar '+p.name+'.');
+      return;
+    }
     if(byId('productPlanSelect').value!==plan.id)byId('productPlanSelect').value=plan.id;
     var options=(plan.options||[]).filter(function(o){return o.active !== false;});
     byId('productOptionWrap').hidden=!options.length;
