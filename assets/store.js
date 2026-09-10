@@ -13,6 +13,30 @@
   var state = { catalog: null, category: initialParams.get('categoria') || 'all', query: initialParams.get('q') || '', selectedProductId: '', hashProductOpened: false };
 
   function byId(id) { return document.getElementById(id); }
+  var MOBILE_ICON_BASE='/assets/mobile-icons/';
+  function normalizeIconText(value){
+    var v=String(value||'');
+    try{v=v.normalize('NFD').replace(/[\u0300-\u036f]/g,'');}catch(_){ }
+    return v.toLowerCase();
+  }
+  function categoryIconFile(c){
+    var t=normalizeIconText(((c&&c.id)||'')+' '+((c&&c.name)||''));
+    if(/pase.*flexible|flexible.*vip/.test(t))return 'pase-flexible-vip.png';
+    if(/agenda|mundial|deportiv/.test(t))return 'agenda-deportiva.png';
+    if(/cine|series|streaming/.test(t))return 'cine-series.png';
+    if(/musica|music/.test(t))return 'musica-premium.png';
+    if(/tv digital|iptv/.test(t))return 'tv-digital.png';
+    if(/recargas|gaming|juegos/.test(t))return 'recargas-gaming.png';
+    if(/ia|educacion|inteligencia artificial/.test(t))return 'ia-educacion.png';
+    if(/zona creativa|diseno|creativa/.test(t))return 'zona-creativa.png';
+    if(/antivirus|software|seguridad/.test(t))return 'antivirus-software.png';
+    return '';
+  }
+  function categoryIconMarkup(c){
+    if(c&&c.id==='all')return '<span class="category-all-mark">▦</span>';
+    var file=categoryIconFile(c);
+    return file?'<img class="category-filter-img" src="'+MOBILE_ICON_BASE+file+'" alt="">':'<span class="category-all-mark">'+escapeHtml((c&&c.icon)||'▦')+'</span>';
+  }
   function escapeHtml(value) {
     return String(value == null ? '' : value)
       .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
@@ -87,7 +111,7 @@
     if(!state.catalog)return;
     var items=[{id:'all',name:'Todo',icon:'▦'}].concat(state.catalog.categories);
     byId('categoryFilters').innerHTML=items.map(function(c){
-      return '<button type="button" class="category-filter'+(state.category===c.id?' active':'')+'" data-category="'+escapeHtml(c.id)+'"><span aria-hidden="true">'+escapeHtml(c.icon||'▦')+'</span><b>'+escapeHtml(c.name)+'</b></button>';
+      return '<button type="button" class="category-filter'+(state.category===c.id?' active':'')+'" data-category="'+escapeHtml(c.id)+'"><span class="category-filter-icon" aria-hidden="true">'+categoryIconMarkup(c)+'</span><b>'+escapeHtml(c.name)+'</b></button>';
     }).join('');
     updateStoreTitles();
     byId('categoryFilters').querySelectorAll('[data-category]').forEach(function(btn){

@@ -180,3 +180,91 @@
   body.sm-store-page .catalog-header-inner>.catalog-brand{display:none!important}
   body.sm-store-page .sm-store-mobile-title{display:block!important;grid-column:2;grid-row:1;text-align:center;font:900 18px/1 Inter,Arial,sans-serif;color:#182E49;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 6px}
 }
+
+/* 2026-09-10 FIX 2 · restore original 3D icon system + repair Store cards/modal */
+@media (max-width:700px){
+  /* Exact icon artwork recovered from the original Relojes catalog. */
+  .sm-category-icon{overflow:hidden!important;padding:7px!important;box-sizing:border-box!important;font-size:0!important}
+  .sm-category-icon img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;filter:none!important}
+  .sm-search-item img{object-fit:contain!important;padding:4px!important;box-sizing:border-box!important}
+
+  .sm-agenda-art{background:#fff!important;border:1px solid #E6ECF2!important;box-shadow:0 5px 14px rgba(17,47,84,.08)!important;overflow:hidden!important}
+  .sm-agenda-art img{width:47px!important;height:47px!important;object-fit:contain!important}
+
+  .sm-dock-icon{height:34px!important;min-width:38px!important;padding:0 3px!important;background:transparent!important}
+  .sm-dock-icon img{width:32px!important;height:32px!important;object-fit:contain!important;display:block!important}
+  .sm-dock-btn.active .sm-dock-icon{background:#FFF1F0!important}
+  .sm-dock-btn[data-sm-nav="sublibot"] .sm-dock-icon img{width:34px!important;height:34px!important}
+
+  /* Store category filters use the same original icon set as Inicio. */
+  body.sm-store-page .category-filter{font-size:0!important;aspect-ratio:1!important;overflow:hidden!important}
+  body.sm-store-page .category-filter .category-filter-icon{display:flex!important;width:38px!important;height:38px!important;align-items:center!important;justify-content:center!important;font-size:0!important;line-height:1!important;flex:0 0 auto!important}
+  body.sm-store-page .category-filter .category-filter-img{display:block!important;width:38px!important;height:38px!important;object-fit:contain!important}
+  body.sm-store-page .category-filter .category-all-mark{font-size:24px!important;color:#536477!important;line-height:1!important}
+  body.sm-store-page .category-filter b{display:block!important;font:800 8px/1.1 Inter,Arial,sans-serif!important;color:inherit!important;max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important}
+
+  /* The current store.js uses product-visual/product-top/product-footer. Define those
+     explicitly so old store.css names cannot turn cards into horizontal/tall blocks. */
+  body.sm-store-page .product-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;align-items:stretch!important}
+  body.sm-store-page .product-card{
+    position:relative!important;display:flex!important;flex-direction:column!important;
+    min-width:0!important;min-height:272px!important;overflow:hidden!important;
+    background:#fff!important;border:1px solid #E3EAF0!important;border-radius:18px!important;
+    box-shadow:0 6px 18px rgba(17,47,84,.08)!important;transform:none!important
+  }
+  body.sm-store-page .product-card:hover{transform:none!important}
+  body.sm-store-page .product-badge{position:absolute!important;left:9px!important;top:9px!important;z-index:2!important;max-width:calc(100% - 18px)!important;border-radius:999px!important;padding:4px 7px!important;font:850 7px/1 Inter,Arial,sans-serif!important}
+  body.sm-store-page .product-visual{
+    display:grid!important;place-items:center!important;width:100%!important;height:104px!important;min-height:104px!important;
+    padding:13px!important;box-sizing:border-box!important;border-radius:17px 17px 0 0!important;
+    background:#F5F8FA!important;color:#17314D!important;overflow:hidden!important
+  }
+  body.sm-store-page .product-visual img{
+    display:block!important;width:78px!important;height:78px!important;max-width:78px!important;max-height:78px!important;
+    object-fit:contain!important;border-radius:12px!important;background:#fff!important
+  }
+  body.sm-store-page .product-visual b{font:900 20px/1 Inter,Arial,sans-serif!important;color:#17314D!important}
+  body.sm-store-page .product-body{display:flex!important;flex-direction:column!important;flex:1!important;padding:11px!important;min-width:0!important}
+  body.sm-store-page .product-top{display:flex!important;align-items:center!important;gap:5px!important;min-width:0!important;margin:0 0 7px!important;order:0!important}
+  body.sm-store-page .product-top>small{order:-1!important;flex:1!important;min-width:0!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;color:#8795A4!important;font:650 8px/1 Inter,Arial,sans-serif!important}
+  body.sm-store-page .availability-pill{display:inline-flex!important;align-items:center!important;gap:4px!important;margin:0!important;border-radius:999px!important;padding:4px 7px!important;font:850 7px/1 Inter,Arial,sans-serif!important;white-space:nowrap!important}
+  body.sm-store-page .availability-pill.available{background:#E5F8EE!important;color:#188754!important}
+  body.sm-store-page .availability-pill.available:before{content:'●';font-size:7px}
+  body.sm-store-page .availability-pill.limited,body.sm-store-page .availability-pill.on-request{background:#FFF4D9!important;color:#9A6A00!important}
+  body.sm-store-page .availability-pill.paused{background:#FDE8E7!important;color:#B42318!important}
+  body.sm-store-page .product-body h3{margin:0!important;color:#153151!important;font:900 15px/1.08 Inter,Arial,sans-serif!important;letter-spacing:-.2px!important;min-height:32px!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important}
+  body.sm-store-page .product-body>p{margin:7px 0 10px!important;color:#748596!important;font:500 9px/1.35 Inter,Arial,sans-serif!important;min-height:37px!important;display:-webkit-box!important;-webkit-line-clamp:3!important;-webkit-box-orient:vertical!important;overflow:hidden!important}
+  body.sm-store-page .product-footer{display:flex!important;align-items:flex-end!important;justify-content:space-between!important;gap:7px!important;margin-top:auto!important;padding-top:9px!important;border-top:1px solid #E8EDF2!important}
+  body.sm-store-page .product-footer>div{min-width:0!important;flex:1!important}
+  body.sm-store-page .product-footer small{display:block!important;color:#8A98A7!important;font:800 7px/1 Inter,Arial,sans-serif!important;text-transform:uppercase!important;letter-spacing:.2px!important}
+  body.sm-store-page .product-footer strong{display:block!important;margin-top:3px!important;color:#153151!important;font:900 16px/1 Inter,Arial,sans-serif!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  body.sm-store-page .product-footer button{display:flex!important;align-items:center!important;justify-content:center!important;flex:0 0 34px!important;width:34px!important;height:34px!important;min-height:34px!important;margin:0!important;padding:0!important;border:0!important;border-radius:11px!important;background:#E2231A!important;color:#fff!important;font-size:0!important;box-shadow:0 5px 12px rgba(226,35,26,.16)!important}
+  body.sm-store-page .product-footer button:after{content:'›'!important;font:700 25px/1 Arial,sans-serif!important}
+
+  /* Product detail: compact, aligned and never covered by the mobile footer. */
+  body.modal-open #subliMobileDock{display:none!important}
+  body.sm-store-page .modal-backdrop{z-index:12050!important;display:flex!important;align-items:flex-end!important;justify-content:center!important;padding:0!important;background:rgba(9,24,42,.58)!important;backdrop-filter:blur(7px)!important}
+  body.sm-store-page .product-modal-card{
+    width:100%!important;max-width:600px!important;max-height:88dvh!important;margin:0!important;box-sizing:border-box!important;
+    overflow:auto!important;border-radius:26px 26px 0 0!important;padding:18px 17px calc(18px + env(safe-area-inset-bottom))!important;background:#fff!important
+  }
+  body.sm-store-page .modal-close{right:15px!important;top:14px!important;width:39px!important;height:39px!important;border-radius:13px!important;background:#F2F5F8!important;color:#17314D!important;font-size:25px!important}
+  body.sm-store-page .modal-product-head{display:grid!important;grid-template-columns:78px minmax(0,1fr)!important;gap:13px!important;align-items:center!important;padding:0 45px 13px 0!important;border-bottom:1px solid #E8EDF2!important}
+  body.sm-store-page .modal-product-visual{width:78px!important;height:78px!important;border-radius:16px!important;padding:8px!important;box-sizing:border-box!important;background:#F5F8FA!important;color:#17314D!important;overflow:hidden!important}
+  body.sm-store-page .modal-product-visual img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;border-radius:10px!important;background:#fff!important}
+  body.sm-store-page .modal-product-head .availability-pill{margin:0 0 5px!important}
+  body.sm-store-page .modal-product-head h2{margin:0!important;color:#153151!important;font:900 24px/1.06 Inter,Arial,sans-serif!important;letter-spacing:-.4px!important}
+  body.sm-store-page .modal-product-head p{margin:6px 0 0!important;color:#788899!important;font:500 10px/1.35 Inter,Arial,sans-serif!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important}
+  body.sm-store-page .modal-selects{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;margin-top:12px!important}
+  body.sm-store-page .modal-selects label{display:grid!important;gap:6px!important;margin:0!important;color:#43576D!important;font:800 10px/1 Inter,Arial,sans-serif!important}
+  body.sm-store-page .modal-selects select{width:100%!important;min-height:48px!important;box-sizing:border-box!important;border:1px solid #D9E2E9!important;border-radius:13px!important;background:#fff!important;color:#17314D!important;padding:0 12px!important;font:750 12px/1 Inter,Arial,sans-serif!important;box-shadow:none!important}
+  body.sm-store-page .modal-features{margin:12px 0!important;padding:11px 12px!important;border:0!important;border-radius:15px!important;background:#F5F8FA!important;display:grid!important;gap:6px!important;max-height:150px!important;overflow:auto!important}
+  body.sm-store-page .modal-features li{color:#596D81!important;font:500 10px/1.35 Inter,Arial,sans-serif!important;gap:7px!important}
+  body.sm-store-page .modal-product-footer{display:grid!important;grid-template-columns:1fr!important;gap:10px!important;align-items:stretch!important;margin-top:0!important}
+  body.sm-store-page .modal-product-footer small{color:#8A98A7!important;font:600 9px/1 Inter,Arial,sans-serif!important}
+  body.sm-store-page .modal-product-footer strong{margin-top:4px!important;color:#153151!important;font:900 27px/1 Inter,Arial,sans-serif!important}
+  body.sm-store-page .modal-product-footer .store-primary{width:100%!important;min-height:50px!important;margin:0!important;border-radius:14px!important;background:#E2231A!important;color:#fff!important;font:900 14px/1 Inter,Arial,sans-serif!important;display:flex!important;align-items:center!important;justify-content:center!important;text-decoration:none!important;box-shadow:0 8px 18px rgba(226,35,26,.18)!important}
+
+  /* Keep enough space for the fixed dock on every category/search result page. */
+  body.sm-store-page main{padding-bottom:105px!important}
+}

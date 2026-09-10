@@ -17,23 +17,73 @@
     if(s.indexOf('504')===0 && s.length===11) return '+504 '+s.slice(3,7)+'-'+s.slice(7);
     return s ? '+'+s : 'WhatsApp';
   }
-  function goHomeTab(id){
-    if(location.pathname.replace(/\/+$/,'')==='/store' || !document.getElementById('tab-'+id)){
-      location.href='/?tab='+encodeURIComponent(id);
-      return;
+  var ICON_BASE='/assets/mobile-icons/';
+  var CATEGORY_ICONS={
+    'cine-series':'cine-series.png','musica-premium':'musica-premium.png','tv-digital':'tv-digital.png',
+    'recargas-gaming':'recargas-gaming.png','ia-educacion':'ia-educacion.png','zona-creativa':'zona-creativa.png',
+    'antivirus-software':'antivirus-software.png','agenda-deportiva':'agenda-deportiva.png','pase-flexible-vip':'pase-flexible-vip.png'
+  };
+  function categoryIconKey(c){
+    var t=normalize(((c&&c.id)||'')+' '+((c&&c.name)||''));
+    if(/pase.*flexible|flexible.*vip/.test(t)) return 'pase-flexible-vip';
+    if(/agenda|mundial|deportiv/.test(t)) return 'agenda-deportiva';
+    if(/cine|series|streaming/.test(t)) return 'cine-series';
+    if(/musica|music/.test(t)) return 'musica-premium';
+    if(/tv digital|iptv/.test(t)) return 'tv-digital';
+    if(/recargas|gaming|juegos/.test(t)) return 'recargas-gaming';
+    if(/ia|educacion|inteligencia artificial/.test(t)) return 'ia-educacion';
+    if(/zona creativa|diseno|creativa/.test(t)) return 'zona-creativa';
+    if(/antivirus|software|seguridad/.test(t)) return 'antivirus-software';
+    return '';
+  }
+  function categoryIconMarkup(c){
+    var key=categoryIconKey(c), file=CATEGORY_ICONS[key];
+    return file?'<img src="'+ICON_BASE+file+'" alt="">':esc((c&&c.icon)||'');
+  }
+  function navIcon(file,alt){return '<img src="'+ICON_BASE+file+'" alt="'+esc(alt||'')+'">';}
+  function hideIntro(){
+    var intro=document.getElementById('intro');
+    if(!intro)return;
+    intro.style.setProperty('display','none','important');
+    intro.style.setProperty('visibility','hidden','important');
+    intro.style.setProperty('opacity','0','important');
+    intro.style.setProperty('pointer-events','none','important');
+    try{if(intro.parentNode)intro.parentNode.removeChild(intro);}catch(_){ }
+  }
+  function activateLocalTab(id){
+    var panel=document.getElementById('tab-'+id);
+    if(!panel)return false;
+    hideIntro();closeAbout();
+    try{
+      if(typeof window.openTabById==='function') window.openTabById(id);
+      else if(typeof window.switchTab==='function') window.switchTab(id);
+    }catch(_){ }
+    /* Failsafe: several legacy layers touch display/height. Enforce one visible tab. */
+    document.querySelectorAll('.tp').forEach(function(p){
+      var on=p===panel;p.classList.toggle('active',on);
+      p.style.setProperty('display',on?'block':'none','important');
+      p.style.setProperty('visibility',on?'visible':'hidden','important');
+      p.style.setProperty('height',on?'auto':'0','important');
+      p.style.setProperty('overflow',on?'visible':'hidden','important');
+    });
+    if(id==='cartelera'&&typeof window.loadCartelera==='function'){
+      try{var b=document.querySelector('#carteleraApps .cart-app.active')||document.querySelector('#carteleraApps .cart-app');window.loadCartelera((b&&b.dataset.provider)||'netflix',b);}catch(_){ }
     }
-    closeAbout();
-    if(typeof window.openTabById==='function') window.openTabById(id);
-    else if(typeof window.switchTab==='function') window.switchTab(id);
-    setDockActive(id);
-    window.scrollTo({top:0,behavior:'smooth'});
+    if(id==='mundial'&&typeof window.loadAgenda==='function'){try{window.loadAgenda();}catch(_){ }}
+    setDockActive(id);window.scrollTo({top:0,behavior:'smooth'});return true;
+  }
+  function goHomeTab(id){
+    if(location.pathname.replace(/\/+$/,'')==='/store' || document.body.classList.contains('sm-store-page')){
+      location.href='/?tab='+encodeURIComponent(id);return;
+    }
+    if(activateLocalTab(id))return;
+    location.href='/?tab='+encodeURIComponent(id);
   }
   function goProduct(id){
-    if(typeof window.openInlineCatalogProduct==='function' && document.getElementById('tab-inicio')){
-      window.openInlineCatalogProduct(id);
-    }else{
-      location.href='/store#producto='+encodeURIComponent(id);
-    }
+    /* Mobile uses one product UI only: /store. This removes the legacy mixed modal. */
+    if(mobile()) { location.href='/store#producto='+encodeURIComponent(id); return; }
+    if(typeof window.openInlineCatalogProduct==='function' && document.getElementById('tab-inicio')) window.openInlineCatalogProduct(id);
+    else location.href='/store#producto='+encodeURIComponent(id);
   }
   function goCategory(id){ location.href='/store?categoria='+encodeURIComponent(id); }
 
@@ -55,7 +105,7 @@
       '</div>'+
       '<section class="sm-carousel" id="subliMobileCarousel"><div class="sm-carousel-track" id="subliMobileCarouselTrack"><div class="sm-carousel-empty">Cargando promociones…</div></div><div class="sm-carousel-dots" id="subliMobileCarouselDots"></div></section>'+
       '<section><div class="sm-section-title"><h2>Categorías</h2><small id="smCategoryCount"></small></div><div class="sm-category-grid" id="subliMobileCategoryGrid"></div></section>'+
-      '<button type="button" class="sm-cartelera-cta" id="smCarteleraCta"><span class="sm-cartelera-art">🎬</span><span><small>Qué ver hoy</small><strong>Entre a la Cartelera</strong><p>Descubra películas, series y recomendaciones disponibles.</p></span><span class="sm-cartelera-arrow">›</span></button>';
+      '<button type="button" class="sm-cartelera-cta sm-agenda-cta" id="smAgendaCta"><span class="sm-cartelera-art sm-agenda-art">'+navIcon('agenda-deportiva.png','')+'</span><span><small>Partidos y eventos</small><strong>Agenda Deportiva</strong><p>Consulte ligas, partidos y eventos del día.</p></span><span class="sm-cartelera-arrow">›</span></button>';
     tab.insertBefore(wrap,tab.firstChild);
 
     var input=document.getElementById('subliMobileSearch');
@@ -68,7 +118,7 @@
       }
     });
     document.getElementById('smSearchClear').addEventListener('click',function(){input.value='';renderSearch();input.focus();});
-    document.getElementById('smCarteleraCta').addEventListener('click',function(){goHomeTab('cartelera');});
+    document.getElementById('smAgendaCta').addEventListener('click',function(){goHomeTab('mundial');});
     document.addEventListener('click',function(e){
       var shell=document.getElementById('smSearchShell');
       if(shell && !shell.contains(e.target)) shell.classList.remove('open');
@@ -145,13 +195,14 @@
         Array.prototype.forEach.call(legacy,function(old){
           var b=document.createElement('button');b.type='button';b.className='sm-category';
           var icon=old.querySelector('.subli-category-icon'),name=old.querySelector('strong');
-          b.innerHTML='<span class="sm-category-icon">'+esc(icon?icon.textContent.trim():'⌚')+'</span><strong>'+esc(name?name.textContent.trim():'Categoría')+'</strong>';
+          var fake={id:'',name:name?name.textContent.trim():'Categoría',icon:icon?icon.textContent.trim():''};
+          b.innerHTML='<span class="sm-category-icon">'+categoryIconMarkup(fake)+'</span><strong>'+esc(fake.name)+'</strong>';
           b.addEventListener('click',function(){old.click();});grid.appendChild(b);
         });
       }
       return;
     }
-    grid.innerHTML=cats.map(function(c){return '<button type="button" class="sm-category" data-sm-category="'+esc(c.id)+'"><span class="sm-category-icon" aria-hidden="true">'+esc(c.icon||'⌚')+'</span><strong>'+esc(c.name)+'</strong></button>';}).join('');
+    grid.innerHTML=cats.map(function(c){return '<button type="button" class="sm-category" data-sm-category="'+esc(c.id)+'"><span class="sm-category-icon" aria-hidden="true">'+categoryIconMarkup(c)+'</span><strong>'+esc(c.name)+'</strong></button>';}).join('');
     grid.querySelectorAll('[data-sm-category]').forEach(function(b){b.addEventListener('click',function(){goCategory(b.getAttribute('data-sm-category'));});});
   }
 
@@ -159,11 +210,11 @@
     if(document.getElementById('subliMobileDock')) return;
     var dock=document.createElement('nav');dock.id='subliMobileDock';dock.className='sm-mobile-dock';dock.setAttribute('aria-label','Navegación móvil');
     dock.innerHTML=''+
-      '<button type="button" class="sm-dock-btn active" data-sm-nav="inicio"><span class="sm-dock-icon">⌂</span><small>Inicio</small></button>'+
-      '<button type="button" class="sm-dock-btn" data-sm-nav="cartelera"><span class="sm-dock-icon">🎬</span><small>Cartelera</small></button>'+
-      '<button type="button" class="sm-dock-btn" data-sm-nav="promos"><span class="sm-dock-icon">🔥</span><small>Ofertas</small></button>'+
-      '<button type="button" class="sm-dock-btn" data-sm-nav="sublibot"><span class="sm-dock-icon"><img src="/assets/sublibot-catalogo.png?v=20260824-v2" alt=""></span><small>Sublibot</small></button>'+
-      '<button type="button" class="sm-dock-btn" data-sm-nav="nosotros"><span class="sm-dock-icon">ⓘ</span><small>Nosotros</small></button>';
+      '<button type="button" class="sm-dock-btn active" data-sm-nav="inicio"><span class="sm-dock-icon">'+navIcon('inicio.png','Inicio')+'</span><small>Inicio</small></button>'+
+      '<button type="button" class="sm-dock-btn" data-sm-nav="cartelera"><span class="sm-dock-icon">'+navIcon('cartelera.png','Cartelera')+'</span><small>Cartelera</small></button>'+
+      '<button type="button" class="sm-dock-btn" data-sm-nav="promos"><span class="sm-dock-icon">'+navIcon('ofertas.png','Ofertas')+'</span><small>Ofertas</small></button>'+
+      '<button type="button" class="sm-dock-btn" data-sm-nav="sublibot"><span class="sm-dock-icon"><img src="/assets/sublibot-catalogo.png?v=20260824-v2" alt="Sublibot"></span><small>Sublibot</small></button>'+
+      '<button type="button" class="sm-dock-btn" data-sm-nav="nosotros"><span class="sm-dock-icon">'+navIcon('nosotros.png','Nosotros')+'</span><small>Nosotros</small></button>';
     document.body.appendChild(dock);
     dock.querySelectorAll('[data-sm-nav]').forEach(function(b){b.addEventListener('click',function(){
       var id=b.getAttribute('data-sm-nav');
@@ -213,7 +264,7 @@
     if(!document.getElementById('tab-inicio')) return;
     var q=new URLSearchParams(location.search), tab=q.get('tab'), open=q.get('open');
     setTimeout(function(){
-      if(tab && ['inicio','cartelera','promos'].indexOf(tab)!==-1) goHomeTab(tab);
+      if(tab && ['inicio','cartelera','promos','mundial'].indexOf(tab)!==-1) goHomeTab(tab);
       if(open==='sublibot' && typeof window.mascotAbrirChat==='function'){window.mascotAbrirChat();setDockActive('sublibot');}
       if(open==='nosotros'){openAbout();setDockActive('nosotros');}
     },180);
@@ -227,6 +278,8 @@
   }
 
   function init(){
+    var initialTab=new URLSearchParams(location.search).get('tab');
+    if(initialTab)hideIntro();
     buildHome();buildDock();buildAbout();initStore();
     if(window.__SUBLI_CATALOG__) sync(window.__SUBLI_CATALOG__);
     window.addEventListener('subli:catalog-updated',function(e){sync(e.detail||window.__SUBLI_CATALOG__);});
