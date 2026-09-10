@@ -9,7 +9,8 @@
     maintenance: { label: 'Mantenimiento', className: 'paused' }
   };
 
-  var state = { catalog: null, category: 'all', query: '', selectedProductId: '', hashProductOpened: false };
+  var initialParams = new URLSearchParams(window.location.search);
+  var state = { catalog: null, category: initialParams.get('categoria') || 'all', query: initialParams.get('q') || '', selectedProductId: '', hashProductOpened: false };
 
   function byId(id) { return document.getElementById(id); }
   function escapeHtml(value) {
@@ -64,6 +65,8 @@
     state.catalog.categories=(state.catalog.categories || []).filter(function(c){return c.active !== false;}).sort(function(a,b){return (a.order||0)-(b.order||0);});
     state.catalog.products=(state.catalog.products || []).filter(function(p){return p.active !== false && !p.redemptionOnly && p.storeEnabled !== false;}).sort(function(a,b){return (a.order||0)-(b.order||0);});
     state.catalog.promotions=(state.catalog.promotions || []).filter(function(p){return p.active !== false;}).sort(function(a,b){return (a.order||0)-(b.order||0);});
+    if(state.category!=='all' && !state.catalog.categories.some(function(c){return c.id===state.category;})) state.category='all';
+    var searchInput=byId('storeSearch'); if(searchInput) searchInput.value=state.query;
     renderAll();
     configureConsultLinks();
     openRequestedProduct();
@@ -72,14 +75,23 @@
     var url=whatsappUrl('Hola, quisiera consultar información del catálogo y disponibilidad de servicios.');
     ['headerConsult','heroConsult'].forEach(function(id){ var el=byId(id); if(el) el.href=url; });
   }
+
+  function updateStoreTitles(){
+    var label=state.category==='all' ? 'Catálogo' : categoryName(state.category);
+    var mobileTitle=byId('smStoreTitle'); if(mobileTitle) mobileTitle.textContent=label;
+    var heading=document.querySelector('.catalog-heading h2'); if(heading) heading.textContent=state.category==='all' ? 'Catálogo completo' : 'Recomendados';
+    document.title=(state.category==='all' ? 'Catálogo' : label)+' · Sublicuentas';
+  }
+
   function renderCategories() {
     if(!state.catalog)return;
     var items=[{id:'all',name:'Todo',icon:'▦'}].concat(state.catalog.categories);
     byId('categoryFilters').innerHTML=items.map(function(c){
-      return '<button type="button" class="category-filter'+(state.category===c.id?' active':'')+'" data-category="'+escapeHtml(c.id)+'">'+escapeHtml((c.icon||'')+' '+c.name)+'</button>';
+      return '<button type="button" class="category-filter'+(state.category===c.id?' active':'')+'" data-category="'+escapeHtml(c.id)+'"><span aria-hidden="true">'+escapeHtml(c.icon||'▦')+'</span><b>'+escapeHtml(c.name)+'</b></button>';
     }).join('');
+    updateStoreTitles();
     byId('categoryFilters').querySelectorAll('[data-category]').forEach(function(btn){
-      btn.addEventListener('click',function(){state.category=btn.dataset.category;renderCategories();renderProducts();});
+      btn.addEventListener('click',function(){state.category=btn.dataset.category;var u=new URL(location.href);if(state.category==='all')u.searchParams.delete('categoria');else u.searchParams.set('categoria',state.category);history.replaceState(null,'',u.pathname+(u.searchParams.toString()?'?'+u.searchParams.toString():'')+u.hash);renderCategories();renderProducts();});
     });
   }
   function renderProducts(){
