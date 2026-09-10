@@ -1226,7 +1226,7 @@ body { height: auto !important; min-height: 100vh; }
         <h1>Tu entretenimiento<br/><span>en un solo lugar</span></h1>
         <p>Streaming, herramientas, TV digital y más. Revise precios, promociones y disponibilidad desde un solo lugar.</p>
         <div class="subli-commerce-actions">
-          <button type="button" class="subli-commerce-primary" onclick="document.getElementById('subliLiveCatalogSection')?.scrollIntoView({behavior:'smooth',block:'start'})">
+          <button type="button" class="subli-commerce-primary" onclick="window.location.href='/store'">
             Ver catálogo <b>&rarr;</b>
           </button>
           <button type="button" class="subli-commerce-secondary" onclick="openTabById('promos')">
@@ -1308,7 +1308,7 @@ body { height: auto !important; min-height: 100vh; }
     </div>
     <div class="subli-live-catalog-foot">
       <div><i></i><span>Precios, promociones y disponibilidad sincronizados desde el panel.</span></div>
-      <button type="button" onclick="document.getElementById('subliLiveCatalogSection')?.scrollIntoView({behavior:'smooth',block:'start'})">Abrir catálogo <b>&rarr;</b></button>
+      <button type="button" onclick="window.location.href='/store'">Abrir catálogo <b>&rarr;</b></button>
     </div>
   </section>
 
@@ -1443,7 +1443,7 @@ body { height: auto !important; min-height: 100vh; }
       <span>Planes y precios visibles sin iniciar sesión</span>
       <span>Promociones y disponibilidad en un solo lugar</span>
     </div>
-    <button type="button" class="sc-cons-store" onclick="document.getElementById('subliLiveCatalogSection')?.scrollIntoView({behavior:'smooth',block:'start'})"><span>🛍️</span> Abrir catálogo</button>
+    <button type="button" class="sc-cons-store" onclick="window.location.href='/store'"><span>🛍️</span> Abrir catálogo</button>
     <a class="sc-cons-wa" href="https://wa.me/50432126332?text=Hola%2C%20quiero%20informaci%C3%B3n%20de%20Sublicuentas" target="_blank" rel="noopener"><span>💬</span> Escríbenos por WhatsApp</a>
     <small class="sc-cons-foot">Su cuenta mantiene historial, puntos y beneficios.</small>
   </div>
@@ -6696,5 +6696,227 @@ footer{padding-bottom:78px!important}
 #tab-promos .subli-promos-web-grid{display:block!important;grid-template-columns:none!important;max-width:1180px!important;margin:0 auto!important;padding:18px 14px 96px!important;overflow:visible!important;}
 #tab-promos .subli-promos-web-grid::before,#tab-promos .subli-promos-web-grid::after{content:none!important;}
 </style>
+
+<style id="catalog-clean-final-20260910">
+/* Catálogo público · limpieza visual final 2026-09-10 */
+#tab-inicio .subli-live-catalog{
+  background:#fff!important;
+  border:1px solid #DCE6F0!important;
+  border-radius:22px!important;
+  padding:22px!important;
+  box-shadow:0 12px 34px rgba(23,48,78,.07)!important;
+}
+#tab-inicio .subli-live-catalog-head{
+  margin-bottom:12px!important;
+}
+#tab-inicio .subli-live-catalog-head h2{
+  color:#102A4D!important;
+  font-size:27px!important;
+  letter-spacing:-.6px!important;
+}
+#tab-inicio .subli-live-catalog-head p,
+#tab-inicio .subli-live-catalog-foot span{
+  color:#6E7F93!important;
+}
+#tab-inicio .subli-live-search{
+  background:#fff!important;
+  border:1px solid #D8E3EE!important;
+  border-radius:14px!important;
+  box-shadow:none!important;
+}
+#tab-inicio .subli-live-search:focus-within{
+  border-color:#53B8E5!important;
+  box-shadow:0 0 0 3px rgba(0,168,232,.09)!important;
+}
+#tab-inicio .subli-live-filters{
+  gap:7px!important;
+  margin-bottom:8px!important;
+}
+#tab-inicio .subli-live-filters button{
+  background:#fff!important;
+  border:1px solid #DCE6F0!important;
+  color:#476079!important;
+  border-radius:999px!important;
+  box-shadow:none!important;
+}
+#tab-inicio .subli-live-filters button.active{
+  background:#102A4D!important;
+  border-color:#102A4D!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+#tab-inicio .subli-live-product-grid{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:11px!important;
+  overflow:visible!important;
+  padding:3px 0 8px!important;
+}
+#tab-inicio .subli-live-product{
+  min-width:0!important;
+  width:auto!important;
+  min-height:166px!important;
+  padding:13px!important;
+  display:grid!important;
+  grid-template-columns:54px minmax(0,1fr)!important;
+  grid-template-rows:auto auto 1fr auto!important;
+  grid-template-areas:
+    "icon title"
+    "icon desc"
+    ". desc"
+    "footer footer"!important;
+  gap:4px 10px!important;
+  background:#fff!important;
+  border:1px solid #DDE7F0!important;
+  border-radius:16px!important;
+  box-shadow:0 6px 16px rgba(23,48,78,.04)!important;
+  overflow:hidden!important;
+  flex:none!important;
+}
+#tab-inicio .subli-live-product:hover{
+  transform:translateY(-2px)!important;
+  border-color:#C7D8E7!important;
+  box-shadow:0 10px 22px rgba(23,48,78,.08)!important;
+}
+#tab-inicio .subli-live-product-top{
+  grid-area:icon!important;
+  display:block!important;
+  position:static!important;
+}
+#tab-inicio .subli-live-product-visual{
+  width:54px!important;
+  height:54px!important;
+  border-radius:14px!important;
+  background:#F5F9FC!important;
+  border:1px solid #E7EEF5!important;
+  box-shadow:none!important;
+  padding:6px!important;
+  display:grid!important;
+  place-items:center!important;
+}
+#tab-inicio .subli-live-product-visual img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  border-radius:10px!important;
+}
+#tab-inicio .subli-live-product-status{
+  position:absolute!important;
+  top:12px!important;
+  right:12px!important;
+  margin:0!important;
+  max-width:92px!important;
+  padding:4px 7px!important;
+  font-size:7px!important;
+  background:#E8F7EF!important;
+  color:#168A4D!important;
+}
+#tab-inicio .subli-live-product-status.limited,
+#tab-inicio .subli-live-product-status.on_request{
+  background:#FFF4DD!important;color:#9A6400!important;
+}
+#tab-inicio .subli-live-product-status.paused,
+#tab-inicio .subli-live-product-status.maintenance{
+  background:#F3F4F6!important;color:#6B7280!important;
+}
+#tab-inicio .subli-product-promo-badge{
+  position:absolute!important;
+  left:12px!important;
+  top:74px!important;
+  width:max-content!important;
+  max-width:78px!important;
+  padding:4px 6px!important;
+  border-radius:999px!important;
+  font-size:6.5px!important;
+  background:#F1EAFE!important;
+  color:#6D28D9!important;
+  box-shadow:none!important;
+}
+#tab-inicio .subli-live-product h3{
+  grid-area:title!important;
+  margin:3px 78px 0 0!important;
+  padding:0!important;
+  color:#153151!important;
+  font-size:13px!important;
+  line-height:1.15!important;
+  font-weight:900!important;
+  white-space:normal!important;
+  display:-webkit-box!important;
+  -webkit-line-clamp:2!important;
+  -webkit-box-orient:vertical!important;
+  overflow:hidden!important;
+}
+#tab-inicio .subli-live-product p{
+  grid-area:desc!important;
+  margin:4px 0 0!important;
+  padding:0!important;
+  color:#718398!important;
+  font-size:9px!important;
+  line-height:1.4!important;
+  min-height:0!important;
+  display:-webkit-box!important;
+  -webkit-line-clamp:3!important;
+  -webkit-box-orient:vertical!important;
+  overflow:hidden!important;
+}
+#tab-inicio .subli-live-product-bottom{
+  grid-area:footer!important;
+  margin-top:9px!important;
+  padding:9px 0 0!important;
+  border-top:1px solid #E9EFF5!important;
+}
+#tab-inicio .subli-live-product-bottom::after{display:none!important}
+#tab-inicio .subli-live-product-price small{
+  color:#91A0B0!important;font-size:7.5px!important;
+}
+#tab-inicio .subli-live-product-price strong{
+  color:#153151!important;font-size:15px!important;
+}
+#tab-inicio .subli-live-product button{
+  width:32px!important;height:32px!important;min-height:32px!important;
+  border-radius:10px!important;
+  background:#E2231A!important;
+  box-shadow:0 5px 12px rgba(226,35,26,.16)!important;
+}
+#tab-inicio .subli-live-catalog-foot{
+  padding-top:12px!important;
+  margin-top:4px!important;
+  border-top:1px solid #EDF2F6!important;
+}
+#tab-inicio .subli-live-catalog-foot>button{
+  display:inline-flex!important;
+  min-width:190px!important;
+  min-height:42px!important;
+  justify-content:center!important;
+  align-items:center!important;
+  background:#E2231A!important;
+  color:#fff!important;
+  border:0!important;
+  border-radius:12px!important;
+  box-shadow:0 7px 16px rgba(226,35,26,.14)!important;
+}
+@media(max-width:900px){
+  #tab-inicio .subli-live-product-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:600px){
+  #tab-inicio .subli-live-catalog{margin:10px 10px 0!important;padding:14px!important;border-radius:18px!important}
+  #tab-inicio .subli-live-catalog-head h2{font-size:23px!important}
+  #tab-inicio .subli-live-product-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  #tab-inicio .subli-live-product{
+    min-height:154px!important;
+    padding:10px!important;
+    grid-template-columns:46px minmax(0,1fr)!important;
+    gap:3px 8px!important;
+  }
+  #tab-inicio .subli-live-product-visual{width:46px!important;height:46px!important}
+  #tab-inicio .subli-live-product-status{top:9px!important;right:9px!important;font-size:6.5px!important}
+  #tab-inicio .subli-live-product h3{font-size:11.5px!important;margin-right:64px!important}
+  #tab-inicio .subli-live-product p{font-size:8px!important;-webkit-line-clamp:2!important}
+  #tab-inicio .subli-product-promo-badge{left:9px!important;top:61px!important}
+  #tab-inicio .subli-live-catalog-foot{align-items:stretch!important;gap:9px!important}
+  #tab-inicio .subli-live-catalog-foot>button{width:100%!important;min-width:0!important}
+}
+</style>
+
 </body>
 </html>

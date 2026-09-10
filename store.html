@@ -3,41 +3,56 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#111218">
-  <meta name="description" content="Catálogo visual de servicios, precios, promociones y disponibilidad.">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Catálogo visual de servicios, precios, promociones y disponibilidad de Sublicuentas.">
   <title>Catálogo · Sublicuentas</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/store.css?v=20260821-1">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/store.css?v=20260910-CAT-1">
 </head>
 <body>
   <header class="catalog-header">
     <div class="catalog-header-inner">
-      <button type="button" class="back-catalog" data-close-catalog>← Volver</button>
-      <a class="catalog-brand" href="/store.html"><b>SUBLI</b>CUENTAS <small>CATÁLOGO</small></a>
-      <a class="header-consult" id="headerConsult" target="_blank" rel="noopener">Consultar</a>
+      <button type="button" class="back-catalog" data-close-catalog>← Inicio</button>
+      <a class="catalog-brand" href="/store"><b>SUBLI</b>CUENTAS <small>CATÁLOGO</small></a>
+      <a class="header-consult" id="headerConsult" target="_blank" rel="noopener">WhatsApp</a>
     </div>
   </header>
 
   <main>
-    <section class="catalog-hero phase3-store-hero">
-      <div class="phase3-store-copy"><span class="eyebrow">CATÁLOGO OFICIAL</span><h1>Servicios, precios y ofertas.<br><em>Todo más claro.</em></h1><p>Explore categorías, compare planes y consulte disponibilidad directamente con su asesor.</p><div class="hero-actions"><button type="button" class="catalog-primary" id="exploreProducts">Explorar servicios</button><a class="catalog-secondary" id="heroConsult" target="_blank" rel="noopener">Consultar</a></div></div>
-      <div class="phase3-store-bot"><img src="/assets/sublibot-catalogo.png?v=20260824-v2" alt="Sublibot"></div>
+    <section class="catalog-hero">
+      <div class="catalog-hero-copy">
+        <span class="eyebrow">CATÁLOGO OFICIAL</span>
+        <h1>Todo lo que vendemos,<br><em>ordenado y fácil de comparar.</em></h1>
+        <p>Consulte precios, planes, disponibilidad y promociones sin perderse entre tantas opciones.</p>
+        <div class="hero-actions">
+          <button type="button" class="catalog-primary" id="exploreProducts">Ver servicios</button>
+          <a class="catalog-secondary" id="heroConsult" target="_blank" rel="noopener">Consultar por WhatsApp</a>
+        </div>
+        <div class="hero-points">
+          <span>✓ Precios sincronizados</span>
+          <span>✓ Catálogo actualizado</span>
+          <span>✓ Atención en Honduras</span>
+        </div>
+      </div>
+      <div class="catalog-hero-bot">
+        <img src="/assets/sublibot-catalogo.png?v=20260824-v2" alt="Sublibot">
+      </div>
     </section>
 
     <section class="promo-section" id="promoSection" hidden>
       <div class="section-heading">
-        <div><span class="eyebrow">OFERTAS DESTACADAS</span><h2>Promociones activas</h2></div>
-        <div class="promo-arrows"><button id="promoPrev" type="button">←</button><button id="promoNext" type="button">→</button></div>
+        <div><span class="eyebrow">PROMOCIONES</span><h2>Ofertas activas</h2></div>
+        <div class="promo-arrows"><button id="promoPrev" type="button" aria-label="Anterior">←</button><button id="promoNext" type="button" aria-label="Siguiente">→</button></div>
       </div>
       <div class="promo-track" id="promoTrack"></div>
     </section>
 
     <section class="catalog-section" id="catalogSection">
       <div class="section-heading catalog-heading">
-        <div><span class="eyebrow">CATÁLOGO CENTRAL</span><h2>Todos los servicios</h2></div>
-        <label class="catalog-search">⌕<input id="storeSearch" type="search" placeholder="Buscar Netflix, Disney, antivirus…"></label>
+        <div><span class="eyebrow">SERVICIOS</span><h2>Catálogo completo</h2><small id="storeResultCount" class="result-count">Cargando servicios…</small></div>
+        <label class="catalog-search"><span>⌕</span><input id="storeSearch" type="search" placeholder="Buscar Netflix, Canva, IPTV…"></label>
       </div>
       <div class="category-scroll" id="categoryFilters"></div>
       <div class="product-grid" id="productGrid"></div>
@@ -53,7 +68,7 @@
 
   <div class="modal-backdrop" id="productModal" hidden>
     <section class="product-modal-card" role="dialog" aria-modal="true" aria-labelledby="productModalTitle">
-      <button type="button" class="modal-close" data-close-modal="productModal">×</button>
+      <button type="button" class="modal-close" data-close-modal="productModal" aria-label="Cerrar">×</button>
       <div class="modal-product-head">
         <div class="modal-product-visual" id="productModalVisual"></div>
         <div><span class="availability-pill" id="productModalStatus"></span><h2 id="productModalTitle"></h2><p id="productModalSummary"></p></div>
@@ -72,6 +87,6 @@
   </div>
 
   <div class="catalog-toast-stack" id="storeToastStack" aria-live="polite"></div>
-  <script src="/assets/store.js?v=20260821-1" defer></script>
+  <script src="/assets/store.js?v=20260910-CAT-1" defer></script>
 </body>
 </html>
