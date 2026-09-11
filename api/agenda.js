@@ -20,7 +20,8 @@ export default async function handler(req, res) {
     const espnDate = hnDate.replace(/-/g, "");
 
     const CATS = [
-      { key: "hn",            label: "🇭🇳 Liga Nacional de Honduras", type: "tsdb", leagueId: "4818" },
+      { key: "hn",            label: "🇭🇳 Liga Nacional de Honduras", type: "tsdb", leagueId: "4818", alwaysShow: true },
+      { key: "centralamerica",label: "🏆 Copa Centroamericana Concacaf", type: "espn", sport: "soccer", slug: "concacaf.central.american.cup", alwaysShow: true },
       { key: "concacaf",      label: "🌎 CONCACAF Champions Cup", type: "espn", sport: "soccer", slug: "concacaf.champions" },
       { key: "gold",          label: "🏆 Copa Oro CONCACAF", type: "espn", sport: "soccer", slug: "concacaf.gold" },
       { key: "leaguescup",    label: "🌎 Leagues Cup", type: "espn", sport: "soccer", slug: "concacaf.leagues.cup" },
@@ -28,7 +29,7 @@ export default async function handler(req, res) {
       { key: "mls",           label: "🇺🇸 MLS", type: "espn", sport: "soccer", slug: "usa.1" },
       { key: "arg",           label: "🇦🇷 Liga Profesional Argentina", type: "espn", sport: "soccer", slug: "arg.1" },
       { key: "bra",           label: "🇧🇷 Brasileirão", type: "espn", sport: "soccer", slug: "bra.1" },
-      { key: "eng",           label: "🏴 Premier League", type: "espn", sport: "soccer", slug: "eng.1" },
+      { key: "eng",           label: "🏴 Premier League", type: "espn", sport: "soccer", slug: "eng.1", alwaysShow: true },
       { key: "esp",           label: "🇪🇸 LaLiga", type: "espn", sport: "soccer", slug: "esp.1" },
       { key: "copadelrey",    label: "🏆 Copa del Rey", type: "espn", sport: "soccer", slug: "esp.copa_del_rey" },
       { key: "ita",           label: "🇮🇹 Serie A", type: "espn", sport: "soccer", slug: "ita.1" },
@@ -56,9 +57,9 @@ export default async function handler(req, res) {
       key: c.key,
       label: c.label,
       partidos: results[i].status === "fulfilled" ? results[i].value : [],
-    })).filter((c) => c.partidos.length > 0);
+    })).filter((c, i) => c.partidos.length > 0 || CATS[i].alwaysShow);
 
-    res.setHeader("Cache-Control", "s-maxage=300, stale-while-revalidate=600");
+    res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=120");
     res.status(200).json({ fecha: hnDate, timezone: "America/Tegucigalpa", categorias });
   } catch (e) {
     res.status(200).json({ error: e.message || "Error cargando la agenda deportiva" });
@@ -91,16 +92,21 @@ async function fetchCat(c, espnDate, hnDate) {
   const timeout = setTimeout(() => ctrl.abort(), 8000);
   try {
     if (c.type === "espn") {
-      const url = `https://site.api.espn.com/apis/site/v2/sports/${c.sport}/${c.slug}/scoreboard?dates=${espnDate}`;
+      // Un partido nocturno en Honduras puede caer en el día siguiente en UTC.
+      // Pedimos una ventana de dos días y luego filtramos estrictamente por fecha HN.
+      const nextEspnDate = addDaysISO(hnDate, 1).replace(/-/g, "");
+      const url = `https://site.api.espn.com/apis/site/v2/sports/${c.sport}/${c.slug}/scoreboard?dates=${espnDate}-${nextEspnDate}&limit=200`;
       const r = await fetch(url, { signal: ctrl.signal });
-      if (!r.ok) return [];
+      if (!r.ok) return c.key === "centralamerica" ? centralAmericaFallback(hnDate) : [];
       const data = await r.json();
-      return (data.events || []).flatMap((ev) => {
+      const events = (data.events || []).filter((ev) => eventDateHN(ev) === hnDate);
+      const mapped = events.flatMap((ev) => {
         if (c.sport === "mma" && ev.competitions && ev.competitions.length) {
           return ev.competitions.map((comp) => mapEspnEvent(ev, comp)).filter(Boolean);
         }
         return [mapEspnEvent(ev)].filter(Boolean);
       });
+      return mapped.length ? mapped : (c.key === "centralamerica" ? centralAmericaFallback(hnDate) : []);
     }
     if (c.type === "tsdb") {
       const url = `https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=${hnDate}&l=${c.leagueId}`;
@@ -111,10 +117,53 @@ async function fetchCat(c, espnDate, hnDate) {
     }
     return [];
   } catch (e) {
-    return [];
+    return c && c.key === "centralamerica" ? centralAmericaFallback(hnDate) : [];
   } finally {
     clearTimeout(timeout);
   }
+}
+
+
+function addDaysISO(iso, days) {
+  const d = new Date(`${iso}T12:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
+function eventDateHN(ev) {
+  try {
+    const raw = (ev && ev.competitions && ev.competitions[0] && ev.competitions[0].date) || (ev && ev.date);
+    if (!raw) return "";
+    return new Date(new Date(raw).getTime() - 6 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  } catch (_) { return ""; }
+}
+
+// Respaldo oficial de cuartos de final 2026. Solo entra si ESPN no devuelve
+// la competencia; así la Copa Centroamericana no desaparece del catálogo.
+function centralAmericaFallback(hnDate) {
+  const games = {
+    "2026-09-09": [
+      ["Deportivo Saprissa", "CS Cartaginés", "2026-09-09T19:06:00-06:00"],
+      ["FC Motagua", "Alianza FC (SLV)", "2026-09-09T21:06:00-06:00"],
+    ],
+    "2026-09-10": [
+      ["CD Marathón", "LD Alajuelense", "2026-09-10T19:06:00-06:00"],
+      ["L.A. Firpo", "Club Olimpia Deportivo", "2026-09-10T21:06:00-06:00"],
+    ],
+    "2026-09-16": [
+      ["CS Cartaginés", "Deportivo Saprissa", "2026-09-16T18:30:00-06:00"],
+      ["Alianza FC (SLV)", "FC Motagua", "2026-09-16T21:15:00-06:00"],
+    ],
+    "2026-09-17": [
+      ["LD Alajuelense", "CD Marathón", "2026-09-17T18:30:00-06:00"],
+      ["Club Olimpia Deportivo", "L.A. Firpo", "2026-09-17T21:15:00-06:00"],
+    ],
+  };
+  return (games[hnDate] || []).map((g) => ({
+    local: g[0], visita: g[1], logoLocal: null, logoVisita: null,
+    horaHN: horaHN(new Date(g[2])), estado: "Programado",
+    marcadorLocal: null, marcadorVisita: null,
+  }));
 }
 
 function mapEspnEvent(ev, competition) {
