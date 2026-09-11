@@ -7001,5 +7001,123 @@ footer{padding-bottom:78px!important}
 })();
 </script>
 
+
+
+<style id="subli-home-fixed-v10">
+@media (max-width:700px){
+  /* Inicio fijo: elimina el scroll fantasma creado por 100vh + padding del dock. */
+  html.sm-home-fixed,
+  body.sm-home-fixed{
+    width:100%!important;
+    height:100dvh!important;
+    min-height:100dvh!important;
+    max-height:100dvh!important;
+    overflow:hidden!important;
+    overscroll-behavior:none!important;
+  }
+  body.sm-home-fixed{
+    padding-bottom:0!important;
+    position:relative!important;
+  }
+  body.sm-home-fixed main{
+    margin:0!important;
+    padding-top:0!important;
+    min-height:0!important;
+    overflow:hidden!important;
+  }
+  body.sm-home-fixed #tab-inicio{
+    min-height:0!important;
+    height:auto!important;
+    overflow:visible!important;
+    padding-bottom:0!important;
+  }
+  body.sm-home-fixed #tab-inicio>.sp{
+    display:none!important;
+    height:0!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:0!important;
+  }
+  body.sm-home-fixed #tab-inicio .subli-home-support-grid,
+  body.sm-home-fixed #tab-inicio .subli-support-card,
+  body.sm-home-fixed #tab-inicio .mascot-btn{
+    display:none!important;
+    height:0!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:0!important;
+  }
+
+  /* Nuevo icono Nosotros, sin fondo negro. */
+  #subliMobileDock [data-sm-nav="nosotros"] .sm-dock-icon{
+    background:transparent!important;
+    overflow:visible!important;
+  }
+  #subliMobileDock [data-sm-nav="nosotros"] .sm-dock-icon img{
+    width:35px!important;
+    height:35px!important;
+    object-fit:contain!important;
+    background:transparent!important;
+    border-radius:0!important;
+    filter:none!important;
+  }
+  #subliMobileDock [data-sm-nav="nosotros"].active .sm-dock-icon{
+    background:#FFF1F0!important;
+  }
+}
+</style>
+<script id="subli-home-fixed-v10-script">
+(function(){
+  'use strict';
+  var ICON='/assets/mobile-icons/nosotros.png?v=20260911-NOSOTROS-SIN-FONDO-1';
+  function isMobile(){ return window.matchMedia && window.matchMedia('(max-width:700px)').matches; }
+  function homeActive(){
+    var home=document.getElementById('tab-inicio');
+    return !!(isMobile() && home && home.classList.contains('active') && !document.body.classList.contains('sm-store-page'));
+  }
+  function forceTop(){
+    try{ if('scrollRestoration' in history) history.scrollRestoration='manual'; }catch(_){ }
+    try{ window.scrollTo(0,0); }catch(_){ }
+    try{ document.documentElement.scrollTop=0; document.body.scrollTop=0; }catch(_){ }
+  }
+  function syncHomeLock(){
+    var on=homeActive();
+    document.documentElement.classList.toggle('sm-home-fixed',on);
+    document.body.classList.toggle('sm-home-fixed',on);
+    if(on) forceTop();
+  }
+  function applyNosotrosIcon(){
+    var img=document.querySelector('#subliMobileDock [data-sm-nav="nosotros"] .sm-dock-icon img');
+    if(img && img.getAttribute('src')!==ICON){
+      img.setAttribute('src',ICON);
+      img.setAttribute('alt','Nosotros');
+      img.style.background='transparent';
+    }
+  }
+  function sync(){ syncHomeLock(); applyNosotrosIcon(); }
+  function start(){
+    sync();
+    setTimeout(sync,120);
+    setTimeout(sync,450);
+    setTimeout(sync,900);
+    var obs=new MutationObserver(function(muts){
+      var needs=false;
+      for(var i=0;i<muts.length;i++){
+        var m=muts[i];
+        if(m.type==='childList' || m.attributeName==='class' || m.attributeName==='src'){needs=true;break;}
+      }
+      if(needs) requestAnimationFrame(sync);
+    });
+    obs.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','src']});
+    window.addEventListener('pageshow',function(){setTimeout(sync,0);});
+    window.addEventListener('resize',sync,{passive:true});
+    document.addEventListener('click',function(){setTimeout(sync,0);},true);
+    document.addEventListener('visibilitychange',function(){if(!document.hidden)setTimeout(sync,0);});
+    if(homeActive()) forceTop();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
+})();
+</script>
+
 </body>
 </html>
