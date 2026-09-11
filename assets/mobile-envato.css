@@ -530,3 +530,39 @@
     object-fit:contain!important;
   }
 }
+
+/* 2026-09-11 FIX 6 — product modal must really close on mobile */
+@media (max-width:700px){
+  /* The author display:flex rule must NEVER override the HTML hidden state. */
+  body.sm-store-page .modal-backdrop[hidden],
+  body.sm-mobile-shell-ready.sm-store-page .modal-backdrop[hidden]{
+    display:none!important;
+    visibility:hidden!important;
+    opacity:0!important;
+    pointer-events:none!important;
+  }
+
+  /* Only an open modal is rendered. */
+  body.sm-store-page .modal-backdrop:not([hidden]){
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    pointer-events:auto!important;
+    position:fixed!important;
+    inset:0!important;
+  }
+
+  /* Lock only while product detail is open; category/product list remains normally scrollable after closing. */
+  body.sm-store-page.modal-open,
+  body.sm-mobile-shell-ready.sm-store-page.modal-open{
+    overflow:hidden!important;
+    height:100dvh!important;
+  }
+
+  body.sm-store-page .product-modal-card{
+    max-height:calc(100dvh - 18px)!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+}
