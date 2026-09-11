@@ -17,11 +17,8 @@
     if(s.indexOf('504')===0 && s.length===11) return '+504 '+s.slice(3,7)+'-'+s.slice(7);
     return s ? '+'+s : 'WhatsApp';
   }
-  var ICON_FALLBACK_BASE='/mobile-icons/';
-  function iconSrc(file){
-    var map=window.__SUBLI_MOBILE_ICONS__||{};
-    return map[file]||ICON_FALLBACK_BASE+file+'?v=20260910-4';
-  }
+  var ICON_BASE='/mobile-icons/';
+  var ICON_FALLBACK_BASE='/assets/mobile-icons/';
   var CATEGORY_ICONS={
     'cine-series':'cine-series.png','musica-premium':'musica-premium.png','tv-digital':'tv-digital.png',
     'recargas-gaming':'recargas-gaming.png','ia-educacion':'ia-educacion.png','zona-creativa':'zona-creativa.png',
@@ -42,17 +39,9 @@
   }
   function categoryIconMarkup(c){
     var key=categoryIconKey(c), file=CATEGORY_ICONS[key];
-    return file?'<img src="'+esc(iconSrc(file))+'" alt="" aria-hidden="true">':esc((c&&c.icon)||'');
+    return file?'<img src="'+ICON_BASE+file+'" alt="">':esc((c&&c.icon)||'');
   }
-  function navIcon(file,alt){return '<img src="'+esc(iconSrc(file))+'" alt="'+esc(alt||'')+'" aria-hidden="true">';}
-  function sublibotMini(alt){return '<img src="/assets/sublibot-mobile.webp?v=20260910-5" alt="'+esc(alt||'Sublibot')+'">';}
-  function hideLegacyMobileChrome(){
-    document.querySelectorAll('#subliBottomNav,.subli-bottom-nav').forEach(function(el){
-      el.style.setProperty('display','none','important');
-      el.style.setProperty('visibility','hidden','important');
-      el.style.setProperty('pointer-events','none','important');
-    });
-  }
+  function navIcon(file,alt){return '<img src="'+ICON_BASE+file+'" alt="'+esc(alt||'')+'">';}
   function hideIntro(){
     var intro=document.getElementById('intro');
     if(!intro)return;
@@ -180,7 +169,7 @@
       track.innerHTML=slides.map(function(s,i){
         var copy=Boolean(s.title||s.subtitle||s.badge||s.buttonLabel);
         return '<button type="button" class="sm-slide" data-sm-slide="'+i+'" style="background:linear-gradient(135deg,'+esc(s.accentFrom||'#102F54')+','+esc(s.accentTo||'#E2231A')+')">'+
-          (s.imageUrl?'<img class="fit-'+esc(s.imageFit||'cover')+'" src="'+esc(s.imageUrl)+'" alt="'+esc(s.title||'Promoción')+'" decoding="async" '+(i===0?'fetchpriority="high"':'loading="lazy"')+'>':'')+
+          (s.imageUrl?'<img class="fit-'+esc(s.imageFit||'cover')+'" src="'+esc(s.imageUrl)+'" alt="'+esc(s.title||'Promoción')+'">':'')+
           (copy?'<span class="sm-slide-copy">'+(s.badge?'<span>'+esc(s.badge)+'</span>':'')+(s.title?'<h3>'+esc(s.title)+'</h3>':'')+(s.subtitle?'<p>'+esc(s.subtitle)+'</p>':'')+(s.buttonLabel?'<b>'+esc(s.buttonLabel)+' →</b>':'')+'</span>':'')+'</button>';
       }).join('');
       track.querySelectorAll('[data-sm-slide]').forEach(function(b){b.addEventListener('click',function(){runSlide(slides[Number(b.getAttribute('data-sm-slide'))]);});});
@@ -221,82 +210,50 @@
   function buildDock(){
     if(document.getElementById('subliMobileDock')) return;
     var dock=document.createElement('nav');dock.id='subliMobileDock';dock.className='sm-mobile-dock';dock.setAttribute('aria-label','Navegación móvil');
-    if(document.getElementById('intro')) dock.classList.add('sm-dock-pending');
     dock.innerHTML=''+
       '<button type="button" class="sm-dock-btn active" data-sm-nav="inicio"><span class="sm-dock-icon">'+navIcon('inicio.png','Inicio')+'</span><small>Inicio</small></button>'+
       '<button type="button" class="sm-dock-btn" data-sm-nav="cartelera"><span class="sm-dock-icon">'+navIcon('cartelera.png','Cartelera')+'</span><small>Cartelera</small></button>'+
       '<button type="button" class="sm-dock-btn" data-sm-nav="promos"><span class="sm-dock-icon">'+navIcon('ofertas.png','Ofertas')+'</span><small>Ofertas</small></button>'+
-      '<button type="button" class="sm-dock-btn" data-sm-nav="sublibot"><span class="sm-dock-icon">'+sublibotMini('Sublibot')+'</span><small>Sublibot</small></button>'+
+      '<button type="button" class="sm-dock-btn" data-sm-nav="sublibot"><span class="sm-dock-icon"><img src="/assets/sublibot-catalogo.png?v=20260824-v2" alt="Sublibot"></span><small>Sublibot</small></button>'+
       '<button type="button" class="sm-dock-btn" data-sm-nav="nosotros"><span class="sm-dock-icon">'+navIcon('nosotros.png','Nosotros')+'</span><small>Nosotros</small></button>';
     document.body.appendChild(dock);
     dock.querySelectorAll('[data-sm-nav]').forEach(function(b){b.addEventListener('click',function(){
       var id=b.getAttribute('data-sm-nav');
       if(id==='sublibot'){
-        var pan=document.getElementById('sb-pan');
-        var isOpen=!!(pan && pan.classList.contains('open') && !pan.classList.contains('minimized'));
-        if(isOpen){
-          if(typeof window.sbCerrar==='function') window.sbCerrar();
-          else if(pan){ pan.classList.remove('open'); pan.classList.remove('minimized'); }
-          setDockActive(document.getElementById('tab-inicio') && document.getElementById('tab-inicio').classList.contains('active') ? 'inicio' : '');
-          return;
-        }
-        if(location.pathname.replace(/\/+$/,'')==='/store'){try{sessionStorage.setItem('subli-open-sublibot','1');}catch(_e){} location.href='/?open=sublibot&skipIntro=1';return;}
+        if(location.pathname.replace(/\/+$/,'')==='/store'){location.href='/?open=sublibot';return;}
         if(typeof window.mascotAbrirChat==='function') window.mascotAbrirChat();
-        else if(pan){ pan.classList.add('open'); pan.classList.remove('minimized'); }
         setDockActive('sublibot');return;
       }
       if(id==='nosotros'){openAbout();setDockActive('nosotros');return;}
       goHomeTab(id);
     });});
   }
-  function revealDockAfterIntro(){
-    var dock=document.getElementById('subliMobileDock'); if(!dock)return;
-    var intro=document.getElementById('intro');
-    function reveal(){dock.classList.remove('sm-dock-pending');}
-    if(!intro){reveal();return;}
-    intro.addEventListener('animationend',function(e){if(e.animationName==='introScreenExit')reveal();},{once:true});
-    setTimeout(reveal,2200);
-  }
   function setDockActive(id){document.querySelectorAll('#subliMobileDock [data-sm-nav]').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-sm-nav')===id);});}
 
-  var ABOUT_SECTIONS={
-    quienes:{icon:'👥',title:'Quiénes somos',body:'<p>Sublicuentas nació en Honduras de la pasión por la tecnología y el entretenimiento. Trabajamos con innovación constante, compromiso con nuestros clientes y soluciones digitales eficientes a precios competitivos.</p>'},
-    terminos:{icon:'📋',title:'Términos y condiciones',body:'<h4>1. Información del servicio</h4><p>Ofrecemos acceso a cuentas, perfiles, licencias, IPTV y servicios digitales. Los productos se entregan digitalmente de forma inmediata o dentro del plazo indicado.</p><h4>2. Pagos</h4><ul><li>Transferencias: Ficohsa, BAC, Davivienda, Banpaís y Occidente.</li><li>Tigo Money y efectivo cuando aplique.</li><li>El servicio se activa al confirmar el pago.</li><li>No se emiten facturas fiscales.</li></ul><h4>3. Entrega</h4><ul><li>Entrega entre 15 y 30 minutos tras confirmar pago, vía WhatsApp.</li><li>Cuentas y licencias: garantía durante el tiempo contratado.</li><li>IPTV: garantía de funcionamiento de 24 horas.</li><li>Si la cuenta falla antes del tiempo contratado, se otorga reemplazo sin costo.</li></ul><h4>4. Reembolsos y garantías</h4><ul><li>No se aceptan devoluciones ni reembolsos una vez entregado o activado un servicio digital.</li><li>La garantía cubre acceso y funcionamiento; no problemas de red, incompatibilidad o desconocimiento técnico.</li><li>Recargas o keys no tienen devolución una vez activadas o enviadas.</li><li>En errores internos comprobables se realiza reposición o cambio de perfil, no devolución en efectivo.</li></ul><h4>5. Normas de uso</h4><ul><li>No modificar datos sensibles de la cuenta.</li><li>No compartir fuera de lo permitido por el plan.</li><li>No solicitar múltiples códigos de inicio.</li><li>Primera falta: advertencia; segunda falta: suspensión sin reembolso.</li></ul><h4>6. Reglas por plataforma</h4><ul><li>Netflix: si indica que el dispositivo no pertenece al hogar, usar “Estoy de viaje” o “Ver temporalmente”.</li><li>Disney+: si la TV no forma parte del hogar, usar “Estoy fuera del hogar”.</li><li>Prime Video: no usar la cuenta para alquiler de películas.</li><li>Códigos de inicio: enviar captura a soporte; expiran en 10–15 min.</li></ul>'},
-    garantias:{icon:'↩',title:'Política de devolución y garantías',body:'<ul><li><b>Servicios digitales:</b> no se aceptan devoluciones ni reembolsos una vez entregados o activados.</li><li><b>Responsabilidad del usuario:</b> la garantía cubre acceso y funcionamiento, no lentitud de red, incompatibilidad de dispositivos o desconocimiento técnico.</li><li><b>Cuentas y licencias:</b> garantía durante el tiempo adquirido, sujeta a revisión del estado de la cuenta.</li><li><b>IPTV:</b> garantía máxima de 24 horas para fallas del servidor; no aplica por velocidad de internet del cliente.</li><li><b>Recargas de juegos:</b> no aplica reembolso una vez enviada la recarga al ID suministrado.</li><li><b>Error interno comprobable:</b> se realiza reposición o cambio de perfil.</li></ul>'},
-    privacidad:{icon:'🔒',title:'Política de privacidad',body:'<ul><li>Usamos su información únicamente para procesar pedidos, activar servicios y brindar soporte.</li><li>No compartimos ni vendemos datos personales a terceros.</li><li>La información se almacena de forma segura y solo personal autorizado tiene acceso.</li><li>Para modificar o eliminar datos: <b>soporte@sublicuentas.com</b>.</li></ul>'},
-    soporte:{icon:'☎',title:'Atención y soporte',body:'<p><b>Lunes a sábado:</b> 8:00 AM – 9:30 PM.</p><p><b>Domingo:</b> 11:00 AM – 6:00 PM.</p><p><b>Feriados:</b> 11:00 AM – 5:00 PM.</p><div class="sm-attention-box"><div><small>Número de atención</small><strong id="smSupportPhone">WhatsApp</strong></div><a id="smSupportLink" target="_blank" rel="noopener">Escribir</a></div>'}
-  };
-  function aboutMenuItem(key){var x=ABOUT_SECTIONS[key];return '<button type="button" class="sm-about-menu-item" data-sm-about-view="'+key+'"><span class="sm-about-card-icon">'+x.icon+'</span><strong>'+x.title+'</strong><i>›</i></button>';}
   function aboutMarkup(){
-    return '<div class="sm-about-handle"></div><div class="sm-about-home" id="smAboutHome"><div class="sm-about-head"><h2>Nosotros</h2><button type="button" class="sm-about-close" data-sm-about-close aria-label="Cerrar">×</button></div>'+ 
-      '<div class="sm-about-intro">'+sublibotMini('Sublibot')+'<div><strong>Sublicuentas · Honduras</strong><p>Acceso fácil, confiable y accesible a streaming, TV digital, juegos, software y herramientas online. Nuestro propósito: Conectamos tu entretenimiento.</p></div></div>'+ 
-      '<div class="sm-about-menu">'+aboutMenuItem('quienes')+aboutMenuItem('terminos')+aboutMenuItem('garantias')+aboutMenuItem('privacidad')+aboutMenuItem('soporte')+'</div></div>'+ 
-      '<div class="sm-about-detail" id="smAboutDetail" hidden><div class="sm-about-detail-head"><button type="button" class="sm-about-back" data-sm-about-back aria-label="Volver">←</button><h2 id="smAboutDetailTitle"></h2><button type="button" class="sm-about-close" data-sm-about-close aria-label="Cerrar">×</button></div><div class="sm-about-detail-body" id="smAboutDetailBody"></div></div>';
+    return '<div class="sm-about-handle"></div><div class="sm-about-head"><h2>Nosotros</h2><button type="button" class="sm-about-close" data-sm-about-close aria-label="Cerrar">×</button></div>'+
+    '<div class="sm-about-intro"><img src="/assets/sublibot-catalogo.png?v=20260824-v2" alt="Sublibot"><div><strong>Sublicuentas · Honduras</strong><p>Acceso fácil, confiable y accesible a streaming, TV digital, juegos, software y herramientas online. Nuestro propósito: Conectamos tu entretenimiento.</p></div></div>'+
+    aboutCard(aboutIcon('quienes-somos.png','Quiénes somos'),'Quiénes somos','<p>Sublicuentas nació en Honduras de la pasión por la tecnología y el entretenimiento. Trabajamos con innovación constante, compromiso con nuestros clientes y soluciones digitales eficientes a precios competitivos.</p>')+
+    aboutCard(aboutIcon('terminos-condiciones.png','Términos y condiciones'),'Términos y condiciones','<h4>1. Información del servicio</h4><p>Ofrecemos acceso a cuentas, perfiles, licencias, IPTV y servicios digitales. Los productos se entregan digitalmente de forma inmediata o dentro del plazo indicado.</p><h4>2. Pagos</h4><ul><li>Transferencias: Ficohsa, BAC, Davivienda, Banpaís y Occidente.</li><li>Tigo Money y efectivo cuando aplique.</li><li>El servicio se activa al confirmar el pago.</li><li>No se emiten facturas fiscales.</li></ul><h4>3. Entrega</h4><ul><li>Entrega entre 15 y 30 minutos tras confirmar pago, vía WhatsApp.</li><li>Cuentas y licencias: garantía durante el tiempo contratado.</li><li>IPTV: garantía de funcionamiento de 24 horas.</li><li>Si la cuenta falla antes del tiempo contratado, se otorga reemplazo sin costo.</li></ul><h4>4. Reembolsos y garantías</h4><ul><li>No se aceptan devoluciones ni reembolsos una vez entregado o activado un servicio digital.</li><li>La garantía cubre acceso y funcionamiento; no problemas de red, incompatibilidad o desconocimiento técnico.</li><li>Recargas o keys no tienen devolución una vez activadas o enviadas.</li><li>En errores internos comprobables se realiza reposición o cambio de perfil, no devolución en efectivo.</li></ul><h4>5. Normas de uso</h4><ul><li>No modificar datos sensibles de la cuenta.</li><li>No compartir fuera de lo permitido por el plan.</li><li>No solicitar múltiples códigos de inicio.</li><li>Primera falta: advertencia; segunda falta: suspensión sin reembolso.</li></ul><h4>6. Reglas por plataforma</h4><ul><li>Netflix: si indica que el dispositivo no pertenece al hogar, usar “Estoy de viaje” o “Ver temporalmente”.</li><li>Disney+: si la TV no forma parte del hogar, usar “Estoy fuera del hogar”.</li><li>Prime Video: no usar la cuenta para alquiler de películas.</li><li>Códigos de inicio: enviar captura a soporte; expiran en 10–15 min.</li></ul>')+
+    aboutCard(aboutIcon('devolucion-garantias.png','Política de devolución y garantías'),'Política de devolución y garantías','<ul><li><b>Servicios digitales:</b> no se aceptan devoluciones ni reembolsos una vez entregados o activados.</li><li><b>Responsabilidad del usuario:</b> la garantía cubre acceso y funcionamiento, no lentitud de red, incompatibilidad de dispositivos o desconocimiento técnico.</li><li><b>Cuentas y licencias:</b> garantía durante el tiempo adquirido, sujeta a revisión del estado de la cuenta.</li><li><b>IPTV:</b> garantía máxima de 24 horas para fallas del servidor; no aplica por velocidad de internet del cliente.</li><li><b>Recargas de juegos:</b> no aplica reembolso una vez enviada la recarga al ID suministrado.</li><li><b>Error interno comprobable:</b> se realiza reposición o cambio de perfil.</li></ul>')+
+    aboutCard(aboutIcon('privacidad.png','Política de privacidad'),'Política de privacidad','<ul><li>Usamos su información únicamente para procesar pedidos, activar servicios y brindar soporte.</li><li>No compartimos ni vendemos datos personales a terceros.</li><li>La información se almacena de forma segura y solo personal autorizado tiene acceso.</li><li>Para modificar o eliminar datos: <b>soporte@sublicuentas.com</b>.</li></ul>')+
+    aboutCard(aboutIcon('soporte.png','Atención y soporte'),'Atención y soporte','<p><b>Lunes a sábado:</b> 8:00 AM – 9:30 PM.</p><p><b>Domingo:</b> 11:00 AM – 6:00 PM.</p><p><b>Feriados:</b> 11:00 AM – 5:00 PM.</p><div class="sm-attention-box"><div><small>Número de atención</small><strong id="smSupportPhone">WhatsApp</strong></div><a id="smSupportLink" target="_blank" rel="noopener">Escribir</a></div>');
   }
+  function aboutCard(icon,title,body){return '<section class="sm-about-card"><button type="button"><span class="sm-about-card-icon">'+icon+'</span>'+title+'<i>›</i></button><div class="sm-about-body">'+body+'</div></section>';}
   function buildAbout(){
     if(document.getElementById('smAboutOverlay')) return;
     var o=document.createElement('div');o.id='smAboutOverlay';o.className='sm-about-overlay';o.innerHTML='<div class="sm-about-sheet" role="dialog" aria-modal="true" aria-label="Nosotros">'+aboutMarkup()+'</div>';document.body.appendChild(o);
-    o.addEventListener('click',function(e){
-      if(e.target===o||e.target.closest('[data-sm-about-close]')){closeAbout();return;}
-      var view=e.target.closest('[data-sm-about-view]');if(view){openAboutDetail(view.getAttribute('data-sm-about-view'));return;}
-      if(e.target.closest('[data-sm-about-back]')) closeAboutDetail();
-    });
+    o.addEventListener('click',function(e){if(e.target===o||e.target.closest('[data-sm-about-close]'))closeAbout();});
+    o.querySelectorAll('.sm-about-card>button').forEach(function(b){b.addEventListener('click',function(){b.parentElement.classList.toggle('open');});});
     syncSupport();
   }
-  function openAboutDetail(key){
-    var item=ABOUT_SECTIONS[key],home=document.getElementById('smAboutHome'),detail=document.getElementById('smAboutDetail');if(!item||!home||!detail)return;
-    document.getElementById('smAboutDetailTitle').textContent=item.title;
-    document.getElementById('smAboutDetailBody').innerHTML=item.body;
-    home.hidden=true;detail.hidden=false;detail.scrollTop=0;syncSupport();
-  }
-  function closeAboutDetail(){var home=document.getElementById('smAboutHome'),detail=document.getElementById('smAboutDetail');if(home)home.hidden=false;if(detail)detail.hidden=true;}
   function syncSupport(){
     var p=whatsapp(currentCatalog),phone=document.getElementById('smSupportPhone'),link=document.getElementById('smSupportLink');
     if(phone) phone.textContent=prettyPhone(p);
     if(link) link.href='https://wa.me/'+p+'?text='+encodeURIComponent('Hola, necesito atención de Sublicuentas.');
   }
-  function openAbout(){buildAbout();closeAboutDetail();document.body.classList.add('sm-about-open');document.getElementById('smAboutOverlay').classList.add('open');syncSupport();}
-  function closeAbout(){var o=document.getElementById('smAboutOverlay');if(o)o.classList.remove('open');closeAboutDetail();document.body.classList.remove('sm-about-open');if(document.getElementById('tab-inicio') && document.getElementById('tab-inicio').classList.contains('active'))setDockActive('inicio');}
+  function openAbout(){buildAbout();document.body.classList.add('sm-about-open');document.getElementById('smAboutOverlay').classList.add('open');syncSupport();}
+  function closeAbout(){var o=document.getElementById('smAboutOverlay');if(o)o.classList.remove('open');document.body.classList.remove('sm-about-open');if(document.getElementById('tab-inicio') && document.getElementById('tab-inicio').classList.contains('active'))setDockActive('inicio');}
 
   function sync(catalog){
     if(catalog) currentCatalog=catalog;
@@ -311,7 +268,6 @@
       if(tab && ['inicio','cartelera','promos','mundial'].indexOf(tab)!==-1) goHomeTab(tab);
       if(open==='sublibot' && typeof window.mascotAbrirChat==='function'){window.mascotAbrirChat();setDockActive('sublibot');}
       if(open==='nosotros'){openAbout();setDockActive('nosotros');}
-      if(open || q.get('skipIntro')){ try{history.replaceState(null,'',location.pathname+(tab?'?tab='+encodeURIComponent(tab):''));}catch(_e){} }
     },180);
   }
 
@@ -323,15 +279,9 @@
   }
 
   function init(){
-    if(!mobile()) return;
-    document.body.classList.add('sm-mobile-shell');
-    hideLegacyMobileChrome();
-    var initQuery=new URLSearchParams(location.search);
-    var initialTab=initQuery.get('tab'), initialOpen=initQuery.get('open'), skipIntro=initQuery.get('skipIntro');
-    var storedOpen=''; try{storedOpen=sessionStorage.getItem('subli-open-sublibot')||'';}catch(_e){}
-    if(initialTab || initialOpen || skipIntro || storedOpen==='1') hideIntro();
-    if(storedOpen==='1'){ try{sessionStorage.removeItem('subli-open-sublibot');}catch(_e){} }
-    buildHome();buildDock();revealDockAfterIntro();buildAbout();initStore();
+    var initialTab=new URLSearchParams(location.search).get('tab');
+    if(initialTab)hideIntro();
+    buildHome();buildDock();buildAbout();initStore();
     if(window.__SUBLI_CATALOG__) sync(window.__SUBLI_CATALOG__);
     window.addEventListener('subli:catalog-updated',function(e){sync(e.detail||window.__SUBLI_CATALOG__);});
     parseInitialHomeAction();
