@@ -1,114 +1,126 @@
 {
-  "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "*.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "assets/**",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "mobile-icons/**",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "api/chat.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/cartelera.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/partidos.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/agenda.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/catalogo.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/admin-catalogo.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/catalog-sync.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/store-auth.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/checkout.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/canjear.js",
-      "use": "@vercel/node"
+      "source": "/c/(.*)",
+      "destination": "/acceso.html?token=$1"
     }
   ],
-  "routes": [
+  "headers": [
     {
-      "src": "/store/?",
-      "dest": "/store.html"
+      "source": "/",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
     },
     {
-      "src": "/admin/?",
-      "dest": "/admin.html"
+      "source": "/index.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
     },
     {
-      "src": "/api/chat",
-      "dest": "/api/chat.js"
+      "source": "/(.*)\\.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
     },
     {
-      "src": "/api/cartelera",
-      "dest": "/api/cartelera.js"
+      "source": "/control-maestro.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
     },
     {
-      "src": "/api/partidos",
-      "dest": "/api/partidos.js"
+      "source": "/control-maestro.css",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
     },
     {
-      "src": "/api/agenda",
-      "dest": "/api/agenda.js"
+      "source": "/revendedores-admin.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
     },
     {
-      "src": "/api/catalogo",
-      "dest": "/api/catalogo.js"
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
     },
     {
-      "src": "/api/admin-catalogo",
-      "dest": "/api/admin-catalogo.js"
+      "source": "/activar-tv.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
     },
     {
-      "src": "/api/catalog-sync",
-      "dest": "/api/catalog-sync.js"
+      "source": "/activar-tv-platforms.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
     },
     {
-      "src": "/api/store-auth",
-      "dest": "/api/store-auth.js"
+      "source": "/activar-tv.css",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
     },
     {
-      "src": "/api/checkout",
-      "dest": "/api/checkout.js"
+      "source": "/catalogo-relojes-admin.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
     },
     {
-      "src": "/api/canjear",
-      "dest": "/api/canjear.js"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/catalogo-relojes-admin.css",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
     }
-  ]
+  ],
+  "functions": {
+    "api/activar-tv.js": {
+      "maxDuration": 60
+    },
+    "api/catalogo-relojes.js": {
+      "maxDuration": 60
+    }
+  }
 }
