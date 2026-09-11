@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/store.css?v=20260910-CAT-2">
-  <link rel="stylesheet" href="/assets/mobile-envato.css?v=20260910-MOBILE-5-RESTORE">
+  <link rel="stylesheet" href="/assets/mobile-envato.css?v=20260910-MOBILE-6-CLEAN">
 </head>
 <body>
   <header class="catalog-header">
@@ -76,7 +76,9 @@
         <div><span class="availability-pill" id="productModalStatus"></span><h2 id="productModalTitle"></h2><p id="productModalSummary"></p></div>
       </div>
       <div class="modal-selects">
-        <label>Plan<select id="productPlanSelect"></select></label>
+        <div class="modal-static-choice" id="productSinglePlan" hidden></div>
+        <label id="productPlanWrap">Plan<select id="productPlanSelect"></select></label>
+        <div class="modal-static-choice" id="productSingleOption" hidden></div>
         <label id="productOptionWrap">Duración u opción<select id="productOptionSelect"></select></label>
       </div>
       <ul class="modal-features" id="productFeatures"></ul>
@@ -90,7 +92,7 @@
 
   <div class="catalog-toast-stack" id="storeToastStack" aria-live="polite"></div>
   <script src="/assets/mobile-icons-inline.js?v=20260910-ICONS-5" defer></script>
-  <script src="/assets/store.js?v=20260910-CAT-4-FIX" defer></script>
-  <script src="/assets/mobile-envato.js?v=20260910-MOBILE-5-RESTORE" defer></script>
+  <script src="/assets/store.js?v=20260910-CAT-5-CLEAN" defer></script>
+  <script src="/assets/mobile-envato.js?v=20260910-MOBILE-6-CLEAN" defer></script>
 </body>
 </html>
