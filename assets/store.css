@@ -15,12 +15,14 @@
 html{scroll-behavior:smooth}
 @keyframes sm-page-in{from{opacity:0}to{opacity:1}}
 body{
-  animation:sm-page-in .22s ease;
+  animation:sm-page-in .18s ease;
 }
-body.sm-page-leaving{
-  opacity:0!important;
-  transition:opacity .16s ease!important;
-  pointer-events:none!important;
+/* Respuesta instantanea al tocar "atras": no retrasa la navegacion en si,
+   solo da una senal visual de que el toque se registro. */
+.back-catalog:active{
+  transform:scale(.9)!important;
+  opacity:.6!important;
+  transition:transform .08s ease,opacity .08s ease!important;
 }
 body{
   margin:0;
