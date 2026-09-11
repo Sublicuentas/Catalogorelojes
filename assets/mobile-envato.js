@@ -249,7 +249,7 @@
         if(typeof window.mascotAbrirChat==='function') window.mascotAbrirChat();
         setDockActive('sublibot');return;
       }
-      if(id==='nosotros'){ hideIntro(); openAbout(); setDockActive('nosotros'); return; }
+      if(id==='nosotros'){ hideIntro(); try{ if(typeof window.sbCerrar==='function') window.sbCerrar(); }catch(_){ } openAbout(); setDockActive('nosotros'); return; }
       goHomeTab(id);
     });});
   }
