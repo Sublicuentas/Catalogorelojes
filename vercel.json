@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/c/(.*)",
-      "destination": "/acceso.html?token=$1"
+      "source": "/store",
+      "destination": "/store.html"
     }
   ],
   "headers": [
@@ -25,7 +25,7 @@
       ]
     },
     {
-      "source": "/(.*)\\.html",
+      "source": "/store.html",
       "headers": [
         {
           "key": "Cache-Control",
@@ -34,25 +34,7 @@
       ]
     },
     {
-      "source": "/control-maestro.js",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/control-maestro.css",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/revendedores-admin.js",
+      "source": "/admin.html",
       "headers": [
         {
           "key": "Cache-Control",
@@ -66,51 +48,6 @@
         {
           "key": "Cache-Control",
           "value": "no-store"
-        }
-      ]
-    },
-    {
-      "source": "/activar-tv.js",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/activar-tv-platforms.js",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/activar-tv.css",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/catalogo-relojes-admin.js",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/catalogo-relojes-admin.css",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate"
         }
       ]
     }
