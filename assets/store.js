@@ -56,6 +56,10 @@
     var c = state.catalog && state.catalog.categories.find(function(x){ return x.id === id; });
     return c ? c.name : id;
   }
+  function isStreamingCategory() {
+    var text=normalizeIconText(String(state.category||'')+' '+String(categoryName(state.category)||''));
+    return /cine|series|streaming/.test(text);
+  }
   function productById(id) {
     return state.catalog && state.catalog.products.find(function(p){ return p.id === id; });
   }
@@ -103,7 +107,7 @@
 
   function syncCategoryOnlyView(){
     var categoryOnly=state.category!=='all';
-    var streamingOnly=state.category==='streaming';
+    var streamingOnly=isStreamingCategory();
     document.body.classList.toggle('sm-category-only-view',categoryOnly);
     document.body.classList.toggle('sm-streaming-category-view',streamingOnly);
     var promo=byId('promoSection');
@@ -118,11 +122,11 @@
       },[])).join(' ');
     var chips=[];
     function add(label){ if(chips.indexOf(label)===-1)chips.push(label); }
-    if(/FHD|full\s*hd/i.test(source)) add('FHD');
-    else if(/HD/i.test(source)) add('HD');
-    if(/4K|ultra\s*hd/i.test(source)) add('4K');
+    if(/(?:^|\W)FHD(?:$|\W)|full\s*hd/i.test(source)) add('FHD');
+    else if(/(?:^|\W)HD(?:$|\W)/i.test(source)) add('HD');
+    if(/(?:^|\W)4K(?:$|\W)|ultra\s*hd/i.test(source)) add('4K');
     if(/dolby/i.test(source)) add('Dolby');
-    if(/HDR/i.test(source)) add('HDR');
+    if(/(?:^|\W)HDR(?:$|\W)/i.test(source)) add('HDR');
     return chips.slice(0,3);
   }
 
@@ -158,7 +162,7 @@
     if(resultCount)resultCount.textContent=products.length+' '+(products.length===1?'servicio':'servicios')+(state.category!=='all'||query?' encontrados':' disponibles');
     byId('productGrid').innerHTML=products.map(function(p){
       var status=statusOf(p.availability), price=productMinimumPrice(p);
-      if(state.category==='streaming'){
+      if(isStreamingCategory()){
         var chips=platformFeatureChips(p);
         return '<article class="product-card sm-streaming-card" style="--accent:'+escapeHtml(p.accent||'#E2231A')+'">'+
           (p.badge?'<span class="product-badge">'+escapeHtml(p.badge)+'</span>':'')+

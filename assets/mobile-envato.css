@@ -793,3 +793,223 @@
     border-radius:14px!important;
   }
 }
+
+
+/* 2026-09-11 FIX 9 — Cine y Series detector + visual fidelity + full visible product price */
+@media (max-width:700px){
+  /* This class is now applied by category NAME too, not only by a hard-coded ID. */
+  body.sm-store-page.sm-category-only-view.sm-streaming-category-view .catalog-header{
+    background:linear-gradient(180deg,#fff 0%,#fbfcfe 100%)!important;
+  }
+  body.sm-store-page.sm-category-only-view.sm-streaming-category-view .catalog-header-inner{
+    min-height:154px!important;
+    padding:16px 18px 12px!important;
+    grid-template-columns:54px minmax(0,1fr) 54px!important;
+  }
+  body.sm-store-page.sm-category-only-view.sm-streaming-category-view .back-catalog{
+    align-self:start!important;
+    margin-top:17px!important;
+  }
+  body.sm-store-page.sm-category-only-view.sm-streaming-category-view .sm-store-mobile-title{
+    text-align:left!important;
+    padding:0 0 38px 8px!important;
+    font-size:34px!important;
+    line-height:.98!important;
+    max-width:270px!important;
+    margin:0 auto!important;
+  }
+  body.sm-store-page.sm-category-only-view.sm-streaming-category-view .sm-store-mobile-title::after{
+    left:8px!important;
+    transform:none!important;
+    bottom:4px!important;
+    width:250px!important;
+    text-align:left!important;
+    font-size:14px!important;
+    line-height:1.18!important;
+  }
+
+  /* Search visible exactly in this category. */
+  body.sm-store-page.sm-category-only-view.sm-streaming-category-view .catalog-section{
+    padding-top:15px!important;
+  }
+  body.sm-store-page.sm-category-only-view.sm-streaming-category-view .catalog-heading{
+    display:block!important;
+    margin:0 14px 16px!important;
+    padding:0!important;
+  }
+  body.sm-store-page.sm-category-only-view.sm-streaming-category-view .catalog-heading>div{
+    display:none!important;
+  }
+  body.sm-store-page.sm-category-only-view.sm-streaming-category-view .catalog-search{
+    display:grid!important;
+    grid-template-columns:42px 1fr!important;
+    align-items:center!important;
+    width:100%!important;
+    height:60px!important;
+    padding:0 14px!important;
+    border-radius:21px!important;
+    background:#eef2f6!important;
+    border:1px solid #e4e9ef!important;
+    box-shadow:none!important;
+  }
+  body.sm-store-page.sm-category-only-view.sm-streaming-category-view .catalog-search span{
+    text-align:center!important;
+    font-size:28px!important;
+  }
+  body.sm-store-page.sm-category-only-view.sm-streaming-category-view .catalog-search input{
+    width:100%!important;
+    font-size:15px!important;
+  }
+
+  /* Reference-like 2-up service cards. */
+  body.sm-store-page.sm-streaming-category-view #productGrid{
+    padding:0 10px!important;
+    gap:12px 10px!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-card{
+    border-radius:20px!important;
+    box-shadow:0 7px 18px rgba(21,49,81,.08)!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-card .product-visual{
+    height:120px!important;
+    padding:14px 16px 8px!important;
+    background:#fff!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-card .product-visual img{
+    width:88px!important;
+    height:88px!important;
+    margin:0 auto!important;
+    object-fit:contain!important;
+    border-radius:16px!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-card .product-body{
+    padding:9px 12px 12px!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-title-row{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:5px!important;
+    margin-bottom:6px!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-title-row h3{
+    font-size:18px!important;
+    order:1!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-title-row .availability-pill{
+    order:2!important;
+    width:max-content!important;
+    font-size:8px!important;
+    padding:5px 8px!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-card .product-body>p{
+    min-height:32px!important;
+    margin:0 0 7px!important;
+    font-size:10px!important;
+    line-height:1.28!important;
+    -webkit-line-clamp:2!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-platform-features{
+    min-height:20px!important;
+    margin:0 0 8px!important;
+    gap:4px!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-platform-features span{
+    min-height:19px!important;
+    padding:0 6px!important;
+    font-size:7.5px!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-card .product-footer{
+    padding:9px 7px 0!important;
+    align-items:center!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-card .product-footer small{
+    font-size:7px!important;
+    color:#e2231a!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-card .product-footer strong{
+    font-size:18px!important;
+    color:#e2231a!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-card .product-footer button{
+    width:42px!important;
+    height:42px!important;
+    flex:0 0 42px!important;
+  }
+
+  /* Product detail: fit the useful info and keep price/action always visible. */
+  body.sm-store-page .product-modal-card{
+    max-height:calc(100dvh - 54px)!important;
+    padding:15px 16px 14px!important;
+    overflow-y:auto!important;
+    border-radius:24px 24px 0 0!important;
+  }
+  body.sm-store-page .modal-product-head{
+    grid-template-columns:70px minmax(0,1fr)!important;
+    min-height:82px!important;
+    padding:0 46px 10px 0!important;
+    gap:11px!important;
+  }
+  body.sm-store-page .modal-product-visual{
+    width:70px!important;
+    height:70px!important;
+  }
+  body.sm-store-page .modal-product-head h2{
+    font-size:23px!important;
+  }
+  body.sm-store-page .modal-product-head p{
+    font-size:10px!important;
+    margin-top:4px!important;
+  }
+  body.sm-store-page .modal-selects{
+    margin-top:10px!important;
+    gap:7px!important;
+  }
+  body.sm-store-page .modal-selects select{
+    min-height:45px!important;
+  }
+  body.sm-store-page .modal-features{
+    max-height:116px!important;
+    margin:10px 0 8px!important;
+    padding:9px 11px!important;
+  }
+  body.sm-store-page .modal-product-footer{
+    position:sticky!important;
+    bottom:-14px!important;
+    z-index:3!important;
+    margin:0 -16px -14px!important;
+    padding:10px 16px calc(12px + env(safe-area-inset-bottom))!important;
+    background:#fff!important;
+    border-top:1px solid #e8edf2!important;
+    box-shadow:0 -10px 24px rgba(255,255,255,.96)!important;
+    gap:8px!important;
+  }
+  body.sm-store-page .modal-product-footer>div{
+    min-height:48px!important;
+  }
+  body.sm-store-page .modal-product-footer strong{
+    display:block!important;
+    font-size:28px!important;
+    line-height:1!important;
+    white-space:normal!important;
+    overflow:visible!important;
+  }
+  body.sm-store-page .modal-product-footer .catalog-primary{
+    width:100%!important;
+    min-height:48px!important;
+    border-radius:14px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    background:#e2231a!important;
+    color:#fff!important;
+    font:900 14px/1 Inter,Arial,sans-serif!important;
+    text-decoration:none!important;
+  }
+  body.sm-store-page .catalog-disclaimer{
+    display:block!important;
+    padding:8px 0 0!important;
+    font-size:8px!important;
+  }
+}
