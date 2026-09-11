@@ -116,9 +116,6 @@
     }
   ],
   "functions": {
-    "api/activar-tv.js": {
-      "maxDuration": 60
-    },
     "api/catalogo-relojes.js": {
       "maxDuration": 60
     }
