@@ -4,6 +4,17 @@
   var MOBILE_MAX = 700;
   var currentCatalog = null;
   var carouselTimer = 0;
+  var ICON_VERSION = '20260911-fix2';
+  var DEFAULT_MOBILE_CATEGORIES = [
+    {id:'cine-series',name:'Cine y Series'},
+    {id:'musica-premium',name:'Música Premium'},
+    {id:'tv-digital',name:'TV Digital'},
+    {id:'recargas-gaming',name:'Recargas Gaming'},
+    {id:'ia-educacion',name:'IA y Educación'},
+    {id:'zona-creativa',name:'Zona Creativa'},
+    {id:'antivirus-software',name:'Antivirus y Software'},
+    {id:'pase-flexible-vip',name:'Pase Flexible Vip'}
+  ];
 
   function mobile(){ return window.matchMedia('(max-width:'+MOBILE_MAX+'px)').matches; }
   function esc(v){ return String(v == null ? '' : v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c];}); }
@@ -24,6 +35,12 @@
     'recargas-gaming':'recargas-gaming.png','ia-educacion':'ia-educacion.png','zona-creativa':'zona-creativa.png',
     'antivirus-software':'antivirus-software.png','agenda-deportiva':'agenda-deportiva.png','pase-flexible-vip':'pase-flexible-vip.png'
   };
+  function iconUrl(base,file){ return base+file+'?v='+ICON_VERSION; }
+  function iconImg(file,alt,cls){
+    var a=esc(alt||''), c=cls?' class="'+esc(cls)+'"':'';
+    var primary=iconUrl(ICON_BASE,file), fallback=iconUrl(ICON_FALLBACK_BASE,file);
+    return '<img'+c+' src="'+primary+'" alt="'+a+'" loading="eager" decoding="async" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src=\''+fallback+'\';}else{this.onerror=null;this.style.visibility=\'hidden\';}">';
+  }
   function categoryIconKey(c){
     var t=normalize(((c&&c.id)||'')+' '+((c&&c.name)||''));
     if(/pase.*flexible|flexible.*vip/.test(t)) return 'pase-flexible-vip';
@@ -39,9 +56,10 @@
   }
   function categoryIconMarkup(c){
     var key=categoryIconKey(c), file=CATEGORY_ICONS[key];
-    return file?'<img src="'+ICON_BASE+file+'" alt="">':esc((c&&c.icon)||'');
+    return file?iconImg(file,(c&&c.name)||''):(c&&c.icon&&String(c.icon).trim()?esc(c.icon):'<span aria-hidden="true">•</span>');
   }
-  function navIcon(file,alt){return '<img src="'+ICON_BASE+file+'" alt="'+esc(alt||'')+'">';}
+  function navIcon(file,alt){ return iconImg(file,alt); }
+  function aboutIcon(file,alt){ return iconImg(file,alt); }
   function hideIntro(){
     var intro=document.getElementById('intro');
     if(!intro)return;
@@ -59,7 +77,6 @@
       if(typeof window.openTabById==='function') window.openTabById(id);
       else if(typeof window.switchTab==='function') window.switchTab(id);
     }catch(_){ }
-    /* Failsafe: several legacy layers touch display/height. Enforce one visible tab. */
     document.querySelectorAll('.tp').forEach(function(p){
       var on=p===panel;p.classList.toggle('active',on);
       p.style.setProperty('display',on?'block':'none','important');
@@ -75,13 +92,12 @@
   }
   function goHomeTab(id){
     if(location.pathname.replace(/\/+$/,'')==='/store' || document.body.classList.contains('sm-store-page')){
-      location.href='/?tab='+encodeURIComponent(id);return;
+      location.href='/?tab='+encodeURIComponent(id)+'&skipIntro=1';return;
     }
     if(activateLocalTab(id))return;
-    location.href='/?tab='+encodeURIComponent(id);
+    location.href='/?tab='+encodeURIComponent(id)+'&skipIntro=1';
   }
   function goProduct(id){
-    /* Mobile uses one product UI only: /store. This removes the legacy mixed modal. */
     if(mobile()) { location.href='/store#producto='+encodeURIComponent(id); return; }
     if(typeof window.openInlineCatalogProduct==='function' && document.getElementById('tab-inicio')) window.openInlineCatalogProduct(id);
     else location.href='/store#producto='+encodeURIComponent(id);
@@ -106,7 +122,7 @@
       '</div>'+
       '<section class="sm-carousel" id="subliMobileCarousel"><div class="sm-carousel-track" id="subliMobileCarouselTrack"><div class="sm-carousel-empty">Cargando promociones…</div></div><div class="sm-carousel-dots" id="subliMobileCarouselDots"></div></section>'+
       '<section><div class="sm-section-title"><h2>Categorías</h2><small id="smCategoryCount"></small></div><div class="sm-category-grid" id="subliMobileCategoryGrid"></div></section>'+
-      '<button type="button" class="sm-cartelera-cta sm-agenda-cta" id="smAgendaCta"><span class="sm-cartelera-art sm-agenda-art">'+navIcon('agenda-deportiva.png','')+'</span><span><small>Partidos y eventos</small><strong>Agenda Deportiva</strong><p>Consulte ligas, partidos y eventos del día.</p></span><span class="sm-cartelera-arrow">›</span></button>';
+      '<button type="button" class="sm-cartelera-cta sm-agenda-cta" id="smAgendaCta"><span class="sm-cartelera-art sm-agenda-art">'+navIcon('agenda-deportiva.png','Agenda deportiva')+'</span><span><small>Partidos y eventos</small><strong>Agenda Deportiva</strong><p>Consulte ligas, partidos y eventos del día.</p></span><span class="sm-cartelera-arrow">›</span></button>';
     tab.insertBefore(wrap,tab.firstChild);
 
     var input=document.getElementById('subliMobileSearch');
@@ -152,13 +168,12 @@
     if(!track||!dots) return;
     var slides=((currentCatalog&&currentCatalog.carousel)||[]).filter(function(s){return s.active!==false;}).sort(function(a,b){return Number(a.order||0)-Number(b.order||0);});
     if(!slides.length){
-      /* Preserve any currently-administered legacy carousel as a visual fallback. */
       var legacy=document.querySelectorAll('#ncTrack .nc-card');
       if(legacy.length){
         track.innerHTML='';
         Array.prototype.forEach.call(legacy,function(card){
           var btn=document.createElement('button');btn.type='button';btn.className='sm-slide';
-          var img=card.querySelector('img'); if(img){var clone=img.cloneNode(true);clone.removeAttribute('style');btn.appendChild(clone);}
+          var img=card.querySelector('img'); if(img){var clone=img.cloneNode(true);clone.removeAttribute('style');btn.appendChild(clone);} else {btn.innerHTML='<span class="sm-slide-copy"><h3>Promociones</h3><p>Consulte nuestras ofertas del mes.</p></span>';}
           btn.addEventListener('click',function(){card.click();});track.appendChild(btn);
         });
         slides=new Array(legacy.length).fill(null);
@@ -188,21 +203,8 @@
     var grid=document.getElementById('subliMobileCategoryGrid'),count=document.getElementById('smCategoryCount');
     if(!grid) return;
     var cats=activeCategories(currentCatalog);
+    if(!cats.length) cats = DEFAULT_MOBILE_CATEGORIES.slice();
     if(count) count.textContent=cats.length?cats.length+' secciones':'';
-    if(!cats.length){
-      var legacy=document.querySelectorAll('#subliCategoryGrid .subli-category-card');
-      if(legacy.length){
-        grid.innerHTML='';
-        Array.prototype.forEach.call(legacy,function(old){
-          var b=document.createElement('button');b.type='button';b.className='sm-category';
-          var icon=old.querySelector('.subli-category-icon'),name=old.querySelector('strong');
-          var fake={id:'',name:name?name.textContent.trim():'Categoría',icon:icon?icon.textContent.trim():''};
-          b.innerHTML='<span class="sm-category-icon">'+categoryIconMarkup(fake)+'</span><strong>'+esc(fake.name)+'</strong>';
-          b.addEventListener('click',function(){old.click();});grid.appendChild(b);
-        });
-      }
-      return;
-    }
     grid.innerHTML=cats.map(function(c){return '<button type="button" class="sm-category" data-sm-category="'+esc(c.id)+'"><span class="sm-category-icon" aria-hidden="true">'+categoryIconMarkup(c)+'</span><strong>'+esc(c.name)+'</strong></button>';}).join('');
     grid.querySelectorAll('[data-sm-category]').forEach(function(b){b.addEventListener('click',function(){goCategory(b.getAttribute('data-sm-category'));});});
   }
@@ -220,11 +222,12 @@
     dock.querySelectorAll('[data-sm-nav]').forEach(function(b){b.addEventListener('click',function(){
       var id=b.getAttribute('data-sm-nav');
       if(id==='sublibot'){
-        if(location.pathname.replace(/\/+$/,'')==='/store'){location.href='/?open=sublibot';return;}
+        hideIntro(); closeAbout();
+        if(location.pathname.replace(/\/+$/,'')==='/store'){location.href='/?open=sublibot&skipIntro=1';return;}
         if(typeof window.mascotAbrirChat==='function') window.mascotAbrirChat();
         setDockActive('sublibot');return;
       }
-      if(id==='nosotros'){openAbout();setDockActive('nosotros');return;}
+      if(id==='nosotros'){ hideIntro(); openAbout(); setDockActive('nosotros'); return; }
       goHomeTab(id);
     });});
   }
@@ -252,7 +255,7 @@
     if(phone) phone.textContent=prettyPhone(p);
     if(link) link.href='https://wa.me/'+p+'?text='+encodeURIComponent('Hola, necesito atención de Sublicuentas.');
   }
-  function openAbout(){buildAbout();document.body.classList.add('sm-about-open');document.getElementById('smAboutOverlay').classList.add('open');syncSupport();}
+  function openAbout(){hideIntro();buildAbout();document.body.classList.add('sm-about-open');document.getElementById('smAboutOverlay').classList.add('open');syncSupport();}
   function closeAbout(){var o=document.getElementById('smAboutOverlay');if(o)o.classList.remove('open');document.body.classList.remove('sm-about-open');if(document.getElementById('tab-inicio') && document.getElementById('tab-inicio').classList.contains('active'))setDockActive('inicio');}
 
   function sync(catalog){
@@ -279,14 +282,16 @@
   }
 
   function init(){
-    var initialTab=new URLSearchParams(location.search).get('tab');
-    if(initialTab)hideIntro();
+    var params=new URLSearchParams(location.search);
+    if(params.get('tab') || params.get('open') || params.get('skipIntro')) hideIntro();
     buildHome();buildDock();buildAbout();initStore();
+    renderCategories();
+    renderCarousel();
     if(window.__SUBLI_CATALOG__) sync(window.__SUBLI_CATALOG__);
     window.addEventListener('subli:catalog-updated',function(e){sync(e.detail||window.__SUBLI_CATALOG__);});
     parseInitialHomeAction();
-    /* catalog-sync may finish just after this file on a slow connection */
     setTimeout(function(){sync(window.__SUBLI_CATALOG__||currentCatalog);},700);
+    setTimeout(function(){ if(!currentCatalog){ renderCategories(); renderCarousel(); } },2500);
   }
 
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
