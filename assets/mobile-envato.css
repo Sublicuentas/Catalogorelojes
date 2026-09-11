@@ -268,3 +268,31 @@
   /* Keep enough space for the fixed dock on every category/search result page. */
   body.sm-store-page main{padding-bottom:105px!important}
 }
+
+
+/* 2026-09-10 FIX 3 · iconos 3D reales + espacio inferior compacto */
+@media (max-width:700px){
+  /* Gana a las reglas legacy inline del index que añadían padding repetido. */
+  html body.sm-mobile-shell{padding-bottom:82px!important;background:#F5F7FA!important}
+  html body.sm-mobile-shell main{padding-bottom:0!important;margin-bottom:0!important}
+  html body.sm-mobile-shell #tab-inicio{min-height:0!important;padding-bottom:0!important}
+  html body.sm-mobile-shell .subli-mobile-home{padding-bottom:4px!important}
+  html body.sm-mobile-shell #tab-mundial{min-height:0!important;padding-bottom:8px!important;margin-bottom:0!important}
+  html body.sm-mobile-shell #agendaLigasWrap{margin-bottom:0!important;padding-bottom:0!important}
+  html body.sm-mobile-shell #agendaCats{margin-bottom:0!important;padding-bottom:0!important}
+  html body.sm-mobile-shell #agendaCats .agenda-cat:last-child{margin-bottom:0!important}
+
+  /* Los PNG originales son 96x96 y se muestran por debajo de su resolución nativa. */
+  .sm-category-icon img,.sm-dock-icon img,.sm-agenda-art img,
+  body.sm-store-page .category-filter-img{
+    image-rendering:auto!important;
+    -webkit-user-drag:none;
+    filter:none!important;
+  }
+  .sm-category-icon img{width:54px!important;height:54px!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important}
+  .sm-dock-icon img{width:31px!important;height:31px!important;object-fit:contain!important}
+  .sm-agenda-art img{width:49px!important;height:49px!important;object-fit:contain!important}
+  .sm-mobile-dock{min-height:68px!important;padding-top:4px!important;padding-bottom:calc(4px + env(safe-area-inset-bottom))!important}
+  .sm-dock-btn{gap:1px!important;padding:2px 1px!important}
+  .sm-dock-btn small{font-size:8.2px!important}
+}

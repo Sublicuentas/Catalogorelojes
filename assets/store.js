@@ -35,7 +35,7 @@
   function categoryIconMarkup(c){
     if(c&&c.id==='all')return '<span class="category-all-mark">▦</span>';
     var file=categoryIconFile(c);
-    return file?'<img class="category-filter-img" src="'+MOBILE_ICON_BASE+file+'" alt="">':'<span class="category-all-mark">'+escapeHtml((c&&c.icon)||'▦')+'</span>';
+    return file?'<img class="category-filter-img" src="'+MOBILE_ICON_BASE+file+'?v=20260910-3d" alt="" aria-hidden="true">':'<span class="category-all-mark">'+escapeHtml((c&&c.icon)||'▦')+'</span>';
   }
   function escapeHtml(value) {
     return String(value == null ? '' : value)

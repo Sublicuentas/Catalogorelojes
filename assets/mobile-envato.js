@@ -38,9 +38,9 @@
   }
   function categoryIconMarkup(c){
     var key=categoryIconKey(c), file=CATEGORY_ICONS[key];
-    return file?'<img src="'+ICON_BASE+file+'" alt="">':esc((c&&c.icon)||'');
+    return file?'<img src="'+ICON_BASE+file+'?v=20260910-3d" alt="" aria-hidden="true">':esc((c&&c.icon)||'');
   }
-  function navIcon(file,alt){return '<img src="'+ICON_BASE+file+'" alt="'+esc(alt||'')+'">';}
+  function navIcon(file,alt){return '<img src="'+ICON_BASE+file+'?v=20260910-3d" alt="" aria-hidden="true">';}
   function hideIntro(){
     var intro=document.getElementById('intro');
     if(!intro)return;
@@ -278,6 +278,7 @@
   }
 
   function init(){
+    if(mobile()) document.body.classList.add('sm-mobile-shell');
     var initialTab=new URLSearchParams(location.search).get('tab');
     if(initialTab)hideIntro();
     buildHome();buildDock();buildAbout();initStore();
