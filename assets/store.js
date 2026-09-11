@@ -135,6 +135,8 @@
     var label=state.category==='all' ? 'Catálogo' : categoryName(state.category);
     var mobileTitle=byId('smStoreTitle'); if(mobileTitle) mobileTitle.textContent=label;
     var heading=document.querySelector('.catalog-heading h2'); if(heading) heading.textContent=state.category==='all' ? 'Catálogo completo' : 'Recomendados';
+    var searchInput=byId('storeSearch');
+    if(searchInput) searchInput.placeholder=isStreamingCategory() ? 'Buscar plataformas...' : 'Buscar Netflix, Canva, IPTV…';
     document.title=(state.category==='all' ? 'Catálogo' : label)+' · Sublicuentas';
   }
 
