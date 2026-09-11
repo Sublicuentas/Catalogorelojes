@@ -69,6 +69,27 @@
     intro.style.setProperty('pointer-events','none','important');
     try{if(intro.parentNode)intro.parentNode.removeChild(intro);}catch(_){ }
   }
+  function syncIntroState(){
+    var intro=document.getElementById('intro');
+    var active=!!intro;
+    document.body.classList.toggle('sm-intro-active',active);
+    if(!active){
+      var dock=document.getElementById('subliMobileDock');
+      if(dock) dock.removeAttribute('aria-hidden');
+    }
+  }
+  function watchIntro(){
+    syncIntroState();
+    var obs=new MutationObserver(function(){ syncIntroState(); });
+    obs.observe(document.documentElement,{childList:true,subtree:true});
+    setTimeout(syncIntroState,3600);
+    setTimeout(syncIntroState,5200);
+  }
+  function resetMobilePanel(id){
+    var panel=document.getElementById('tab-'+id);
+    if(panel){ try{panel.scrollTop=0;}catch(_){ } }
+    try{window.scrollTo(0,0);}catch(_){ }
+  }
   function activateLocalTab(id){
     var panel=document.getElementById('tab-'+id);
     if(!panel)return false;
@@ -88,7 +109,7 @@
       try{var b=document.querySelector('#carteleraApps .cart-app.active')||document.querySelector('#carteleraApps .cart-app');window.loadCartelera((b&&b.dataset.provider)||'netflix',b);}catch(_){ }
     }
     if(id==='mundial'&&typeof window.loadAgenda==='function'){try{window.loadAgenda();}catch(_){ }}
-    setDockActive(id);window.scrollTo({top:0,behavior:'smooth'});return true;
+    setDockActive(id);resetMobilePanel(id);return true;
   }
   function goHomeTab(id){
     if(location.pathname.replace(/\/+$/,'')==='/store' || document.body.classList.contains('sm-store-page')){
@@ -217,7 +238,7 @@
       '<button type="button" class="sm-dock-btn" data-sm-nav="cartelera"><span class="sm-dock-icon">'+navIcon('cartelera.png','Cartelera')+'</span><small>Cartelera</small></button>'+
       '<button type="button" class="sm-dock-btn" data-sm-nav="promos"><span class="sm-dock-icon">'+navIcon('ofertas.png','Ofertas')+'</span><small>Ofertas</small></button>'+
       '<button type="button" class="sm-dock-btn" data-sm-nav="sublibot"><span class="sm-dock-icon"><img src="/assets/sublibot-catalogo.png?v=20260824-v2" alt="Sublibot"></span><small>Sublibot</small></button>'+
-      '<button type="button" class="sm-dock-btn" data-sm-nav="nosotros"><span class="sm-dock-icon">'+navIcon('nosotros.png','Nosotros')+'</span><small>Nosotros</small></button>';
+      '<button type="button" class="sm-dock-btn" data-sm-nav="nosotros"><span class="sm-dock-icon">'+navIcon('quienes-somos.png','Nosotros')+'</span><small>Nosotros</small></button>';
     document.body.appendChild(dock);
     dock.querySelectorAll('[data-sm-nav]').forEach(function(b){b.addEventListener('click',function(){
       var id=b.getAttribute('data-sm-nav');
@@ -283,14 +304,16 @@
 
   function init(){
     var params=new URLSearchParams(location.search);
+    document.body.classList.add('sm-mobile-shell-ready');
     if(params.get('tab') || params.get('open') || params.get('skipIntro')) hideIntro();
+    watchIntro();
     buildHome();buildDock();buildAbout();initStore();
     renderCategories();
     renderCarousel();
     if(window.__SUBLI_CATALOG__) sync(window.__SUBLI_CATALOG__);
     window.addEventListener('subli:catalog-updated',function(e){sync(e.detail||window.__SUBLI_CATALOG__);});
     parseInitialHomeAction();
-    setTimeout(function(){sync(window.__SUBLI_CATALOG__||currentCatalog);},700);
+    setTimeout(function(){sync(window.__SUBLI_CATALOG__||currentCatalog);resetMobilePanel('inicio');},700);
     setTimeout(function(){ if(!currentCatalog){ renderCategories(); renderCarousel(); } },2500);
   }
 

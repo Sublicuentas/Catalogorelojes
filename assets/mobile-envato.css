@@ -352,3 +352,105 @@
   body:not(.sm-store-page) main:after,
   .tp.active:after{content:none!important;display:none!important;}
 }
+
+
+/* 2026-09-11 STRICT FIX 4 — ONLY: Nosotros icon, dock overlap, intro dock, full Inicio */
+@media (max-width:700px){
+  :root{--sm-dock-h:92px;--sm-dock-gap:10px;--sm-view-bottom:calc(var(--sm-dock-h) + var(--sm-dock-gap) + env(safe-area-inset-bottom));}
+
+  /* 3) Intro: footer icons NEVER appear over the intro. */
+  body.sm-intro-active .sm-mobile-dock{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;}
+
+  /* 4) Mobile shell owns the viewport; Inicio always opens from its real top. */
+  body.sm-mobile-shell-ready:not(.sm-store-page){height:100dvh!important;min-height:100dvh!important;overflow:hidden!important;padding:0!important;}
+  body.sm-mobile-shell-ready:not(.sm-store-page) main{
+    height:calc(100dvh - var(--sm-view-bottom))!important;
+    min-height:0!important;
+    overflow:hidden!important;
+    padding:0!important;
+    margin:0!important;
+  }
+  body.sm-mobile-shell-ready:not(.sm-store-page) main>.tp{
+    height:100%!important;
+    min-height:0!important;
+    overflow:hidden!important;
+    padding-bottom:0!important;
+    margin-bottom:0!important;
+    box-sizing:border-box!important;
+  }
+  body.sm-mobile-shell-ready:not(.sm-store-page) main>.tp.active{
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    overscroll-behavior-y:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+    scrollbar-width:none!important;
+  }
+  body.sm-mobile-shell-ready:not(.sm-store-page) main>.tp.active::-webkit-scrollbar{display:none!important;}
+  #tab-inicio{height:100%!important;min-height:0!important;background:var(--sm-bg)!important;}
+  body.sm-mobile-shell-ready:not(.sm-store-page) #tab-inicio>*:not(#subliMobileHome){display:none!important;}
+  #tab-inicio>.subli-mobile-home{
+    min-height:100%!important;
+    padding:14px 14px 22px!important;
+    margin:0 auto!important;
+    box-sizing:border-box!important;
+  }
+
+  /* 2) No page/category content can render behind the fixed footer. */
+  .sm-mobile-dock{
+    display:grid!important;
+    bottom:8px!important;
+    z-index:14000!important;
+  }
+  body.sm-mobile-shell-ready.sm-store-page{
+    height:100dvh!important;
+    min-height:100dvh!important;
+    overflow:hidden!important;
+    padding:0!important;
+    display:flex!important;
+    flex-direction:column!important;
+  }
+  body.sm-mobile-shell-ready.sm-store-page .catalog-header{flex:0 0 auto!important;}
+  body.sm-mobile-shell-ready.sm-store-page main{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    height:auto!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior-y:contain!important;
+    padding-bottom:18px!important;
+    margin-bottom:var(--sm-view-bottom)!important;
+    box-sizing:border-box!important;
+  }
+  body.sm-mobile-shell-ready.sm-store-page footer{display:none!important;}
+
+  /* Mask the tiny rounded-corner area below/behind dock without creating a white rectangle. */
+  body.sm-mobile-shell-ready::after{
+    content:'';
+    position:fixed;
+    left:0;right:0;bottom:0;
+    height:calc(18px + env(safe-area-inset-bottom));
+    background:var(--sm-bg)!important;
+    z-index:13950;
+    pointer-events:none;
+  }
+  body.sm-intro-active::after{display:none!important;}
+
+  /* Nosotros stays above the footer; footer remains visible. */
+  body.sm-about-open{overflow:hidden!important;}
+  .sm-about-overlay{
+    inset:0 0 var(--sm-view-bottom) 0!important;
+    z-index:13900!important;
+    padding:0 8px!important;
+    box-sizing:border-box!important;
+  }
+  .sm-about-sheet{
+    max-height:calc(100dvh - var(--sm-view-bottom) - 8px)!important;
+    border-radius:27px 27px 18px 18px!important;
+    padding-bottom:16px!important;
+  }
+
+  /* Chat also stops above footer. */
+  #sb-pan{bottom:var(--sm-view-bottom)!important;max-height:calc(100dvh - var(--sm-view-bottom) - 18px)!important;}
+  #sb-fab{bottom:var(--sm-view-bottom)!important;}
+}
