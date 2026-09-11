@@ -113,8 +113,18 @@
     setDockActive(id);resetMobilePanel(id);return true;
   }
   function goHomeTab(id){
-    if(location.pathname.replace(/\/+$/,'')==='/store' || document.body.classList.contains('sm-store-page')){
-      location.href='/?tab='+encodeURIComponent(id)+'&skipIntro=1';return;
+    if(document.body.classList.contains('sm-store-page')){
+      if(id==='inicio'){ location.href='/'; return; }
+      if(id==='promos'){
+        var promo=document.getElementById('promoSection');
+        if(promo && !promo.hidden){ promo.scrollIntoView({behavior:'smooth',block:'start'}); setDockActive('promos'); return; }
+        location.href='/?seccion=ofertas'; return;
+      }
+      if(id==='cartelera'){
+        var url='https://wa.me/'+whatsapp(currentCatalog)+'?text='+encodeURIComponent('Hola, quisiera consultar la cartelera y recomendaciones de Sublicuentas.');
+        window.open(url,'_blank','noopener,noreferrer'); return;
+      }
+      location.href='/';return;
     }
     if(activateLocalTab(id))return;
     location.href='/?tab='+encodeURIComponent(id)+'&skipIntro=1';
@@ -231,6 +241,82 @@
     grid.querySelectorAll('[data-sm-category]').forEach(function(b){b.addEventListener('click',function(){goCategory(b.getAttribute('data-sm-category'));});});
   }
 
+
+  var publicBotHistory=[];
+  function buildPublicSublibot(){
+    if(document.getElementById('smPublicBot')) return;
+    var o=document.createElement('div');
+    o.id='smPublicBot';
+    o.className='sm-public-bot';
+    o.setAttribute('aria-hidden','true');
+    o.innerHTML=''+
+      '<section class="sm-public-bot-sheet" role="dialog" aria-modal="true" aria-label="Sublibot">'+
+        '<header class="sm-public-bot-head">'+
+          '<div class="sm-public-bot-avatar"><img src="/assets/sublibot-catalogo.png?v=20260824-v2" alt="Sublibot"></div>'+
+          '<div><strong>Sublibot</strong><small>Asistente de Sublicuentas</small></div>'+
+          '<button type="button" data-sm-bot-close aria-label="Cerrar">×</button>'+
+        '</header>'+
+        '<div class="sm-public-bot-messages" id="smPublicBotMessages">'+
+          '<div class="sm-public-bot-msg bot">Hola 👋 Soy Sublibot. Puedo ayudarle con precios, planes y servicios del catálogo.</div>'+
+        '</div>'+
+        '<form class="sm-public-bot-form" id="smPublicBotForm">'+
+          '<input id="smPublicBotInput" type="text" autocomplete="off" placeholder="Pregunte por Netflix, Disney, IPTV…">'+
+          '<button type="submit" aria-label="Enviar">➜</button>'+
+        '</form>'+
+      '</section>';
+    document.body.appendChild(o);
+    o.addEventListener('click',function(e){
+      if(e.target===o || e.target.closest('[data-sm-bot-close]')) closePublicSublibot();
+    });
+    var form=document.getElementById('smPublicBotForm');
+    if(form) form.addEventListener('submit',function(e){e.preventDefault();sendPublicBotMessage();});
+  }
+  function publicBotBubble(role,text){
+    var box=document.getElementById('smPublicBotMessages'); if(!box)return null;
+    var d=document.createElement('div'); d.className='sm-public-bot-msg '+(role==='user'?'user':'bot'); d.textContent=String(text||'');
+    box.appendChild(d); box.scrollTop=box.scrollHeight; return d;
+  }
+  async function sendPublicBotMessage(){
+    var input=document.getElementById('smPublicBotInput'); if(!input)return;
+    var text=input.value.trim(); if(!text)return;
+    input.value='';
+    publicBotHistory.push({role:'user',content:text});
+    publicBotBubble('user',text);
+    var pending=publicBotBubble('bot','Consultando…');
+    try{
+      var r=await fetch('/api/chat',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        cache:'no-store',
+        body:JSON.stringify({
+          max_tokens:500,
+          system:'Usted es Sublibot, asistente público de ventas de Sublicuentas en Honduras. Responda de forma breve, clara y amable. Use únicamente el catálogo vigente inyectado por el servidor para precios, planes y disponibilidad. Si algo no está disponible, indíquelo sin inventar.',
+          messages:publicBotHistory.slice(-10)
+        })
+      });
+      var data=await r.json().catch(function(){return{};});
+      var reply=String(data.reply||'No pude responder en este momento.');
+      publicBotHistory.push({role:'assistant',content:reply});
+      if(pending) pending.textContent=reply;
+    }catch(_){
+      if(pending) pending.textContent='No pude conectarme ahora. Puede intentar nuevamente en unos segundos.';
+    }
+    var box=document.getElementById('smPublicBotMessages'); if(box)box.scrollTop=box.scrollHeight;
+  }
+  function openPublicSublibot(){
+    buildPublicSublibot();
+    hideIntro(); closeAbout();
+    var o=document.getElementById('smPublicBot'); if(!o)return;
+    o.classList.add('open'); o.setAttribute('aria-hidden','false'); document.body.classList.add('sm-public-bot-open');
+    setDockActive('sublibot');
+    setTimeout(function(){var i=document.getElementById('smPublicBotInput');if(i)i.focus();},120);
+  }
+  function closePublicSublibot(){
+    var o=document.getElementById('smPublicBot'); if(o){o.classList.remove('open');o.setAttribute('aria-hidden','true');}
+    document.body.classList.remove('sm-public-bot-open');
+    if(document.body.classList.contains('sm-store-page')) setDockActive('inicio');
+  }
+
   function buildDock(){
     if(document.getElementById('subliMobileDock')) return;
     var dock=document.createElement('nav');dock.id='subliMobileDock';dock.className='sm-mobile-dock';dock.setAttribute('aria-label','Navegación móvil');
@@ -245,7 +331,7 @@
       var id=b.getAttribute('data-sm-nav');
       if(id==='sublibot'){
         hideIntro(); closeAbout();
-        if(location.pathname.replace(/\/+$/,'')==='/store'){location.href='/?open=sublibot&skipIntro=1';return;}
+        if(document.body.classList.contains('sm-store-page')){openPublicSublibot();return;}
         if(typeof window.mascotAbrirChat==='function') window.mascotAbrirChat();
         setDockActive('sublibot');return;
       }
@@ -308,7 +394,8 @@
     document.body.classList.add('sm-mobile-shell-ready');
     if(params.get('tab') || params.get('open') || params.get('skipIntro')) hideIntro();
     watchIntro();
-    buildHome();buildDock();buildAbout();initStore();
+    buildHome();buildDock();buildAbout();initStore();buildPublicSublibot();
+    if(document.body.classList.contains('sm-store-page') && params.get('open')==='sublibot') setTimeout(openPublicSublibot,120);
     renderCategories();
     renderCarousel();
     if(window.__SUBLI_CATALOG__) sync(window.__SUBLI_CATALOG__);
