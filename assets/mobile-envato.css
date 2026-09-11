@@ -382,3 +382,82 @@
     opacity:0!important;visibility:hidden!important;pointer-events:none!important;
   }
 }
+
+
+/* =========================================================
+   MOBILE CLEAN 6 · navegación simple, textos en negrita,
+   categorías compactas, producto limpio y Nosotros por vista
+   ========================================================= */
+@media (max-width:700px){
+  /* Tipografía principal más firme. */
+  .sm-search input,.sm-category strong,.sm-dock-btn small,.sm-cartelera-cta p,
+  body.sm-store-page .catalog-search input,body.sm-store-page .result-count,
+  body.sm-store-page .product-body>p,body.sm-store-page .modal-product-head p,
+  body.sm-store-page .modal-features li,body.sm-store-page .catalog-disclaimer{
+    font-weight:700!important;
+  }
+  .sm-category strong{font-weight:850!important}
+  .sm-dock-btn small{font-weight:850!important}
+
+  /* En categoría no repetimos oferta grande ni grilla completa. */
+  body.sm-store-page.sm-category-view .promo-section{display:none!important}
+  body.sm-store-page.sm-category-view .catalog-heading{margin-top:14px!important;gap:7px!important}
+  body.sm-store-page.sm-category-view .catalog-heading h2{font:900 17px/1.1 Inter,Arial,sans-serif!important}
+  body.sm-store-page.sm-category-view .catalog-search{height:46px!important;border-radius:13px!important}
+  body.sm-store-page.sm-category-view .category-scroll{
+    display:flex!important;grid-template-columns:none!important;gap:7px!important;overflow-x:auto!important;overflow-y:hidden!important;
+    scroll-snap-type:x proximity!important;padding:2px 1px 8px!important;margin:0 0 12px!important;scrollbar-width:none!important;
+  }
+  body.sm-store-page.sm-category-view .category-scroll::-webkit-scrollbar{display:none!important}
+  body.sm-store-page.sm-category-view .category-filter{
+    flex:0 0 72px!important;width:72px!important;height:72px!important;aspect-ratio:auto!important;padding:5px 4px!important;border-radius:15px!important;
+    scroll-snap-align:start!important;font-size:7.5px!important;gap:3px!important;
+  }
+  body.sm-store-page.sm-category-view .category-filter .category-filter-icon{width:35px!important;height:35px!important}
+  body.sm-store-page.sm-category-view .category-filter .category-filter-img{width:35px!important;height:35px!important}
+  body.sm-store-page.sm-category-view .category-filter b{font:850 7.5px/1.05 Inter,Arial,sans-serif!important;-webkit-line-clamp:2!important;display:-webkit-box!important;-webkit-box-orient:vertical!important;white-space:normal!important}
+
+  /* Soporte vive en Nosotros: el encabezado de categoría queda limpio. */
+  body.sm-store-page .header-consult{visibility:hidden!important;pointer-events:none!important}
+
+  /* Reserva exacta para el dock, sin tapar las últimas tarjetas. */
+  body.sm-store-page main{padding-bottom:calc(116px + env(safe-area-inset-bottom))!important}
+
+  /* Producto: no mostrar controles vacíos o redundantes. */
+  body.sm-store-page .modal-selects [hidden]{display:none!important}
+  body.sm-store-page .modal-static-choice[hidden]{display:none!important}
+  body.sm-store-page .modal-static-choice{
+    display:grid!important;gap:4px!important;padding:11px 13px!important;border:1px solid #DCE5EC!important;border-radius:13px!important;background:#F7F9FB!important;
+  }
+  body.sm-store-page .modal-static-choice small{font:850 9px/1 Inter,Arial,sans-serif!important;color:#6F8193!important;text-transform:uppercase!important;letter-spacing:.3px!important}
+  body.sm-store-page .modal-static-choice strong{font:900 13px/1.15 Inter,Arial,sans-serif!important;color:#17314D!important}
+  body.sm-store-page .product-modal-card{max-height:84dvh!important;padding:16px 16px calc(16px + env(safe-area-inset-bottom))!important}
+  body.sm-store-page .modal-features{max-height:none!important;overflow:visible!important}
+  body.sm-store-page .catalog-disclaimer{display:block!important;margin-top:10px!important;color:#8795A4!important;font-size:9px!important;line-height:1.35!important}
+
+  /* Nosotros: una sola navegación; cada política abre una vista propia. */
+  body.sm-about-open #subliMobileDock{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+  .sm-about-sheet{overflow:hidden!important;display:flex!important;flex-direction:column!important;max-height:88dvh!important;padding:9px 0 calc(14px + env(safe-area-inset-bottom))!important}
+  .sm-about-handle{flex:0 0 auto!important}
+  .sm-about-home,.sm-about-detail{overflow-y:auto!important;overscroll-behavior:contain!important;padding:0 14px 14px!important}
+  .sm-about-home[hidden],.sm-about-detail[hidden]{display:none!important}
+  .sm-about-head{position:sticky!important;top:0!important;z-index:3!important;background:#F7F9FB!important;padding:3px 2px 12px!important}
+  .sm-about-head h2,.sm-about-detail-head h2{font-weight:900!important}
+  .sm-about-intro strong{font-weight:900!important}
+  .sm-about-intro p{font-weight:700!important}
+  .sm-about-menu{display:grid!important;gap:8px!important}
+  .sm-about-menu-item{width:100%!important;display:grid!important;grid-template-columns:38px 1fr 20px!important;gap:10px!important;align-items:center!important;border:1px solid #E8EDF2!important;background:#fff!important;border-radius:16px!important;padding:13px!important;text-align:left!important;color:var(--sm-navy)!important}
+  .sm-about-menu-item strong{font:900 13px/1.2 Inter,Arial,sans-serif!important}
+  .sm-about-menu-item i{font-style:normal!important;font-size:21px!important;color:#92A0AE!important;text-align:right!important}
+  .sm-about-detail-head{position:sticky!important;top:0!important;z-index:4!important;display:grid!important;grid-template-columns:40px 1fr 40px!important;align-items:center!important;gap:8px!important;background:#F7F9FB!important;padding:3px 0 12px!important}
+  .sm-about-detail-head h2{margin:0!important;color:var(--sm-navy)!important;font:900 17px/1.15 Inter,Arial,sans-serif!important;text-align:center!important}
+  .sm-about-back{border:0!important;width:38px!important;height:38px!important;border-radius:12px!important;background:#fff!important;box-shadow:0 4px 12px rgba(17,47,84,.08)!important;color:var(--sm-navy)!important;font:900 22px/1 Arial,sans-serif!important}
+  .sm-about-detail-body{background:#fff!important;border:1px solid #E8EDF2!important;border-radius:18px!important;padding:15px!important;color:#50667B!important;font:700 11px/1.58 Inter,Arial,sans-serif!important}
+  .sm-about-detail-body h4{margin:15px 0 6px!important;color:#203B58!important;font:900 12px/1.25 Inter,Arial,sans-serif!important}
+  .sm-about-detail-body h4:first-child{margin-top:0!important}
+  .sm-about-detail-body p{margin:7px 0!important}
+  .sm-about-detail-body ul{margin:7px 0!important;padding-left:19px!important}
+  .sm-about-detail-body li{margin:5px 0!important;font-weight:700!important}
+  .sm-about-detail-body b{font-weight:900!important;color:#203B58!important}
+  .sm-about-card{display:none!important}
+}

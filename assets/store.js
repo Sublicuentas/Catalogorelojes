@@ -13,8 +13,7 @@
   var state = { catalog: null, category: initialParams.get('categoria') || 'all', query: initialParams.get('q') || '', selectedProductId: '', hashProductOpened: false };
 
   function byId(id) { return document.getElementById(id); }
-  var MOBILE_ICON_FALLBACK='/mobile-icons/';
-  function mobileIconSrc(file){var map=window.__SUBLI_MOBILE_ICONS__||{};return map[file]||MOBILE_ICON_FALLBACK+file+'?v=20260910-4';}
+  var MOBILE_ICON_BASE='/mobile-icons/';
   function normalizeIconText(value){
     var v=String(value||'');
     try{v=v.normalize('NFD').replace(/[\u0300-\u036f]/g,'');}catch(_){ }
@@ -36,7 +35,7 @@
   function categoryIconMarkup(c){
     if(c&&c.id==='all')return '<span class="category-all-mark">▦</span>';
     var file=categoryIconFile(c);
-    return file?'<img class="category-filter-img" src="'+mobileIconSrc(file)+'" alt="" aria-hidden="true" decoding="async">':'<span class="category-all-mark">'+escapeHtml((c&&c.icon)||'▦')+'</span>';
+    return file?'<img class="category-filter-img" src="'+MOBILE_ICON_BASE+file+'" alt="">':'<span class="category-all-mark">'+escapeHtml((c&&c.icon)||'▦')+'</span>';
   }
   function escapeHtml(value) {
     return String(value == null ? '' : value)
@@ -61,7 +60,7 @@
   }
   function visualContent(item) {
     return item.imageUrl
-      ? '<img src="'+escapeHtml(item.imageUrl)+'" alt="'+escapeHtml(item.name || item.title)+'" decoding="async" loading="lazy">'
+      ? '<img src="'+escapeHtml(item.imageUrl)+'" alt="'+escapeHtml(item.name || item.title)+'">'
       : '<b>'+escapeHtml(item.visual || (item.name || item.title || '').slice(0,4).toUpperCase())+'</b>';
   }
   function whatsappUrl(text) {
@@ -104,7 +103,10 @@
   function updateStoreTitles(){
     var label=state.category==='all' ? 'Catálogo' : categoryName(state.category);
     var mobileTitle=byId('smStoreTitle'); if(mobileTitle) mobileTitle.textContent=label;
-    var heading=document.querySelector('.catalog-heading h2'); if(heading) heading.textContent=state.category==='all' ? 'Catálogo completo' : 'Recomendados';
+    var heading=document.querySelector('.catalog-heading h2');
+    if(heading) heading.textContent=state.category==='all' ? 'Todos los servicios' : 'Resultados';
+    document.body.classList.toggle('sm-category-view', state.category!=='all');
+    document.body.classList.toggle('sm-catalog-all', state.category==='all');
     document.title=(state.category==='all' ? 'Catálogo' : label)+' · Sublicuentas';
   }
 
@@ -171,15 +173,25 @@
     byId('productModalSummary').textContent=p.summary||'';
     var plans=(p.plans||[]).filter(function(x){return x.active !== false;});
     byId('productPlanSelect').innerHTML=plans.map(function(plan){return '<option value="'+escapeHtml(plan.id)+'">'+escapeHtml(plan.name)+'</option>';}).join('');
+    var onePlan=plans.length===1;
+    var planWrap=byId('productPlanWrap'), singlePlan=byId('productSinglePlan');
+    if(planWrap) planWrap.hidden=onePlan || !plans.length;
+    if(singlePlan){
+      singlePlan.hidden=!onePlan;
+      singlePlan.innerHTML=onePlan ? '<small>Plan</small><strong>'+escapeHtml(plans[0].name)+'</strong>' : '';
+    }
     updateProductSelection();
     byId('productModal').hidden=false;
     document.body.classList.add('modal-open');
   }
   function updateProductSelection(){
     var p=productById(state.selectedProductId); if(!p)return;
-    var plan=(p.plans||[]).find(function(x){return x.id===byId('productPlanSelect').value;}) || (p.plans||[]).filter(function(x){return x.active!==false;})[0];
+    var activePlans=(p.plans||[]).filter(function(x){return x.active!==false;});
+    var plan=activePlans.find(function(x){return x.id===byId('productPlanSelect').value;}) || activePlans[0];
+    var optionWrap=byId('productOptionWrap'), singleOption=byId('productSingleOption');
     if(!plan){
-      byId('productOptionWrap').hidden=true;
+      if(optionWrap) optionWrap.hidden=true;
+      if(singleOption) singleOption.hidden=true;
       byId('productFeatures').innerHTML=(p.productFeatures||[]).map(function(f){return '<li>'+escapeHtml(f)+'</li>';}).join('');
       byId('productModalPrice').textContent='Consultar';
       byId('consultSelectedProduct').href=whatsappUrl('Hola, quisiera consultar '+p.name+'.');
@@ -187,11 +199,17 @@
     }
     if(byId('productPlanSelect').value!==plan.id)byId('productPlanSelect').value=plan.id;
     var options=(plan.options||[]).filter(function(o){return o.active !== false;});
-    byId('productOptionWrap').hidden=!options.length;
+    var oneOption=options.length===1;
+    if(optionWrap) optionWrap.hidden=options.length<=1;
+    if(singleOption){
+      singleOption.hidden=!oneOption;
+      singleOption.innerHTML=oneOption ? '<small>Duración u opción</small><strong>'+escapeHtml(options[0].label||'Opción incluida')+'</strong>' : '';
+    }
     if(options.length){
       var prev=byId('productOptionSelect').value;
       byId('productOptionSelect').innerHTML=options.map(function(o){return '<option value="'+escapeHtml(o.id)+'">'+escapeHtml(o.label)+' · '+escapeHtml(formatPrice(o.price))+(o.bonus?' · '+escapeHtml(o.bonus):'')+'</option>';}).join('');
       if(options.some(function(o){return o.id===prev;}))byId('productOptionSelect').value=prev;
+      else byId('productOptionSelect').value=options[0].id;
     }else byId('productOptionSelect').innerHTML='';
     var option=options.find(function(o){return o.id===byId('productOptionSelect').value;}) || options[0];
     var price=option ? option.price : plan.price;
