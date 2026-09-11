@@ -13,7 +13,8 @@
   var state = { catalog: null, category: initialParams.get('categoria') || 'all', query: initialParams.get('q') || '', selectedProductId: '', hashProductOpened: false };
 
   function byId(id) { return document.getElementById(id); }
-  var MOBILE_ICON_BASE='/assets/mobile-icons/';
+  var MOBILE_ICON_FALLBACK='/mobile-icons/';
+  function mobileIconSrc(file){var map=window.__SUBLI_MOBILE_ICONS__||{};return map[file]||MOBILE_ICON_FALLBACK+file+'?v=20260910-4';}
   function normalizeIconText(value){
     var v=String(value||'');
     try{v=v.normalize('NFD').replace(/[\u0300-\u036f]/g,'');}catch(_){ }
@@ -35,7 +36,7 @@
   function categoryIconMarkup(c){
     if(c&&c.id==='all')return '<span class="category-all-mark">▦</span>';
     var file=categoryIconFile(c);
-    return file?'<img class="category-filter-img" src="'+MOBILE_ICON_BASE+file+'?v=20260910-3d" alt="" aria-hidden="true">':'<span class="category-all-mark">'+escapeHtml((c&&c.icon)||'▦')+'</span>';
+    return file?'<img class="category-filter-img" src="'+mobileIconSrc(file)+'" alt="" aria-hidden="true" decoding="async">':'<span class="category-all-mark">'+escapeHtml((c&&c.icon)||'▦')+'</span>';
   }
   function escapeHtml(value) {
     return String(value == null ? '' : value)
@@ -60,7 +61,7 @@
   }
   function visualContent(item) {
     return item.imageUrl
-      ? '<img src="'+escapeHtml(item.imageUrl)+'" alt="'+escapeHtml(item.name || item.title)+'">'
+      ? '<img src="'+escapeHtml(item.imageUrl)+'" alt="'+escapeHtml(item.name || item.title)+'" decoding="async" loading="lazy">'
       : '<b>'+escapeHtml(item.visual || (item.name || item.title || '').slice(0,4).toUpperCase())+'</b>';
   }
   function whatsappUrl(text) {

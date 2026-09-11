@@ -296,3 +296,73 @@
   .sm-dock-btn{gap:1px!important;padding:2px 1px!important}
   .sm-dock-btn small{font-size:8.2px!important}
 }
+
+
+/* =========================================================
+   MOBILE FIX 4 · iconos 3D, intro limpio, modal y rendimiento
+   ========================================================= */
+@media (max-width:700px){
+  /* El splash siempre queda por encima del dock. Sale rápido y limpio. */
+  #intro{
+    z-index:30000!important;
+    animation:introScreenExit .28s ease 1.15s forwards!important;
+  }
+  .sm-mobile-dock{
+    z-index:9000!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    transition:opacity .16s ease,visibility .16s ease!important;
+  }
+  .sm-mobile-dock.sm-dock-pending{
+    opacity:0!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+
+  /* Los PNG 3D tienen tamaño propio y nunca se deforman. */
+  .sm-category-icon img{
+    display:block!important;
+    width:74%!important;
+    height:74%!important;
+    max-width:52px!important;
+    max-height:52px!important;
+    object-fit:contain!important;
+  }
+  .sm-cartelera-art img{
+    display:block!important;
+    width:46px!important;
+    height:46px!important;
+    object-fit:contain!important;
+  }
+  .sm-dock-icon img{
+    display:block!important;
+    width:30px!important;
+    height:30px!important;
+    object-fit:contain!important;
+  }
+
+  /* CRÍTICO: el modal con hidden no puede mostrarse vacío al cargar /store. */
+  body.sm-store-page .modal-backdrop[hidden]{display:none!important}
+  body.sm-store-page .modal-backdrop:not([hidden]){display:flex!important}
+  body.sm-store-page .modal-backdrop{
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    background:rgba(9,24,42,.58)!important;
+  }
+
+  /* Menos trabajo gráfico en móviles: mismo aspecto, respuesta más rápida. */
+  .sm-about-overlay{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+  .sm-carousel,.sm-cartelera-cta,.sm-category-icon,.sm-mobile-dock{will-change:auto!important}
+
+  /* Sin hueco gigante al terminar Agenda/Cartelera; sólo reserva el dock. */
+  body.sm-mobile-shell #tab-mundial,
+  body.sm-mobile-shell #tab-cartelera,
+  body.sm-mobile-shell #tab-promos{
+    min-height:0!important;
+    padding-bottom:94px!important;
+    margin-bottom:0!important;
+  }
+  body.sm-mobile-shell #tab-mundial > :last-child,
+  body.sm-mobile-shell #tab-cartelera > :last-child,
+  body.sm-mobile-shell #tab-promos > :last-child{margin-bottom:0!important}
+}

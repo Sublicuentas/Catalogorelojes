@@ -17,7 +17,11 @@
     if(s.indexOf('504')===0 && s.length===11) return '+504 '+s.slice(3,7)+'-'+s.slice(7);
     return s ? '+'+s : 'WhatsApp';
   }
-  var ICON_BASE='/assets/mobile-icons/';
+  var ICON_FALLBACK_BASE='/mobile-icons/';
+  function iconSrc(file){
+    var map=window.__SUBLI_MOBILE_ICONS__||{};
+    return map[file]||ICON_FALLBACK_BASE+file+'?v=20260910-4';
+  }
   var CATEGORY_ICONS={
     'cine-series':'cine-series.png','musica-premium':'musica-premium.png','tv-digital':'tv-digital.png',
     'recargas-gaming':'recargas-gaming.png','ia-educacion':'ia-educacion.png','zona-creativa':'zona-creativa.png',
@@ -168,7 +172,7 @@
       track.innerHTML=slides.map(function(s,i){
         var copy=Boolean(s.title||s.subtitle||s.badge||s.buttonLabel);
         return '<button type="button" class="sm-slide" data-sm-slide="'+i+'" style="background:linear-gradient(135deg,'+esc(s.accentFrom||'#102F54')+','+esc(s.accentTo||'#E2231A')+')">'+
-          (s.imageUrl?'<img class="fit-'+esc(s.imageFit||'cover')+'" src="'+esc(s.imageUrl)+'" alt="'+esc(s.title||'Promoción')+'">':'')+
+          (s.imageUrl?'<img class="fit-'+esc(s.imageFit||'cover')+'" src="'+esc(s.imageUrl)+'" alt="'+esc(s.title||'Promoción')+'" decoding="async" '+(i===0?'fetchpriority="high"':'loading="lazy"')+'>':'')+
           (copy?'<span class="sm-slide-copy">'+(s.badge?'<span>'+esc(s.badge)+'</span>':'')+(s.title?'<h3>'+esc(s.title)+'</h3>':'')+(s.subtitle?'<p>'+esc(s.subtitle)+'</p>':'')+(s.buttonLabel?'<b>'+esc(s.buttonLabel)+' →</b>':'')+'</span>':'')+'</button>';
       }).join('');
       track.querySelectorAll('[data-sm-slide]').forEach(function(b){b.addEventListener('click',function(){runSlide(slides[Number(b.getAttribute('data-sm-slide'))]);});});
@@ -209,11 +213,12 @@
   function buildDock(){
     if(document.getElementById('subliMobileDock')) return;
     var dock=document.createElement('nav');dock.id='subliMobileDock';dock.className='sm-mobile-dock';dock.setAttribute('aria-label','Navegación móvil');
+    if(document.getElementById('intro')) dock.classList.add('sm-dock-pending');
     dock.innerHTML=''+
       '<button type="button" class="sm-dock-btn active" data-sm-nav="inicio"><span class="sm-dock-icon">'+navIcon('inicio.png','Inicio')+'</span><small>Inicio</small></button>'+
       '<button type="button" class="sm-dock-btn" data-sm-nav="cartelera"><span class="sm-dock-icon">'+navIcon('cartelera.png','Cartelera')+'</span><small>Cartelera</small></button>'+
       '<button type="button" class="sm-dock-btn" data-sm-nav="promos"><span class="sm-dock-icon">'+navIcon('ofertas.png','Ofertas')+'</span><small>Ofertas</small></button>'+
-      '<button type="button" class="sm-dock-btn" data-sm-nav="sublibot"><span class="sm-dock-icon"><img src="/assets/sublibot-catalogo.png?v=20260824-v2" alt="Sublibot"></span><small>Sublibot</small></button>'+
+      '<button type="button" class="sm-dock-btn" data-sm-nav="sublibot"><span class="sm-dock-icon">'+sublibotMini('Sublibot')+'</span><small>Sublibot</small></button>'+
       '<button type="button" class="sm-dock-btn" data-sm-nav="nosotros"><span class="sm-dock-icon">'+navIcon('nosotros.png','Nosotros')+'</span><small>Nosotros</small></button>';
     document.body.appendChild(dock);
     dock.querySelectorAll('[data-sm-nav]').forEach(function(b){b.addEventListener('click',function(){
@@ -227,11 +232,19 @@
       goHomeTab(id);
     });});
   }
+  function revealDockAfterIntro(){
+    var dock=document.getElementById('subliMobileDock'); if(!dock)return;
+    var intro=document.getElementById('intro');
+    function reveal(){dock.classList.remove('sm-dock-pending');}
+    if(!intro){reveal();return;}
+    intro.addEventListener('animationend',function(e){if(e.animationName==='introScreenExit')reveal();},{once:true});
+    setTimeout(reveal,2200);
+  }
   function setDockActive(id){document.querySelectorAll('#subliMobileDock [data-sm-nav]').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-sm-nav')===id);});}
 
   function aboutMarkup(){
     return '<div class="sm-about-handle"></div><div class="sm-about-head"><h2>Nosotros</h2><button type="button" class="sm-about-close" data-sm-about-close aria-label="Cerrar">×</button></div>'+
-    '<div class="sm-about-intro"><img src="/assets/sublibot-catalogo.png?v=20260824-v2" alt="Sublibot"><div><strong>Sublicuentas · Honduras</strong><p>Acceso fácil, confiable y accesible a streaming, TV digital, juegos, software y herramientas online. Nuestro propósito: Conectamos tu entretenimiento.</p></div></div>'+
+    '<div class="sm-about-intro">'+sublibotMini('Sublibot')+'<div><strong>Sublicuentas · Honduras</strong><p>Acceso fácil, confiable y accesible a streaming, TV digital, juegos, software y herramientas online. Nuestro propósito: Conectamos tu entretenimiento.</p></div></div>'+
     aboutCard('👥','Quiénes somos','<p>Sublicuentas nació en Honduras de la pasión por la tecnología y el entretenimiento. Trabajamos con innovación constante, compromiso con nuestros clientes y soluciones digitales eficientes a precios competitivos.</p>')+
     aboutCard('📋','Términos y condiciones','<h4>1. Información del servicio</h4><p>Ofrecemos acceso a cuentas, perfiles, licencias, IPTV y servicios digitales. Los productos se entregan digitalmente de forma inmediata o dentro del plazo indicado.</p><h4>2. Pagos</h4><ul><li>Transferencias: Ficohsa, BAC, Davivienda, Banpaís y Occidente.</li><li>Tigo Money y efectivo cuando aplique.</li><li>El servicio se activa al confirmar el pago.</li><li>No se emiten facturas fiscales.</li></ul><h4>3. Entrega</h4><ul><li>Entrega entre 15 y 30 minutos tras confirmar pago, vía WhatsApp.</li><li>Cuentas y licencias: garantía durante el tiempo contratado.</li><li>IPTV: garantía de funcionamiento de 24 horas.</li><li>Si la cuenta falla antes del tiempo contratado, se otorga reemplazo sin costo.</li></ul><h4>4. Reembolsos y garantías</h4><ul><li>No se aceptan devoluciones ni reembolsos una vez entregado o activado un servicio digital.</li><li>La garantía cubre acceso y funcionamiento; no problemas de red, incompatibilidad o desconocimiento técnico.</li><li>Recargas o keys no tienen devolución una vez activadas o enviadas.</li><li>En errores internos comprobables se realiza reposición o cambio de perfil, no devolución en efectivo.</li></ul><h4>5. Normas de uso</h4><ul><li>No modificar datos sensibles de la cuenta.</li><li>No compartir fuera de lo permitido por el plan.</li><li>No solicitar múltiples códigos de inicio.</li><li>Primera falta: advertencia; segunda falta: suspensión sin reembolso.</li></ul><h4>6. Reglas por plataforma</h4><ul><li>Netflix: si indica que el dispositivo no pertenece al hogar, usar “Estoy de viaje” o “Ver temporalmente”.</li><li>Disney+: si la TV no forma parte del hogar, usar “Estoy fuera del hogar”.</li><li>Prime Video: no usar la cuenta para alquiler de películas.</li><li>Códigos de inicio: enviar captura a soporte; expiran en 10–15 min.</li></ul>')+
     aboutCard('↩','Política de devolución y garantías','<ul><li><b>Servicios digitales:</b> no se aceptan devoluciones ni reembolsos una vez entregados o activados.</li><li><b>Responsabilidad del usuario:</b> la garantía cubre acceso y funcionamiento, no lentitud de red, incompatibilidad de dispositivos o desconocimiento técnico.</li><li><b>Cuentas y licencias:</b> garantía durante el tiempo adquirido, sujeta a revisión del estado de la cuenta.</li><li><b>IPTV:</b> garantía máxima de 24 horas para fallas del servidor; no aplica por velocidad de internet del cliente.</li><li><b>Recargas de juegos:</b> no aplica reembolso una vez enviada la recarga al ID suministrado.</li><li><b>Error interno comprobable:</b> se realiza reposición o cambio de perfil.</li></ul>')+
@@ -278,10 +291,11 @@
   }
 
   function init(){
-    if(mobile()) document.body.classList.add('sm-mobile-shell');
+    if(!mobile()) return;
+    document.body.classList.add('sm-mobile-shell');
     var initialTab=new URLSearchParams(location.search).get('tab');
     if(initialTab)hideIntro();
-    buildHome();buildDock();buildAbout();initStore();
+    buildHome();buildDock();revealDockAfterIntro();buildAbout();initStore();
     if(window.__SUBLI_CATALOG__) sync(window.__SUBLI_CATALOG__);
     window.addEventListener('subli:catalog-updated',function(e){sync(e.detail||window.__SUBLI_CATALOG__);});
     parseInitialHomeAction();
