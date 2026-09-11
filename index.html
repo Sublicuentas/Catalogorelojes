@@ -6921,5 +6921,53 @@ footer{padding-bottom:78px!important}
 
   <script src="/assets/mobile-icons-inline.js?v=20260910-ICONS-5" defer></script>
   <script src="/assets/mobile-envato.js?v=20260910-MOBILE-7-AJUSTES" defer></script>
+
+<style id="subli-home-agenda-hotfix-20260910-b">
+@media (max-width:700px){
+  #tab-inicio{padding-bottom:0!important}
+  #tab-inicio>.sp{display:none!important;height:0!important;margin:0!important;padding:0!important}
+  #tab-inicio .subli-home-category-section,
+  #tab-inicio .subli-live-catalog,
+  #tab-inicio .subli-home-cartelera,
+  #tab-inicio .subli-home-support-grid{
+    margin-top:14px!important;
+    margin-bottom:0!important;
+    padding-bottom:0!important;
+  }
+  #tab-inicio .subli-home-support-grid{min-height:0!important}
+}
+</style>
+<script id="subli-home-agenda-hotfix-script-20260910-b">
+(function(){
+  function updateAgendaTexts(){
+    var nodes = document.querySelectorAll('#tab-inicio p, #tab-inicio small, #tab-mundial p');
+    nodes.forEach(function(el){
+      var txt = (el.textContent || '').trim();
+      if(/Consulte ligas, partidos y eventos/i.test(txt)){
+        el.textContent = 'Consulte Liga Saudí, MLS, Champions y más eventos del día.';
+      }
+      if(/mejores ligas del mundo/i.test(txt) && !/MLS/i.test(txt)){
+        el.textContent = txt.replace(/NBA y MLB/i, 'NBA, MLB, Saudi Pro League y MLS');
+      }
+    });
+  }
+  function fixHomeGap(){
+    var spacer = document.querySelector('#tab-inicio > .sp');
+    if(spacer){
+      spacer.style.display='none';
+      spacer.style.height='0';
+      spacer.style.margin='0';
+      spacer.style.padding='0';
+    }
+    var support = document.querySelector('#tab-inicio .subli-home-support-grid');
+    if(support){ support.style.minHeight='0'; }
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    updateAgendaTexts();
+    fixHomeGap();
+  });
+})();
+</script>
+
 </body>
 </html>
