@@ -424,18 +424,6 @@
   }
   body.sm-mobile-shell-ready.sm-store-page footer{display:none!important;}
 
-  /* Mask the tiny rounded-corner area below/behind dock without creating a white rectangle. */
-  body.sm-mobile-shell-ready::after{
-    content:'';
-    position:fixed;
-    left:0;right:0;bottom:0;
-    height:calc(18px + env(safe-area-inset-bottom));
-    background:var(--sm-bg)!important;
-    z-index:13950;
-    pointer-events:none;
-  }
-  body.sm-intro-active::after{display:none!important;}
-
   /* Nosotros stays above the footer; footer remains visible. */
   body.sm-about-open{overflow:hidden!important;}
   .sm-about-overlay{
@@ -504,20 +492,9 @@
     padding-bottom:var(--sm-dock-safe-space)!important;
   }
 
-  /* Solid shield: page content never shows through/behind the floating dock. */
-  body.sm-mobile-shell-ready::after{
-    content:''!important;
-    display:block!important;
-    position:fixed!important;
-    left:0!important;
-    right:0!important;
-    bottom:0!important;
-    height:var(--sm-dock-shield-h)!important;
-    background:var(--sm-bg,#F4F7FB)!important;
-    z-index:13950!important;
-    pointer-events:none!important;
-  }
-  body.sm-intro-active::after{display:none!important;}
+  /* El "escudo" solido de abajo se quito por completo: pintaba una franja
+     opaca fija (mas alta de lo pensado) que terminaba tapando contenido real
+     (precios, botones) en vez de solo una esquinita del dock. */
   .sm-mobile-dock{z-index:14000!important;}
 
   /* Embedded Nosotros icon must always render. */
@@ -670,6 +647,14 @@
   }
   body.sm-store-page .modal-product-footer strong{
     font-size:24px!important;
+  }
+  /* Solo el boton de este modal, mas chico — el resto de botones catalog-primary
+     (como "Ver servicios" del encabezado) queda igual que antes. */
+  body.sm-store-page .modal-product-footer .catalog-primary{
+    min-height:38px!important;
+    padding:8px 14px!important;
+    font-size:12px!important;
+    border-radius:11px!important;
   }
   body.sm-store-page .catalog-disclaimer{
     display:block!important;
