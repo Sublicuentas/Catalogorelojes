@@ -57,8 +57,9 @@
     return c ? c.name : id;
   }
   function isStreamingCategory() {
-    var text=normalizeIconText(String(state.category||'')+' '+String(categoryName(state.category)||''));
-    return /cine|series|streaming/.test(text);
+    // Cine y Series ya no usa una tarjeta especial: se ve igual que el resto
+    // de categorias (Musica, TV Digital, etc.) tal como pidio el cliente.
+    return false;
   }
   function productById(id) {
     return state.catalog && state.catalog.products.find(function(p){ return p.id === id; });
