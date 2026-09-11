@@ -1568,6 +1568,9 @@ body { height: auto !important; min-height: 100vh; }
 </nav>
 <script>
 window.switchTab = function switchTab(id,btn){
+  // Sublibot solo debe verse dentro de Sublibot: si queda abierto y el usuario
+  // cambia de pestaña/categoría sin pulsar la X, se cierra automáticamente.
+  try{ if(typeof sbCerrar==='function') sbCerrar(); }catch(e){}
   // Hide ALL panels with inline style (overrides everything)
   document.querySelectorAll('.tp').forEach(function(p){
     p.style.display = 'none';
