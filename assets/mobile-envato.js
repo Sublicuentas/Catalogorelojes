@@ -232,8 +232,17 @@
     dock.querySelectorAll('[data-sm-nav]').forEach(function(b){b.addEventListener('click',function(){
       var id=b.getAttribute('data-sm-nav');
       if(id==='sublibot'){
+        var pan=document.getElementById('sb-pan');
+        var isOpen=!!(pan && pan.classList.contains('open') && !pan.classList.contains('minimized'));
+        if(isOpen){
+          if(typeof window.sbCerrar==='function') window.sbCerrar();
+          else if(pan){ pan.classList.remove('open'); pan.classList.remove('minimized'); }
+          setDockActive(document.getElementById('tab-inicio') && document.getElementById('tab-inicio').classList.contains('active') ? 'inicio' : '');
+          return;
+        }
         if(location.pathname.replace(/\/+$/,'')==='/store'){location.href='/?open=sublibot';return;}
         if(typeof window.mascotAbrirChat==='function') window.mascotAbrirChat();
+        else if(pan){ pan.classList.add('open'); pan.classList.remove('minimized'); }
         setDockActive('sublibot');return;
       }
       if(id==='nosotros'){openAbout();setDockActive('nosotros');return;}
