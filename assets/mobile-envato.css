@@ -269,3 +269,86 @@
   /* Keep enough space for the fixed dock on every category/search result page. */
   body.sm-store-page main{padding-bottom:105px!important}
 }
+
+
+/* 2026-09-11 FIX 3 · footer, Nosotros sheet and bottom overlap cleanup */
+@media (max-width:700px){
+  :root{ --sm-dock-space: calc(106px + env(safe-area-inset-bottom)); }
+
+  /* Remove extra empty strip created at document level.
+     The safe area now lives inside each mobile panel instead of the body. */
+  body{padding-bottom:0!important;}
+  main{padding-bottom:0!important;}
+
+  /* Every mobile section must end before the fixed footer dock. */
+  main>.tp,
+  .tp.active,
+  #tab-inicio,
+  #tab-cartelera,
+  #tab-promos,
+  #tab-mundial,
+  #tab-tv,
+  #tab-musica,
+  #tab-iptv,
+  #tab-juegos,
+  #tab-ia,
+  #tab-diseno,
+  #tab-software{
+    padding-bottom:var(--sm-dock-space)!important;
+    box-sizing:border-box!important;
+    scroll-margin-bottom:var(--sm-dock-space)!important;
+  }
+
+  /* Home shell should stop above the footer without leaving a white block. */
+  #tab-inicio{min-height:auto!important;}
+  .subli-mobile-home{padding-bottom:var(--sm-dock-space)!important;}
+  #tab-inicio>.sp:last-child{display:none!important;}
+
+  /* Fixed dock always visible, including inside Nosotros. */
+  .sm-mobile-dock{z-index:13050!important;}
+
+  /* Nosotros opens above the dock instead of covering it. */
+  body.sm-about-open{overflow:hidden!important;}
+  .sm-about-overlay{
+    z-index:12990!important;
+    inset:0 0 calc(82px + env(safe-area-inset-bottom)) 0!important;
+    padding:0 8px 0 8px!important;
+    box-sizing:border-box!important;
+    align-items:flex-end!important;
+  }
+  .sm-about-sheet{
+    width:100%!important;
+    max-width:600px!important;
+    max-height:calc(100dvh - var(--sm-dock-space) - 12px)!important;
+    margin:0 auto!important;
+    border-radius:27px 27px 18px 18px!important;
+    padding-bottom:18px!important;
+  }
+
+  /* Cartelera, ofertas y demás no deben quedar detrás del footer. */
+  #tab-cartelera,
+  #tab-promos,
+  #tab-mundial,
+  #tab-tv,
+  #tab-musica,
+  #tab-iptv,
+  #tab-juegos,
+  #tab-ia,
+  #tab-diseno,
+  #tab-software{
+    margin-bottom:0!important;
+    min-height:auto!important;
+  }
+
+  /* Chat panel above dock; no white rectangle peeking from debajo del footer. */
+  #sb-pan{bottom:calc(102px + env(safe-area-inset-bottom))!important;max-height:calc(100dvh - 122px - env(safe-area-inset-bottom))!important;}
+  #sb-fab{bottom:calc(100px + env(safe-area-inset-bottom))!important;z-index:13040!important;}
+
+  /* Store page: reserve space inside main instead of outside the page. */
+  body.sm-store-page{padding-bottom:0!important;}
+  body.sm-store-page main{padding-bottom:var(--sm-dock-space)!important;box-sizing:border-box!important;}
+
+  /* Small clean-up for any accidental empty blocks near the footer. */
+  body:not(.sm-store-page) main:after,
+  .tp.active:after{content:none!important;display:none!important;}
+}

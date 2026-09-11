@@ -4,7 +4,7 @@
   var MOBILE_MAX = 700;
   var currentCatalog = null;
   var carouselTimer = 0;
-  var ICON_VERSION = '20260911-fix2';
+  var ICON_VERSION = '20260911-fix3';
   var DEFAULT_MOBILE_CATEGORIES = [
     {id:'cine-series',name:'Cine y Series'},
     {id:'musica-premium',name:'Música Premium'},
