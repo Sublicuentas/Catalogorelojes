@@ -492,9 +492,22 @@
     padding-bottom:var(--sm-dock-safe-space)!important;
   }
 
-  /* El "escudo" solido de abajo se quito por completo: pintaba una franja
-     opaca fija (mas alta de lo pensado) que terminaba tapando contenido real
-     (precios, botones) en vez de solo una esquinita del dock. */
+  /* Rendija chiquita entre el contenido/paneles (Nosotros, etc.) y el dock:
+     antes esto tapaba con una franja enorme (106-120px) contenido real.
+     Ahora es solo del tamaño de la rendija real, no más. */
+  body.sm-mobile-shell-ready::after{
+    content:''!important;
+    display:block!important;
+    position:fixed!important;
+    left:0!important;
+    right:0!important;
+    bottom:0!important;
+    height:calc(18px + env(safe-area-inset-bottom))!important;
+    background:var(--sm-bg,#F4F7FB)!important;
+    z-index:13950!important;
+    pointer-events:none!important;
+  }
+  body.sm-intro-active::after{display:none!important;}
   .sm-mobile-dock{z-index:14000!important;}
 
   /* Embedded Nosotros icon must always render. */
