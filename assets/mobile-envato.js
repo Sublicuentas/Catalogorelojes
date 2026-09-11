@@ -240,7 +240,7 @@
           setDockActive(document.getElementById('tab-inicio') && document.getElementById('tab-inicio').classList.contains('active') ? 'inicio' : '');
           return;
         }
-        if(location.pathname.replace(/\/+$/,'')==='/store'){location.href='/?open=sublibot';return;}
+        if(location.pathname.replace(/\/+$/,'')==='/store'){try{sessionStorage.setItem('subli-open-sublibot','1');}catch(_e){} location.href='/?open=sublibot&skipIntro=1';return;}
         if(typeof window.mascotAbrirChat==='function') window.mascotAbrirChat();
         else if(pan){ pan.classList.add('open'); pan.classList.remove('minimized'); }
         setDockActive('sublibot');return;
@@ -311,6 +311,7 @@
       if(tab && ['inicio','cartelera','promos','mundial'].indexOf(tab)!==-1) goHomeTab(tab);
       if(open==='sublibot' && typeof window.mascotAbrirChat==='function'){window.mascotAbrirChat();setDockActive('sublibot');}
       if(open==='nosotros'){openAbout();setDockActive('nosotros');}
+      if(open || q.get('skipIntro')){ try{history.replaceState(null,'',location.pathname+(tab?'?tab='+encodeURIComponent(tab):''));}catch(_e){} }
     },180);
   }
 
@@ -325,8 +326,11 @@
     if(!mobile()) return;
     document.body.classList.add('sm-mobile-shell');
     hideLegacyMobileChrome();
-    var initialTab=new URLSearchParams(location.search).get('tab');
-    if(initialTab)hideIntro();
+    var initQuery=new URLSearchParams(location.search);
+    var initialTab=initQuery.get('tab'), initialOpen=initQuery.get('open'), skipIntro=initQuery.get('skipIntro');
+    var storedOpen=''; try{storedOpen=sessionStorage.getItem('subli-open-sublibot')||'';}catch(_e){}
+    if(initialTab || initialOpen || skipIntro || storedOpen==='1') hideIntro();
+    if(storedOpen==='1'){ try{sessionStorage.removeItem('subli-open-sublibot');}catch(_e){} }
     buildHome();buildDock();revealDockAfterIntro();buildAbout();initStore();
     if(window.__SUBLI_CATALOG__) sync(window.__SUBLI_CATALOG__);
     window.addEventListener('subli:catalog-updated',function(e){sync(e.detail||window.__SUBLI_CATALOG__);});
