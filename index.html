@@ -6922,22 +6922,37 @@ footer{padding-bottom:78px!important}
   <script src="/assets/mobile-icons-inline.js?v=20260910-ICONS-5" defer></script>
   <script src="/assets/mobile-envato.js?v=20260910-MOBILE-7-AJUSTES" defer></script>
 
-<style id="subli-home-agenda-hotfix-20260910-b">
+<style id="subli-home-agenda-hotfix-20260910-c">
 @media (max-width:700px){
-  #tab-inicio{padding-bottom:0!important}
+  #tab-inicio{padding-bottom:10px!important}
   #tab-inicio>.sp{display:none!important;height:0!important;margin:0!important;padding:0!important}
+  #tab-inicio .subli-home-categories{
+    margin-top:18px!important;
+    padding-top:22px!important;
+    padding-bottom:8px!important;
+  }
   #tab-inicio .subli-home-category-section,
   #tab-inicio .subli-live-catalog,
-  #tab-inicio .subli-home-cartelera,
-  #tab-inicio .subli-home-support-grid{
+  #tab-inicio .subli-home-cartelera{
     margin-top:14px!important;
     margin-bottom:0!important;
     padding-bottom:0!important;
   }
-  #tab-inicio .subli-home-support-grid{min-height:0!important}
+  #tab-inicio .subli-live-catalog{margin-bottom:10px!important}
+  #tab-inicio .subli-home-cartelera{padding-top:12px!important}
+  #tab-inicio .subli-home-support-grid{
+    display:none!important;
+    min-height:0!important;
+    height:0!important;
+    margin:0!important;
+    padding:0!important;
+    overflow:hidden!important;
+  }
+  #tab-inicio .subli-support-card,
+  #tab-inicio .mascot-btn{display:none!important}
 }
 </style>
-<script id="subli-home-agenda-hotfix-script-20260910-b">
+<script id="subli-home-agenda-hotfix-script-20260910-c">
 (function(){
   function updateAgendaTexts(){
     var nodes = document.querySelectorAll('#tab-inicio p, #tab-inicio small, #tab-mundial p');
@@ -6960,7 +6975,24 @@ footer{padding-bottom:78px!important}
       spacer.style.padding='0';
     }
     var support = document.querySelector('#tab-inicio .subli-home-support-grid');
-    if(support){ support.style.minHeight='0'; }
+    if(support){
+      support.style.display='none';
+      support.style.minHeight='0';
+      support.style.height='0';
+      support.style.margin='0';
+      support.style.padding='0';
+      support.style.overflow='hidden';
+    }
+    var cats = document.querySelector('#tab-inicio .subli-home-categories');
+    if(cats){
+      cats.style.marginTop='18px';
+      cats.style.paddingTop='22px';
+      cats.style.paddingBottom='8px';
+    }
+    var live = document.querySelector('#tab-inicio .subli-live-catalog');
+    if(live){ live.style.marginBottom='10px'; }
+    var cart = document.querySelector('#tab-inicio .subli-home-cartelera');
+    if(cart){ cart.style.paddingTop='12px'; cart.style.marginBottom='0'; }
   }
   document.addEventListener('DOMContentLoaded', function(){
     updateAgendaTexts();
