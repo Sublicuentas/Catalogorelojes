@@ -633,3 +633,163 @@
     padding-top:0!important;
   }
 }
+
+
+/* 2026-09-11 FIX 8 — ONLY Cine y Series mobile category */
+@media (max-width:700px){
+  /* Keep category-only behavior, but restore ONLY the search in Cine y Series. */
+  body.sm-store-page.sm-category-only-view.sm-streaming-category-view .catalog-heading{
+    display:flex!important;
+    margin:0 0 16px!important;
+    padding:0 2px!important;
+  }
+  body.sm-store-page.sm-category-only-view.sm-streaming-category-view .catalog-heading>div{
+    display:none!important;
+  }
+  body.sm-store-page.sm-category-only-view.sm-streaming-category-view .catalog-search{
+    display:flex!important;
+    order:1!important;
+    width:100%!important;
+    height:58px!important;
+    margin:0!important;
+    padding:0 17px!important;
+    border:1px solid #e6ebf0!important;
+    border-radius:20px!important;
+    background:#f3f6f8!important;
+    box-shadow:0 8px 18px rgba(20,49,80,.05)!important;
+  }
+  body.sm-store-page.sm-category-only-view.sm-streaming-category-view .catalog-search span{
+    font-size:24px!important;
+    color:#173451!important;
+  }
+  body.sm-store-page.sm-category-only-view.sm-streaming-category-view .catalog-search input{
+    font-size:15px!important;
+    font-weight:700!important;
+    color:#173451!important;
+  }
+  body.sm-store-page.sm-category-only-view.sm-streaming-category-view .catalog-search input::placeholder{
+    color:#9aa7b4!important;
+    opacity:1!important;
+  }
+
+  /* Cine y Series header: title + short subtitle, nothing else. */
+  body.sm-store-page.sm-category-only-view.sm-streaming-category-view .catalog-header-inner{
+    min-height:128px!important;
+    align-items:center!important;
+  }
+  body.sm-store-page.sm-category-only-view.sm-streaming-category-view .sm-store-mobile-title{
+    position:relative!important;
+    padding:0 8px 31px!important;
+    font-size:31px!important;
+  }
+  body.sm-store-page.sm-category-only-view.sm-streaming-category-view .sm-store-mobile-title::after{
+    content:'Grandes historias, mejores momentos.'!important;
+    position:absolute!important;
+    left:50%!important;
+    bottom:4px!important;
+    transform:translateX(-50%)!important;
+    width:100%!important;
+    text-align:center!important;
+    color:#738395!important;
+    font:600 12px/1.25 Inter,Arial,sans-serif!important;
+    letter-spacing:0!important;
+  }
+
+  /* Only Cine y Series cards get this compact reference-inspired layout. */
+  body.sm-store-page.sm-streaming-category-view #productGrid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:12px!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-card{
+    min-height:0!important;
+    border:1px solid #e5eaf0!important;
+    border-radius:22px!important;
+    background:#fff!important;
+    overflow:hidden!important;
+    box-shadow:0 8px 22px rgba(24,49,78,.08)!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-card .product-visual{
+    height:142px!important;
+    padding:14px!important;
+    background:#f5f8fa!important;
+    border-radius:0!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-card .product-visual img{
+    width:100%!important;
+    height:100%!important;
+    object-fit:contain!important;
+    border-radius:18px!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-card .product-body{
+    padding:13px 14px 14px!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-title-row{
+    display:flex!important;
+    align-items:flex-start!important;
+    justify-content:space-between!important;
+    gap:6px!important;
+    margin-bottom:7px!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-title-row h3{
+    flex:1!important;
+    min-width:0!important;
+    margin:0!important;
+    min-height:0!important;
+    color:#153151!important;
+    font:900 17px/1.08 Inter,Arial,sans-serif!important;
+    display:block!important;
+    overflow:visible!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-title-row .availability-pill{
+    flex:0 0 auto!important;
+    margin:0!important;
+    padding:5px 7px!important;
+    font-size:7px!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-card .product-body>p{
+    margin:0 0 9px!important;
+    min-height:38px!important;
+    color:#687b8e!important;
+    font:600 10px/1.35 Inter,Arial,sans-serif!important;
+    -webkit-line-clamp:3!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-platform-features{
+    display:flex!important;
+    flex-wrap:wrap!important;
+    gap:5px!important;
+    min-height:22px!important;
+    margin:0 0 10px!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-platform-features span{
+    display:inline-flex!important;
+    align-items:center!important;
+    min-height:21px!important;
+    padding:0 7px!important;
+    border-radius:999px!important;
+    background:#f1f3f6!important;
+    color:#172a40!important;
+    font:850 8px/1 Inter,Arial,sans-serif!important;
+    white-space:nowrap!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-platform-features span:first-child::before{
+    content:'✚'!important;
+    margin-right:4px!important;
+    color:#e2231a!important;
+    font-size:8px!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-card .product-footer{
+    margin-top:0!important;
+    padding-top:10px!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-card .product-footer strong{
+    color:#153151!important;
+    font-size:19px!important;
+  }
+  body.sm-store-page.sm-streaming-category-view .sm-streaming-card .product-footer button{
+    flex-basis:42px!important;
+    width:42px!important;
+    height:42px!important;
+    min-height:42px!important;
+    border-radius:14px!important;
+  }
+}

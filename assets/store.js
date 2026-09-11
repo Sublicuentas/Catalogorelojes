@@ -103,9 +103,27 @@
 
   function syncCategoryOnlyView(){
     var categoryOnly=state.category!=='all';
+    var streamingOnly=state.category==='streaming';
     document.body.classList.toggle('sm-category-only-view',categoryOnly);
+    document.body.classList.toggle('sm-streaming-category-view',streamingOnly);
     var promo=byId('promoSection');
     if(categoryOnly && promo) promo.hidden=true;
+  }
+
+  function platformFeatureChips(product){
+    var source=[product.summary||'', product.description||'']
+      .concat(product.productFeatures||[])
+      .concat((product.plans||[]).reduce(function(all,plan){
+        return all.concat(plan.features||[]);
+      },[])).join(' ');
+    var chips=[];
+    function add(label){ if(chips.indexOf(label)===-1)chips.push(label); }
+    if(/FHD|full\s*hd/i.test(source)) add('FHD');
+    else if(/HD/i.test(source)) add('HD');
+    if(/4K|ultra\s*hd/i.test(source)) add('4K');
+    if(/dolby/i.test(source)) add('Dolby');
+    if(/HDR/i.test(source)) add('HDR');
+    return chips.slice(0,3);
   }
 
   function updateStoreTitles(){
@@ -140,6 +158,19 @@
     if(resultCount)resultCount.textContent=products.length+' '+(products.length===1?'servicio':'servicios')+(state.category!=='all'||query?' encontrados':' disponibles');
     byId('productGrid').innerHTML=products.map(function(p){
       var status=statusOf(p.availability), price=productMinimumPrice(p);
+      if(state.category==='streaming'){
+        var chips=platformFeatureChips(p);
+        return '<article class="product-card sm-streaming-card" style="--accent:'+escapeHtml(p.accent||'#E2231A')+'">'+
+          (p.badge?'<span class="product-badge">'+escapeHtml(p.badge)+'</span>':'')+
+          '<div class="product-visual">'+visualContent(p)+'</div>'+
+          '<div class="product-body">'+
+            '<div class="sm-streaming-title-row"><h3>'+escapeHtml(p.name)+'</h3><span class="availability-pill '+status.className+'">'+escapeHtml(status.label)+'</span></div>'+
+            '<p>'+escapeHtml(p.summary||'')+'</p>'+
+            (chips.length?'<div class="sm-platform-features">'+chips.map(function(chip){return '<span>'+escapeHtml(chip)+'</span>';}).join('')+'</div>':'')+
+            '<div class="product-footer"><div><small>Desde</small><strong>'+escapeHtml(formatPrice(price))+'</strong></div>'+
+            '<button type="button" data-view-product="'+escapeHtml(p.id)+'">Ver precios</button></div>'+
+          '</div></article>';
+      }
       return '<article class="product-card" style="--accent:'+escapeHtml(p.accent||'#E2231A')+'">'+
         (p.badge?'<span class="product-badge">'+escapeHtml(p.badge)+'</span>':'')+
         '<div class="product-visual">'+visualContent(p)+'</div>'+
