@@ -42,9 +42,17 @@
   }
   function categoryIconMarkup(c){
     var key=categoryIconKey(c), file=CATEGORY_ICONS[key];
-    return file?'<img src="'+ICON_BASE+file+'?v=20260910-3d" alt="" aria-hidden="true">':esc((c&&c.icon)||'');
+    return file?'<img src="'+esc(iconSrc(file))+'" alt="" aria-hidden="true">':esc((c&&c.icon)||'');
   }
-  function navIcon(file,alt){return '<img src="'+ICON_BASE+file+'?v=20260910-3d" alt="" aria-hidden="true">';}
+  function navIcon(file,alt){return '<img src="'+esc(iconSrc(file))+'" alt="'+esc(alt||'')+'" aria-hidden="true">';}
+  function sublibotMini(alt){return '<img src="/assets/sublibot-mobile.webp?v=20260910-5" alt="'+esc(alt||'Sublibot')+'">';}
+  function hideLegacyMobileChrome(){
+    document.querySelectorAll('#subliBottomNav,.subli-bottom-nav').forEach(function(el){
+      el.style.setProperty('display','none','important');
+      el.style.setProperty('visibility','hidden','important');
+      el.style.setProperty('pointer-events','none','important');
+    });
+  }
   function hideIntro(){
     var intro=document.getElementById('intro');
     if(!intro)return;
@@ -293,6 +301,7 @@
   function init(){
     if(!mobile()) return;
     document.body.classList.add('sm-mobile-shell');
+    hideLegacyMobileChrome();
     var initialTab=new URLSearchParams(location.search).get('tab');
     if(initialTab)hideIntro();
     buildHome();buildDock();revealDockAfterIntro();buildAbout();initStore();

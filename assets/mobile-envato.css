@@ -366,3 +366,19 @@
   body.sm-mobile-shell #tab-cartelera > :last-child,
   body.sm-mobile-shell #tab-promos > :last-child{margin-bottom:0!important}
 }
+
+
+/* MOBILE RESTORE 5 · el shell Envato manda sobre el footer/menu legacy */
+@media (max-width:700px){
+  html body.sm-mobile-shell nav#subliBottomNav,
+  html body.sm-mobile-shell .subli-bottom-nav,
+  html body.sm-mobile-shell nav.subli-bottom-nav{
+    display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;
+  }
+  html body.sm-mobile-shell #subliMobileDock.sm-mobile-dock{
+    display:grid!important;visibility:visible;
+  }
+  html body.sm-mobile-shell #subliMobileDock.sm-dock-pending{
+    opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+  }
+}
