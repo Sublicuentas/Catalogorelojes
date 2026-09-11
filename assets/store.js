@@ -272,7 +272,13 @@
     byId('productOptionSelect').addEventListener('change',updateProductSelection);
     document.querySelectorAll('[data-close-modal="productModal"]').forEach(function(btn){btn.addEventListener('click',closeModal);});
     byId('productModal').addEventListener('click',function(e){if(e.target===byId('productModal'))closeModal();});
-    document.querySelectorAll('[data-close-catalog]').forEach(function(btn){btn.addEventListener('click',function(){if(window.parent!==window){window.parent.postMessage({type:'close-sublistore'},'*');}else if(history.length>1){history.back();}else{location.href='/';}});});
+    document.querySelectorAll('[data-close-catalog]').forEach(function(btn){btn.addEventListener('click',function(){
+      if(window.parent!==window){window.parent.postMessage({type:'close-sublistore'},'*');return;}
+      document.body.classList.add('sm-page-leaving');
+      setTimeout(function(){
+        if(history.length>1){history.back();}else{location.href='/';}
+      },140);
+    });});
     byId('promoPrev').addEventListener('click',function(){byId('promoTrack').scrollBy({left:-320,behavior:'smooth'});});
     byId('promoNext').addEventListener('click',function(){byId('promoTrack').scrollBy({left:320,behavior:'smooth'});});
     document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!byId('productModal').hidden)closeModal();});
