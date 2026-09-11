@@ -94,8 +94,6 @@
     state.catalog.categories=(state.catalog.categories || []).filter(function(c){return c.active !== false;}).sort(function(a,b){return (a.order||0)-(b.order||0);});
     state.catalog.products=(state.catalog.products || []).filter(function(p){return p.active !== false && !p.redemptionOnly && p.storeEnabled !== false;}).sort(function(a,b){return (a.order||0)-(b.order||0);});
     state.catalog.promotions=(state.catalog.promotions || []).filter(function(p){return p.active !== false;}).sort(function(a,b){return (a.order||0)-(b.order||0);});
-    window.__SUBLI_CATALOG__=state.catalog;
-    try{window.dispatchEvent(new CustomEvent('subli:catalog-updated',{detail:state.catalog}));}catch(_){}
     if(state.category!=='all' && !state.catalog.categories.some(function(c){return c.id===state.category;})) state.category='all';
     var searchInput=byId('storeSearch'); if(searchInput) searchInput.value=state.query;
     renderAll();
