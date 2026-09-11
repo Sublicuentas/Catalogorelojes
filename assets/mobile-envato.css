@@ -244,7 +244,7 @@
 
   /* Product detail: compact, aligned and never covered by the mobile footer. */
   body.modal-open #subliMobileDock{display:none!important}
-  body.sm-store-page .modal-backdrop{z-index:12050!important;display:flex!important;align-items:flex-end!important;justify-content:center!important;padding:0!important;background:rgba(9,24,42,.58)!important;backdrop-filter:blur(7px)!important}
+  body.sm-store-page .modal-backdrop{z-index:12050!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:16px!important;background:rgba(9,24,42,.58)!important;backdrop-filter:blur(7px)!important;position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;height:100vh!important;width:100vw!important}
   body.sm-store-page .product-modal-card{
     width:100%!important;max-width:600px!important;max-height:88dvh!important;margin:0!important;box-sizing:border-box!important;
     overflow:auto!important;border-radius:26px 26px 0 0!important;padding:18px 17px calc(18px + env(safe-area-inset-bottom))!important;background:#fff!important
@@ -556,7 +556,6 @@
   body.sm-store-page.modal-open,
   body.sm-mobile-shell-ready.sm-store-page.modal-open{
     overflow:hidden!important;
-    height:100dvh!important;
   }
 
   body.sm-store-page .product-modal-card{
@@ -638,17 +637,14 @@
 
 /* 2026-09-11 FIX 12 — modal de producto: tarjeta centrada, completa y sin
    recortes; precio y boton de WhatsApp siempre visibles. Sin negativos ni
-   "safe-area" duplicado (eso era la franja blanca vacia al final). */
+   "safe-area" duplicado (eso era la franja blanca vacia al final), y sin
+   dvh (esa unidad se recalcula mal cuando la barra de Chrome se mueve). */
 @media (max-width:700px){
-  body.sm-store-page .modal-backdrop{
-    align-items:center!important;
-    padding:16px!important;
-  }
   body.sm-store-page .product-modal-card{
     position:relative!important;
     width:100%!important;
     max-width:420px!important;
-    max-height:86dvh!important;
+    max-height:86vh!important;
     margin:0!important;
     border-radius:24px!important;
     overflow-y:auto!important;
