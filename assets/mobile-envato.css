@@ -454,3 +454,79 @@
   #sb-pan{bottom:var(--sm-view-bottom)!important;max-height:calc(100dvh - var(--sm-view-bottom) - 18px)!important;}
   #sb-fab{bottom:var(--sm-view-bottom)!important;}
 }
+
+
+/* 2026-09-11 FIX 5 — ONLY: restore scrolling + footer shield + Nosotros icon render */
+@media (max-width:700px){
+  :root{
+    --sm-dock-safe-space:calc(120px + env(safe-area-inset-bottom));
+    --sm-dock-shield-h:calc(106px + env(safe-area-inset-bottom));
+  }
+
+  /* Restore natural vertical scrolling everywhere. */
+  html{height:auto!important;min-height:100%!important;overflow-y:auto!important;overflow-x:hidden!important;}
+  body.sm-mobile-shell-ready,
+  body.sm-mobile-shell-ready:not(.sm-store-page),
+  body.sm-mobile-shell-ready.sm-store-page{
+    height:auto!important;
+    min-height:100dvh!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    display:block!important;
+    padding:0!important;
+  }
+  body.sm-mobile-shell-ready main,
+  body.sm-mobile-shell-ready:not(.sm-store-page) main,
+  body.sm-mobile-shell-ready.sm-store-page main{
+    height:auto!important;
+    min-height:0!important;
+    overflow:visible!important;
+    display:block!important;
+    padding:0!important;
+    margin:0!important;
+  }
+  body.sm-mobile-shell-ready main>.tp,
+  body.sm-mobile-shell-ready:not(.sm-store-page) main>.tp,
+  body.sm-mobile-shell-ready main>.tp.active,
+  body.sm-mobile-shell-ready:not(.sm-store-page) main>.tp.active{
+    height:auto!important;
+    min-height:0!important;
+    overflow:visible!important;
+    overscroll-behavior:auto!important;
+    -webkit-overflow-scrolling:auto!important;
+    padding-bottom:var(--sm-dock-safe-space)!important;
+    margin-bottom:0!important;
+    box-sizing:border-box!important;
+  }
+  body.sm-mobile-shell-ready.sm-store-page main{
+    overflow:visible!important;
+    margin-bottom:0!important;
+    padding-bottom:var(--sm-dock-safe-space)!important;
+  }
+
+  /* Solid shield: page content never shows through/behind the floating dock. */
+  body.sm-mobile-shell-ready::after{
+    content:''!important;
+    display:block!important;
+    position:fixed!important;
+    left:0!important;
+    right:0!important;
+    bottom:0!important;
+    height:var(--sm-dock-shield-h)!important;
+    background:var(--sm-bg,#F4F7FB)!important;
+    z-index:13950!important;
+    pointer-events:none!important;
+  }
+  body.sm-intro-active::after{display:none!important;}
+  .sm-mobile-dock{z-index:14000!important;}
+
+  /* Embedded Nosotros icon must always render. */
+  .sm-dock-btn[data-sm-nav="nosotros"] .sm-dock-icon img{
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+    width:34px!important;
+    height:34px!important;
+    object-fit:contain!important;
+  }
+}
