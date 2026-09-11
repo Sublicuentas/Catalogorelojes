@@ -101,7 +101,15 @@
     ['headerConsult','heroConsult'].forEach(function(id){ var el=byId(id); if(el) el.href=url; });
   }
 
+  function syncCategoryOnlyView(){
+    var categoryOnly=state.category!=='all';
+    document.body.classList.toggle('sm-category-only-view',categoryOnly);
+    var promo=byId('promoSection');
+    if(categoryOnly && promo) promo.hidden=true;
+  }
+
   function updateStoreTitles(){
+    syncCategoryOnlyView();
     var label=state.category==='all' ? 'Catálogo' : categoryName(state.category);
     var mobileTitle=byId('smStoreTitle'); if(mobileTitle) mobileTitle.textContent=label;
     var heading=document.querySelector('.catalog-heading h2'); if(heading) heading.textContent=state.category==='all' ? 'Catálogo completo' : 'Recomendados';
@@ -116,7 +124,7 @@
     }).join('');
     updateStoreTitles();
     byId('categoryFilters').querySelectorAll('[data-category]').forEach(function(btn){
-      btn.addEventListener('click',function(){state.category=btn.dataset.category;var u=new URL(location.href);if(state.category==='all')u.searchParams.delete('categoria');else u.searchParams.set('categoria',state.category);history.replaceState(null,'',u.pathname+(u.searchParams.toString()?'?'+u.searchParams.toString():'')+u.hash);renderCategories();renderProducts();});
+      btn.addEventListener('click',function(){state.category=btn.dataset.category;var u=new URL(location.href);if(state.category==='all')u.searchParams.delete('categoria');else u.searchParams.set('categoria',state.category);history.replaceState(null,'',u.pathname+(u.searchParams.toString()?'?'+u.searchParams.toString():'')+u.hash);syncCategoryOnlyView();renderCategories();renderProducts();renderPromotions();});
     });
   }
   function renderProducts(){
@@ -146,8 +154,12 @@
   }
   function renderPromotions(){
     if(!state.catalog)return;
-    var promos=state.catalog.promotions || [];
     var section=byId('promoSection');
+    if(state.category!=='all'){
+      if(section)section.hidden=true;
+      return;
+    }
+    var promos=state.catalog.promotions || [];
     section.hidden=!promos.length;
     if(!promos.length)return;
     byId('promoTrack').innerHTML=promos.map(function(promo){

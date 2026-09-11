@@ -566,3 +566,70 @@
     -webkit-overflow-scrolling:touch!important;
   }
 }
+
+
+/* 2026-09-11 FIX 7 — category pages: ONLY back + category title + products */
+@media (max-width:700px){
+  body.sm-store-page.sm-category-only-view .catalog-hero,
+  body.sm-store-page.sm-category-only-view #promoSection,
+  body.sm-store-page.sm-category-only-view .catalog-heading,
+  body.sm-store-page.sm-category-only-view #categoryFilters,
+  body.sm-store-page.sm-category-only-view .header-consult,
+  body.sm-store-page.sm-category-only-view .catalog-brand{
+    display:none!important;
+  }
+
+  body.sm-store-page.sm-category-only-view .catalog-header{
+    display:block!important;
+    background:#fff!important;
+    border-bottom:1px solid #e7edf4!important;
+    position:relative!important;
+    z-index:30!important;
+  }
+  body.sm-store-page.sm-category-only-view .catalog-header-inner{
+    min-height:112px!important;
+    display:grid!important;
+    grid-template-columns:56px 1fr 56px!important;
+    align-items:center!important;
+    padding:0 18px!important;
+    box-sizing:border-box!important;
+  }
+  body.sm-store-page.sm-category-only-view .back-catalog{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:52px!important;
+    height:52px!important;
+    padding:0!important;
+    border:0!important;
+    background:transparent!important;
+    color:#12375d!important;
+    font-size:0!important;
+    line-height:1!important;
+  }
+  body.sm-store-page.sm-category-only-view .back-catalog::before{
+    content:'←'!important;
+    font-size:34px!important;
+    font-weight:800!important;
+  }
+  body.sm-store-page.sm-category-only-view .sm-store-mobile-title{
+    display:block!important;
+    grid-column:2!important;
+    text-align:center!important;
+    font-size:31px!important;
+    line-height:1.08!important;
+    font-weight:900!important;
+    color:#12375d!important;
+    white-space:normal!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+  }
+  body.sm-store-page.sm-category-only-view .catalog-section{
+    padding:20px 0 var(--sm-dock-safe-space)!important;
+    margin:0!important;
+  }
+  body.sm-store-page.sm-category-only-view #productGrid{
+    margin-top:0!important;
+    padding-top:0!important;
+  }
+}
