@@ -777,6 +777,22 @@ main{
   transition:background .25s, width .25s;
 }
 .nc-dot.active{background:var(--accent,#E50914);width:32px;}
+.nc-arrow{
+  display:none;
+  position:absolute;top:50%;z-index:5;
+  width:38px;height:38px;
+  align-items:center;justify-content:center;
+  border:0;border-radius:50%;
+  background:rgba(255,255,255,.92);
+  color:#1A1A1A;font-size:20px;line-height:1;
+  cursor:pointer;
+  box-shadow:0 4px 14px rgba(0,0,0,.18);
+  transform:translateY(-50%);
+  transition:background .18s ease,transform .18s ease;
+}
+.nc-arrow:hover{background:#fff;transform:translateY(-50%) scale(1.06)}
+.nc-arrow-prev{left:14px}
+.nc-arrow-next{right:14px}
 
 /* ══ SUBLIBOT negro ══ */
 .mascot{background:var(--surface)!important;border:1.5px solid var(--border2)!important;box-shadow:var(--shadow)!important}
@@ -1208,10 +1224,6 @@ body { height: auto !important; min-height: 100vh; }
     <img src="/assets/img/img-1e10223ff0.png" class="logo-img"/>
     <div class="hdr-sub">Conectamos tu entretenimiento</div>
   </div>
-  <nav class="hdr-nav-desktop" aria-label="Navegaci&oacute;n principal escritorio">
-    <button type="button" class="tab-btn hdr-nav-link" onclick="switchTab('mundial',this)">Deportes</button>
-    <button type="button" class="tab-btn hdr-nav-link" onclick="switchTab('cartelera',this)">Cartelera</button>
-  </nav>
   <button type="button" class="hdr-sublibot-btn" onclick="window.mascotAbrirChat&&mascotAbrirChat()">
     <img src="/assets/sublibot-catalogo.png" alt=""/> Sublibot
   </button>
@@ -1288,6 +1300,8 @@ body { height: auto !important; min-height: 100vh; }
       </div>
     </div>
     <div class="new-carousel" id="newCarousel">
+      <button type="button" class="nc-arrow nc-arrow-prev" onclick="window.ncPrev&&ncPrev()" aria-label="Anterior">&#8249;</button>
+      <button type="button" class="nc-arrow nc-arrow-next" onclick="window.ncNext&&ncNext()" aria-label="Siguiente">&#8250;</button>
       <div class="nc-track" id="ncTrack">
 
         <div class="nc-card" style="--cg1:#E50914;--cg2:#8B0000" onclick="openTabById('promos')"><img src="/assets/img/img-fb82997ee2.jpg" alt="Ofertas al Mejor Precio" style="width:100%;height:100%;object-fit:cover;display:block"></div>
@@ -1320,6 +1334,38 @@ body { height: auto !important; min-height: 100vh; }
     <div class="subli-category-grid" id="subliCategoryGrid"></div>
   </section>
   </div>
+
+  <section class="subli-home-agenda" aria-labelledby="subliHomeAgendaTitle">
+    <button type="button" class="subli-home-agenda-card" onclick="openTabById('mundial')">
+      <span class="subli-home-agenda-ico"><img src="/mobile-icons/agenda-deportiva.png" alt=""></span>
+      <span class="subli-home-agenda-copy">
+        <span class="subli-home-agenda-eyebrow">Partidos y eventos</span>
+        <strong id="subliHomeAgendaTitle">Agenda Deportiva</strong>
+        <p>Consulte Liga Saud&iacute;, MLS, Champions y m&aacute;s eventos del d&iacute;a.</p>
+      </span>
+      <span class="subli-home-agenda-arrow">&rsaquo;</span>
+    </button>
+  </section>
+
+  <section class="subli-home-cartelera" aria-labelledby="subliHomeCarteleraTitle">
+    <div class="subli-home-heading">
+      <div>
+        <span>Qu&eacute; ver ahora</span>
+        <h2 id="subliHomeCarteleraTitle">Cartelera</h2>
+        <p>Pel&iacute;culas, series y anime de las plataformas disponibles.</p>
+      </div>
+      <button type="button" onclick="openTabById('cartelera')">Ver cartelera <b>&rsaquo;</b></button>
+    </div>
+    <div class="subli-home-apps" id="subliHomeApps">
+      <button type="button" class="active" data-provider="netflix" onclick="loadHomeCartelera('netflix',this)">Netflix</button>
+      <button type="button" data-provider="disney" onclick="loadHomeCartelera('disney',this)">Disney+</button>
+      <button type="button" data-provider="hbomax" onclick="loadHomeCartelera('hbomax',this)">HBO Max</button>
+      <button type="button" data-provider="prime" onclick="loadHomeCartelera('prime',this)">Prime Video</button>
+      <button type="button" data-provider="paramount" onclick="loadHomeCartelera('paramount',this)">Paramount+</button>
+      <button type="button" data-provider="crunchyroll" onclick="loadHomeCartelera('crunchyroll',this)">Crunchyroll</button>
+    </div>
+    <div class="subli-home-poster-row" id="subliHomePosterRow" aria-live="polite"></div>
+  </section>
 
   <section id="subliLiveCatalogSection" class="subli-live-catalog" aria-labelledby="subliLiveCatalogTitle"><div class="subli-live-catalog-head">
       <div>
@@ -1354,25 +1400,6 @@ body { height: auto !important; min-height: 100vh; }
     </div>
   </section>
 
-  <section class="subli-home-cartelera" aria-labelledby="subliHomeCarteleraTitle">
-    <div class="subli-home-heading">
-      <div>
-        <span>Qu&eacute; ver ahora</span>
-        <h2 id="subliHomeCarteleraTitle">Cartelera</h2>
-        <p>Pel&iacute;culas, series y anime de las plataformas disponibles.</p>
-      </div>
-      <button type="button" onclick="openTabById('cartelera')">Ver cartelera <b>&rsaquo;</b></button>
-    </div>
-    <div class="subli-home-apps" id="subliHomeApps">
-      <button type="button" class="active" data-provider="netflix" onclick="loadHomeCartelera('netflix',this)">Netflix</button>
-      <button type="button" data-provider="disney" onclick="loadHomeCartelera('disney',this)">Disney+</button>
-      <button type="button" data-provider="hbomax" onclick="loadHomeCartelera('hbomax',this)">HBO Max</button>
-      <button type="button" data-provider="prime" onclick="loadHomeCartelera('prime',this)">Prime Video</button>
-      <button type="button" data-provider="paramount" onclick="loadHomeCartelera('paramount',this)">Paramount+</button>
-      <button type="button" data-provider="crunchyroll" onclick="loadHomeCartelera('crunchyroll',this)">Crunchyroll</button>
-    </div>
-    <div class="subli-home-poster-row" id="subliHomePosterRow" aria-live="polite"></div>
-  </section>
   <div class="sp"></div>
 <div class="subli-home-support-grid">
 <button class="mascot-btn" onclick="mascotAbrirChat()" aria-label="Abrir chat SubliBot">
@@ -1831,6 +1858,8 @@ document.addEventListener('DOMContentLoaded', function(){
     dots.forEach(function(d,i){ d.classList.toggle('active', i===cur); });
   }
   window.ncGo = go;
+  window.ncNext = function(){ stopPlay(); go(cur+1); };
+  window.ncPrev = function(){ stopPlay(); go(cur-1); };
 
   function autoplay(){ timer = setInterval(function(){ go(cur+1); }, 3800); }
   function stopPlay(){ clearInterval(timer); }
@@ -3763,12 +3792,12 @@ footer{
     max-width:1180px!important;
   }
 
-  /* Portada web: carrusel y categorías comparten la primera franja. */
+  /* Portada web: el carrusel va arriba a todo el ancho y las
+     categorías debajo (igual que en el mockup de referencia). */
   #tab-inicio .subli-home-web-hero-grid{
-    display:grid;
-    grid-template-columns:minmax(0,1.62fr) minmax(310px,.88fr);
-    gap:22px;
-    align-items:stretch;
+    display:flex;
+    flex-direction:column;
+    gap:26px;
   }
   #tab-inicio .hero-wrap{
     display:flex;
@@ -3823,45 +3852,45 @@ footer{
   #tab-inicio .subli-home-categories{
     width:100%!important;
     min-width:0;
-    height:100%;
     margin:0!important;
     border:1px solid #E7DDD5;
     border-radius:22px;
     background:#FFFFFF;
-    padding:20px;
+    padding:22px 24px;
     box-shadow:0 10px 28px rgba(59,42,33,.07);
   }
   #tab-inicio .subli-home-categories .subli-home-heading{
-    margin-bottom:16px;
+    margin-bottom:18px;
     align-items:flex-start;
   }
   #tab-inicio .subli-home-categories .subli-home-heading h2{
     font-size:28px;
   }
   #tab-inicio .subli-category-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-    gap:10px!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:14px!important;
   }
   #tab-inicio .subli-category-card{
-    min-height:58px!important;
-    flex-direction:row!important;
+    flex-direction:column!important;
     align-items:center!important;
     justify-content:flex-start!important;
-    gap:10px!important;
+    text-align:center!important;
+    gap:8px!important;
+    min-height:112px!important;
     border:1px solid #EEE5DE!important;
-    border-radius:14px!important;
+    border-radius:16px!important;
     background:#FAF7F4!important;
-    padding:9px 10px!important;
-    text-align:left!important;
+    padding:16px 10px!important;
   }
   #tab-inicio .subli-category-card:hover{
     border-color:#E7BFC1!important;
     background:#FFF3F3!important;
+    transform:translateY(-2px);
   }
   #tab-inicio .subli-category-icon,
   #tab-inicio .subli-category-icon img{
-    width:36px!important;
-    height:36px!important;
+    width:46px!important;
+    height:46px!important;
   }
   #tab-inicio .subli-category-card strong{
     max-width:none!important;
@@ -7080,18 +7109,6 @@ footer{padding-bottom:78px!important}
     width:auto!important;height:36px!important;max-width:150px!important;
   }
   .hdr-sub{margin-top:0!important;font-size:9.5px!important}
-  .hdr-nav-desktop{
-    display:flex;align-items:center;gap:30px;
-    margin:0 auto;
-  }
-  .hdr-nav-link{
-    background:transparent;border:0;cursor:pointer;padding:6px 2px;
-    font-family:'Barlow Condensed',sans-serif;font-weight:800;
-    font-size:13.5px;letter-spacing:.5px;text-transform:uppercase;
-    color:#3A322C;
-  }
-  .hdr-nav-link::after{content:none!important}
-  .hdr-nav-link:hover,.hdr-nav-link.active{color:#E50914}
   .hdr-sublibot-btn{
     display:flex;align-items:center;gap:8px;
     background:#E50914;color:#fff;border:0;border-radius:999px;
@@ -7106,6 +7123,44 @@ footer{padding-bottom:78px!important}
     width:28px;height:28px;border-radius:50%;object-fit:cover;background:#fff;
   }
 
+  /* Carrusel: flechas visibles (como en el mockup) */
+  #tab-inicio .nc-arrow{
+    display:flex!important;
+  }
+
+  /* Tarjeta "Agenda Deportiva" — sección propia, debajo de Categorías */
+  .subli-home-agenda{margin:0}
+  .subli-home-agenda-card{
+    display:flex;align-items:center;gap:18px;
+    width:100%;text-align:left;cursor:pointer;
+    border:1px solid #E7DDD5;border-radius:22px;
+    background:#FFFFFF;padding:20px 24px;
+    box-shadow:0 10px 28px rgba(59,42,33,.07);
+    transition:transform .18s ease,box-shadow .18s ease;
+  }
+  .subli-home-agenda-card:hover{
+    transform:translateY(-2px);
+    box-shadow:0 14px 32px rgba(59,42,33,.12);
+  }
+  .subli-home-agenda-ico{
+    flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+    width:52px;height:52px;border-radius:16px;background:#FFF3F1;
+  }
+  .subli-home-agenda-ico img{width:30px;height:30px;object-fit:contain}
+  .subli-home-agenda-copy{flex:1;min-width:0}
+  .subli-home-agenda-eyebrow{
+    display:block;color:#E50914;font-family:'Barlow Condensed',sans-serif;
+    font-size:10px;font-weight:900;letter-spacing:1.6px;text-transform:uppercase;
+  }
+  .subli-home-agenda-copy strong{
+    display:block;margin-top:2px;color:#1A1A1A;
+    font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;
+  }
+  .subli-home-agenda-copy p{margin:4px 0 0;color:#706761;font-size:13px}
+  .subli-home-agenda-arrow{
+    flex:0 0 auto;font-size:30px;color:#E50914;line-height:1;
+  }
+
   /* Enlace "Nosotros" discreto en el pie, junto al copyright */
   footer{position:relative}
   .foot-nosotros-link{
@@ -7117,11 +7172,6 @@ footer{padding-bottom:78px!important}
     text-decoration:underline;text-underline-offset:3px;
   }
   .foot-nosotros-link:hover{color:#E50914}
-
-  /* Carrusel/hero un poco más compacto en escritorio */
-  #tab-inicio .subli-home-web-hero-grid{
-    grid-template-columns:minmax(0,1.32fr) minmax(340px,1fr)!important;
-  }
 
   /* ── Panel "Nosotros": tarjeta compacta, no gigante,
      desliza desde el borde derecho ── */
