@@ -52,6 +52,8 @@ header{background:rgba(0,0,0,.82);backdrop-filter:blur(16px) saturate(130%);-web
 .lt-w{color:#fff}.lt-r{color:#B30E20}
 .logo-line{width:112px;height:2px;background:linear-gradient(to right,transparent,#B30E20 40%,#B30E20 80%,transparent);box-shadow:0 0 12px rgba(179,14,32,.5);margin-top:2px}
 .hdr-sub{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:1.5px;color:#fff;font-weight:900;text-transform:uppercase;margin-top:2px}
+.hdr-brand{display:flex;flex-direction:column;align-items:center}
+.hdr-nav-desktop,.hdr-sublibot-btn,.foot-nosotros-link{display:none}
 .tabs-outer{background:var(--bg2);border-bottom:1px solid var(--border);overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none}
 .ts{display:flex;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;max-width:100vw;}
 .ts::-webkit-scrollbar{display:none}
@@ -1202,8 +1204,17 @@ body { height: auto !important; min-height: 100vh; }
 </div>
 <div id="sticky-wrap" style="position:sticky;top:0;z-index:200;box-shadow:0 4px 16px rgba(0,0,0,.08);width:100%;background:var(--bg,#f5efe7);">
 <header>
-  <img src="/assets/img/img-1e10223ff0.png" class="logo-img"/>
-  <div class="hdr-sub">Conectamos tu entretenimiento</div>
+  <div class="hdr-brand">
+    <img src="/assets/img/img-1e10223ff0.png" class="logo-img"/>
+    <div class="hdr-sub">Conectamos tu entretenimiento</div>
+  </div>
+  <nav class="hdr-nav-desktop" aria-label="Navegaci&oacute;n principal escritorio">
+    <button type="button" class="tab-btn hdr-nav-link" onclick="switchTab('mundial',this)">Deportes</button>
+    <button type="button" class="tab-btn hdr-nav-link" onclick="switchTab('cartelera',this)">Cartelera</button>
+  </nav>
+  <button type="button" class="hdr-sublibot-btn" onclick="window.mascotAbrirChat&&mascotAbrirChat()">
+    <img src="/assets/sublibot-catalogo.png" alt=""/> Sublibot
+  </button>
 </header>
 <div class="tabs-outer menu-vertical">
 <button id="menuToggle" class="menu-toggle" onclick="toggleMenu()">
@@ -1230,26 +1241,6 @@ body { height: auto !important; min-height: 100vh; }
 </div></div>
 </div>
 <button type="button" id="subliMenuBackdrop" class="subli-menu-backdrop" onclick="closeSubliMenu()" aria-label="Cerrar men&uacute;"></button>
-
-<!-- ===== Navegaci&oacute;n lateral (modo web/escritorio) ===== -->
-<nav class="subli-side-nav" id="subliSideNav" aria-label="Navegaci&oacute;n principal (escritorio)">
-  <img class="side-nav-logo" src="/assets/img/img-1e10223ff0.png" alt="Sublicuentas"/>
-  <button type="button" class="tab-btn side-nav-btn active" data-side="inicio" onclick="switchTab('inicio',this)">
-    <span class="side-nav-ico"><img src="/mobile-icons/inicio.png" alt=""></span><small>Inicio</small>
-  </button>
-  <button type="button" class="tab-btn side-nav-btn" data-side="cartelera" onclick="switchTab('cartelera',this)">
-    <span class="side-nav-ico"><img src="/mobile-icons/cartelera.png" alt=""></span><small>Cartelera</small>
-  </button>
-  <button type="button" class="tab-btn side-nav-btn" data-side="promos" onclick="switchTab('promos',this)">
-    <span class="side-nav-ico"><img src="/mobile-icons/ofertas.png" alt=""></span><small>Ofertas</small>
-  </button>
-  <button type="button" class="side-nav-btn" id="sideNavSublibot" onclick="window.mascotAbrirChat&&mascotAbrirChat()">
-    <span class="side-nav-ico"><img src="/assets/sublibot-catalogo.png" alt=""></span><small>Sublibot</small>
-  </button>
-  <button type="button" class="side-nav-btn" id="sideNavNosotros" onclick="openNosotrosPanel()">
-    <span class="side-nav-ico"><img src="/mobile-icons/nosotros.png" alt=""></span><small>Nosotros</small>
-  </button>
-</nav>
 
 <!-- ===== Panel "Nosotros" — desliza desde la derecha (modo web) ===== -->
 <button type="button" class="subli-side-panel-backdrop" id="subliNosotrosBackdrop" onclick="closeNosotrosPanel()" aria-label="Cerrar"></button>
@@ -1598,6 +1589,7 @@ body { height: auto !important; min-height: 100vh; }
 </div>
 <div class="foot-dots"><span>&#9670;</span></div>
 <span class="copy">Sublicuentas &copy; <b>2026</b> &ndash; Elevando tu experiencia digital.</span>
+<button type="button" class="foot-nosotros-link" onclick="openNosotrosPanel()">Nosotros</button>
 </footer>
 <nav class="subli-bottom-nav" id="subliBottomNav" aria-label="Navegaci&oacute;n principal">
   <button type="button" class="subli-bottom-btn active" data-tab="inicio"><span class="subli-bottom-icon"></span><small>Inicio</small></button>
@@ -7057,8 +7049,10 @@ footer{padding-bottom:78px!important}
 
 <style id="subli-desktop-sidebar-nav">
 /* ════════════════════════════════════════════════════
-   MODO WEB (escritorio): nav lateral izquierda +
-   panel "Nosotros" deslizante desde la derecha.
+   MODO WEB (escritorio): header horizontal con nav +
+   botón Sublibot (referencia: mockup de Canva del cliente,
+   con nuestros propios colores e íconos) + panel "Nosotros"
+   deslizante desde la derecha.
    El dock inferior (subli-bottom-nav) es solo para móvil;
    quedaba fijo también en escritorio y tapaba el buscador.
    ════════════════════════════════════════════════════ */
@@ -7070,60 +7064,64 @@ footer{padding-bottom:78px!important}
   body{padding-bottom:0!important}
   main{padding-bottom:54px!important}
 
-  /* Deja espacio a la izquierda para el sidebar fijo */
-  #sticky-wrap,main{margin-left:86px!important}
-  #sticky-wrap{width:calc(100% - 86px)!important}
+  /* Header: logo a la izquierda, nav (Deportes / Cartelera)
+     al centro-derecha, botón Sublibot al final. Sin "Categorías". */
+  header{
+    flex-direction:row!important;
+    justify-content:space-between!important;
+    align-items:center!important;
+    padding:12px 30px!important;
+    gap:24px;
+  }
+  .hdr-brand{
+    display:flex;flex-direction:row;align-items:center;gap:10px;
+  }
+  .hdr-brand .logo-img{
+    width:auto!important;height:36px!important;max-width:150px!important;
+  }
+  .hdr-sub{margin-top:0!important;font-size:9.5px!important}
+  .hdr-nav-desktop{
+    display:flex;align-items:center;gap:30px;
+    margin:0 auto;
+  }
+  .hdr-nav-link{
+    background:transparent;border:0;cursor:pointer;padding:6px 2px;
+    font-family:'Barlow Condensed',sans-serif;font-weight:800;
+    font-size:13.5px;letter-spacing:.5px;text-transform:uppercase;
+    color:#3A322C;
+  }
+  .hdr-nav-link::after{content:none!important}
+  .hdr-nav-link:hover,.hdr-nav-link.active{color:#E50914}
+  .hdr-sublibot-btn{
+    display:flex;align-items:center;gap:8px;
+    background:#E50914;color:#fff;border:0;border-radius:999px;
+    padding:8px 18px 8px 8px;cursor:pointer;
+    font-family:'Barlow Condensed',sans-serif;font-weight:800;
+    font-size:13px;letter-spacing:.3px;text-transform:uppercase;
+    box-shadow:0 6px 16px rgba(229,9,20,.28);
+    transition:transform .18s ease,box-shadow .18s ease;
+  }
+  .hdr-sublibot-btn:hover{transform:translateY(-1px);box-shadow:0 9px 20px rgba(229,9,20,.34)}
+  .hdr-sublibot-btn img{
+    width:28px;height:28px;border-radius:50%;object-fit:cover;background:#fff;
+  }
 
-  .subli-side-nav{
-    display:flex!important;
-    position:fixed;left:0;top:0;bottom:0;
-    z-index:600;
-    width:86px;
-    flex-direction:column;
-    align-items:center;
-    gap:3px;
-    padding:16px 0 18px;
-    background:#FFFFFF;
-    border-right:1px solid #E7DDD5;
-    box-shadow:2px 0 20px rgba(54,39,31,.06);
+  /* Enlace "Nosotros" discreto en el pie, junto al copyright */
+  footer{position:relative}
+  .foot-nosotros-link{
+    display:inline-block!important;
+    background:transparent;border:0;cursor:pointer;
+    color:#877D75;font-size:11px;font-weight:800;
+    letter-spacing:.4px;text-transform:uppercase;
+    margin-left:14px;padding:0;
+    text-decoration:underline;text-underline-offset:3px;
   }
-  .subli-side-nav .side-nav-logo{
-    width:32px;height:32px;object-fit:contain;
-    margin-bottom:12px;
+  .foot-nosotros-link:hover{color:#E50914}
+
+  /* Carrusel/hero un poco más compacto en escritorio */
+  #tab-inicio .subli-home-web-hero-grid{
+    grid-template-columns:minmax(0,1.32fr) minmax(340px,1fr)!important;
   }
-  .subli-side-nav .side-nav-btn{
-    display:flex;flex-direction:column;align-items:center;
-    gap:5px;
-    width:74px;
-    padding:10px 2px;
-    border:0;
-    border-left:3px solid transparent;
-    background:transparent;
-    cursor:pointer;
-    color:#877D75;
-    font-family:'Barlow Condensed',sans-serif;
-    font-size:10.5px;font-weight:800;letter-spacing:.4px;
-    text-transform:uppercase;
-    border-radius:0 12px 12px 0;
-    transition:background .18s ease,color .18s ease;
-  }
-  .subli-side-nav .side-nav-ico{
-    display:flex;align-items:center;justify-content:center;
-    width:26px;height:26px;
-  }
-  .subli-side-nav .side-nav-ico img{
-    width:100%;height:100%;object-fit:contain;
-    opacity:.72;
-    transition:opacity .18s ease;
-  }
-  .subli-side-nav .side-nav-btn:hover{background:#FAF3EE;color:#B30E20}
-  .subli-side-nav .side-nav-btn:hover .side-nav-ico img{opacity:1}
-  .subli-side-nav .side-nav-btn.active{
-    color:#E50914;
-    background:#FFF3F1;
-    border-left-color:#E50914;
-  }
-  .subli-side-nav .side-nav-btn.active .side-nav-ico img{opacity:1}
 
   /* ── Panel "Nosotros": tarjeta compacta, no gigante,
      desliza desde el borde derecho ── */
@@ -7200,7 +7198,7 @@ footer{padding-bottom:78px!important}
   #sb-fab{display:none!important}
 }
 @media (max-width:899px){
-  .subli-side-nav,.subli-side-panel,.subli-side-panel-backdrop{display:none!important}
+  .subli-side-panel,.subli-side-panel-backdrop,.hdr-nav-desktop,.hdr-sublibot-btn,.foot-nosotros-link{display:none!important}
 }
 </style>
 <script>
@@ -7209,13 +7207,11 @@ footer{padding-bottom:78px!important}
     var p=document.getElementById('subliNosotrosPanel'), b=document.getElementById('subliNosotrosBackdrop');
     if(p) p.classList.add('open');
     if(b) b.classList.add('open');
-    var btn=document.getElementById('sideNavNosotros'); if(btn) btn.classList.add('active');
   };
   window.closeNosotrosPanel = function(){
     var p=document.getElementById('subliNosotrosPanel'), b=document.getElementById('subliNosotrosBackdrop');
     if(p) p.classList.remove('open');
     if(b) b.classList.remove('open');
-    var btn=document.getElementById('sideNavNosotros'); if(btn) btn.classList.remove('active');
   };
   document.addEventListener('keydown', function(e){
     if(e.key==='Escape') window.closeNosotrosPanel();
