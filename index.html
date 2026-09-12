@@ -1274,31 +1274,6 @@ body { height: auto !important; min-height: 100vh; }
 <div class="tp active" id="tab-inicio">
   <div class="subli-home-web-hero-grid">
   <div class="hero-wrap">
-    <div class="hero-top subli-commerce-hero">
-      <div class="subli-commerce-copy">
-        <span class="subli-commerce-live"><i></i> Cat&aacute;logo conectado</span>
-        <h1>Tu entretenimiento<br/><span>en un solo lugar</span></h1>
-        <p>Streaming, herramientas, TV digital y más. Revise precios, promociones y disponibilidad desde un solo lugar.</p>
-        <div class="subli-commerce-actions">
-          <button type="button" class="subli-commerce-primary" onclick="window.location.href='/store'">
-            Ver catálogo <b>&rarr;</b>
-          </button>
-          <button type="button" class="subli-commerce-secondary" onclick="openTabById('promos')">
-            Ver promociones
-          </button>
-        </div>
-        <div class="subli-commerce-trust" aria-label="Beneficios de Sublicuentas">
-          <span><b id="subliLiveProductCount">27</b> servicios</span>
-          <span><b>100%</b> digital</span>
-          <span><b>Soporte</b> garantizado</span>
-        </div>
-        <span class="catalog-sync-note" id="subliCatalogSyncNote">Comprobando precios vigentes&hellip;</span>
-      </div>
-      <div class="subli-commerce-showcase subli-final-bot" aria-hidden="true">
-        <div class="subli-final-bot-glow"></div>
-        <img src="/assets/sublibot-catalogo.png?v=20260824-v2" alt="">
-      </div>
-    </div>
     <div class="new-carousel" id="newCarousel">
       <button type="button" class="nc-arrow nc-arrow-prev" onclick="window.ncPrev&&ncPrev()" aria-label="Anterior">&#8249;</button>
       <button type="button" class="nc-arrow nc-arrow-next" onclick="window.ncNext&&ncNext()" aria-label="Siguiente">&#8250;</button>
@@ -1335,18 +1310,6 @@ body { height: auto !important; min-height: 100vh; }
   </section>
   </div>
 
-  <section class="subli-home-agenda" aria-labelledby="subliHomeAgendaTitle">
-    <button type="button" class="subli-home-agenda-card" onclick="openTabById('mundial')">
-      <span class="subli-home-agenda-ico"><img src="/mobile-icons/agenda-deportiva.png" alt=""></span>
-      <span class="subli-home-agenda-copy">
-        <span class="subli-home-agenda-eyebrow">Partidos y eventos</span>
-        <strong id="subliHomeAgendaTitle">Agenda Deportiva</strong>
-        <p>Consulte Liga Saud&iacute;, MLS, Champions y m&aacute;s eventos del d&iacute;a.</p>
-      </span>
-      <span class="subli-home-agenda-arrow">&rsaquo;</span>
-    </button>
-  </section>
-
   <section class="subli-home-cartelera" aria-labelledby="subliHomeCarteleraTitle">
     <div class="subli-home-heading">
       <div>
@@ -1367,37 +1330,23 @@ body { height: auto !important; min-height: 100vh; }
     <div class="subli-home-poster-row" id="subliHomePosterRow" aria-live="polite"></div>
   </section>
 
-  <section id="subliLiveCatalogSection" class="subli-live-catalog" aria-labelledby="subliLiveCatalogTitle"><div class="subli-live-catalog-head">
+  <section class="subli-home-agenda" aria-labelledby="subliHomeAgendaTitle">
+    <div class="subli-home-heading">
       <div>
-        <span><i></i> Cat&aacute;logo en vivo</span>
-        <h2 id="subliLiveCatalogTitle">Servicios destacados</h2>
-        <p>Consulte precios, promociones y disponibilidad actual.</p>
+        <span>Partidos y eventos</span>
+        <h2 id="subliHomeAgendaTitle">Agenda Deportiva</h2>
+        <p>Consulte Liga Saud&iacute;, MLS, Champions y m&aacute;s eventos del d&iacute;a.</p>
       </div>
-      <strong id="subliLiveCatalogCount">Cargando&hellip;</strong>
+      <button type="button" onclick="openTabById('mundial')">Ver agenda <b>&rsaquo;</b></button>
     </div>
-    <div class="subli-live-search">
-      <span aria-hidden="true">&#128269;</span>
-      <input id="subliLiveSearch" type="search" autocomplete="off" placeholder="Buscar Netflix, Canva, Office, IPTV&hellip;" aria-label="Buscar en el cat&aacute;logo"/>
-      <button type="button" id="subliLiveSearchClear" aria-label="Limpiar b&uacute;squeda">&times;</button>
-    </div>
-    <div class="subli-live-filters" id="subliLiveFilters" aria-label="Filtrar servicios">
-      <button type="button" class="active" data-home-category="all">Todo</button>
-      <button type="button" data-home-category="streaming">Streaming</button>
-      <button type="button" data-home-category="iptv">TV digital</button>
-      <button type="button" data-home-category="music">M&uacute;sica</button>
-      <button type="button" data-home-category="ai,creative,software">Licencias</button>
-      <button type="button" data-home-category="gaming">Gaming</button>
-    </div>
-    <div class="subli-live-product-grid" id="subliLiveProductGrid" aria-live="polite">
-      <span class="subli-live-product-skeleton"></span>
-      <span class="subli-live-product-skeleton"></span>
-      <span class="subli-live-product-skeleton"></span>
-      <span class="subli-live-product-skeleton"></span>
-    </div>
-    <div class="subli-live-catalog-foot">
-      <div><i></i><span>Precios, promociones y disponibilidad sincronizados desde el panel.</span></div>
-      <button type="button" onclick="window.location.href='/store'">Abrir catálogo <b>&rarr;</b></button>
-    </div>
+    <button type="button" class="subli-home-agenda-card" onclick="openTabById('mundial')">
+      <span class="subli-home-agenda-ico"><img src="/mobile-icons/agenda-deportiva.png" alt=""></span>
+      <span class="subli-home-agenda-copy">
+        <strong>Partidos del d&iacute;a</strong>
+        <p>Ligas, horarios y resultados en vivo desde la agenda completa.</p>
+      </span>
+      <span class="subli-home-agenda-arrow">&rsaquo;</span>
+    </button>
   </section>
 
   <div class="sp"></div>
@@ -3918,6 +3867,27 @@ footer{
     flex-wrap:wrap;
     overflow:visible;
     padding-bottom:12px;
+  }
+
+  /* Agenda Deportiva web: misma tarjeta que Cartelera, encabezado igual */
+  #tab-inicio .subli-home-agenda{
+    width:100%!important;
+    margin:24px 0 0!important;
+    border:1px solid #E7DDD5;
+    border-radius:22px;
+    background:#FFFFFF;
+    padding:20px;
+    box-shadow:0 10px 28px rgba(59,42,33,.06);
+  }
+  #tab-inicio .subli-home-agenda .subli-home-heading{
+    margin-bottom:13px;
+  }
+  #tab-inicio .subli-home-agenda .subli-home-heading h2{
+    font-size:30px;
+  }
+  #tab-inicio .subli-home-agenda-card{
+    border-color:#EEE5DE!important;
+    box-shadow:none!important;
   }
   #tab-inicio .subli-home-poster-row{
     grid-template-columns:repeat(6,minmax(0,1fr))!important;
@@ -7042,15 +7012,16 @@ footer{padding-bottom:78px!important}
     });
   }
   function fixHomeGap(){
+    var isMobile = window.matchMedia('(max-width:700px)').matches;
     var spacer = document.querySelector('#tab-inicio > .sp');
-    if(spacer){
+    if(spacer && isMobile){
       spacer.style.display='none';
       spacer.style.height='0';
       spacer.style.margin='0';
       spacer.style.padding='0';
     }
     var support = document.querySelector('#tab-inicio .subli-home-support-grid');
-    if(support){
+    if(support && isMobile){
       support.style.display='none';
       support.style.minHeight='0';
       support.style.height='0';
@@ -7059,15 +7030,13 @@ footer{padding-bottom:78px!important}
       support.style.overflow='hidden';
     }
     var cats = document.querySelector('#tab-inicio .subli-home-categories');
-    if(cats){
+    if(cats && isMobile){
       cats.style.marginTop='18px';
       cats.style.paddingTop='22px';
       cats.style.paddingBottom='8px';
     }
-    var live = document.querySelector('#tab-inicio .subli-live-catalog');
-    if(live){ live.style.marginBottom='10px'; }
     var cart = document.querySelector('#tab-inicio .subli-home-cartelera');
-    if(cart){ cart.style.paddingTop='12px'; cart.style.marginBottom='0'; }
+    if(cart && isMobile){ cart.style.paddingTop='12px'; cart.style.marginBottom='0'; }
   }
   document.addEventListener('DOMContentLoaded', function(){
     updateAgendaTexts();
