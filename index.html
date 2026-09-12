@@ -703,7 +703,8 @@ main{
 .nc-track{display:flex;transition:transform .42s cubic-bezier(.22,.8,.2,1);width:100%}
 .nc-card{
   flex-shrink:0;width:100%;
-  height:185px;
+  aspect-ratio:900/506;
+  height:auto;
   position:relative;
   overflow:hidden;
   display:flex;
@@ -1229,6 +1230,42 @@ body { height: auto !important; min-height: 100vh; }
 </div></div>
 </div>
 <button type="button" id="subliMenuBackdrop" class="subli-menu-backdrop" onclick="closeSubliMenu()" aria-label="Cerrar men&uacute;"></button>
+
+<!-- ===== Navegaci&oacute;n lateral (modo web/escritorio) ===== -->
+<nav class="subli-side-nav" id="subliSideNav" aria-label="Navegaci&oacute;n principal (escritorio)">
+  <img class="side-nav-logo" src="/assets/img/img-1e10223ff0.png" alt="Sublicuentas"/>
+  <button type="button" class="tab-btn side-nav-btn active" data-side="inicio" onclick="switchTab('inicio',this)">
+    <span class="side-nav-ico"><img src="/mobile-icons/inicio.png" alt=""></span><small>Inicio</small>
+  </button>
+  <button type="button" class="tab-btn side-nav-btn" data-side="cartelera" onclick="switchTab('cartelera',this)">
+    <span class="side-nav-ico"><img src="/mobile-icons/cartelera.png" alt=""></span><small>Cartelera</small>
+  </button>
+  <button type="button" class="tab-btn side-nav-btn" data-side="promos" onclick="switchTab('promos',this)">
+    <span class="side-nav-ico"><img src="/mobile-icons/ofertas.png" alt=""></span><small>Ofertas</small>
+  </button>
+  <button type="button" class="side-nav-btn" id="sideNavSublibot" onclick="window.mascotAbrirChat&&mascotAbrirChat()">
+    <span class="side-nav-ico"><img src="/assets/sublibot-catalogo.png" alt=""></span><small>Sublibot</small>
+  </button>
+  <button type="button" class="side-nav-btn" id="sideNavNosotros" onclick="openNosotrosPanel()">
+    <span class="side-nav-ico"><img src="/mobile-icons/nosotros.png" alt=""></span><small>Nosotros</small>
+  </button>
+</nav>
+
+<!-- ===== Panel "Nosotros" — desliza desde la derecha (modo web) ===== -->
+<button type="button" class="subli-side-panel-backdrop" id="subliNosotrosBackdrop" onclick="closeNosotrosPanel()" aria-label="Cerrar"></button>
+<div class="subli-side-panel" id="subliNosotrosPanel" role="dialog" aria-modal="true" aria-labelledby="subliNosotrosTitle">
+  <div class="subli-side-panel-head">
+    <div><span>Sublicuentas</span><strong id="subliNosotrosTitle">Nosotros</strong></div>
+    <button type="button" onclick="closeNosotrosPanel()" aria-label="Cerrar">&times;</button>
+  </div>
+  <div class="subli-side-panel-body">
+    <p>Hace 4 a&ntilde;os, en el coraz&oacute;n de <strong>Honduras</strong>, un grupo de j&oacute;venes apasionados por la tecnolog&iacute;a y el entretenimiento decidi&oacute; transformar la forma en que las personas disfrutan del contenido digital.</p>
+    <p>As&iacute; naci&oacute; <strong>Sublicuentas</strong>, con la visi&oacute;n de brindar acceso f&aacute;cil, confiable y accesible a las mejores plataformas de streaming, TV digital, juegos, software y herramientas online. Trabajamos cada d&iacute;a con <strong>innovaci&oacute;n constante</strong>, compromiso con nuestros clientes y soluciones digitales eficientes a precios competitivos.</p>
+    <p class="subli-side-panel-tag">Nuestro prop&oacute;sito: Conectamos tu entretenimiento.</p>
+    <a class="subli-side-panel-cta" href="https://wa.me/50432126332?text=Hola!%20Quiero%20conocer%20m%C3%A1s%20sobre%20Sublicuentas" target="_blank" rel="noopener">Escr&iacute;benos por WhatsApp</a>
+  </div>
+</div>
+
 <main>
 
 <div class="tp active" id="tab-inicio">
@@ -7014,6 +7051,174 @@ footer{padding-bottom:78px!important}
   document.addEventListener('DOMContentLoaded', function(){
     updateAgendaTexts();
     fixHomeGap();
+  });
+})();
+</script>
+
+<style id="subli-desktop-sidebar-nav">
+/* ════════════════════════════════════════════════════
+   MODO WEB (escritorio): nav lateral izquierda +
+   panel "Nosotros" deslizante desde la derecha.
+   El dock inferior (subli-bottom-nav) es solo para móvil;
+   quedaba fijo también en escritorio y tapaba el buscador.
+   ════════════════════════════════════════════════════ */
+@media (min-width:900px){
+
+  /* El dock móvil no debe existir en escritorio: por eso
+     quedaba flotando sobre "Buscar Netflix, Canva..." */
+  .subli-bottom-nav{display:none!important}
+  body{padding-bottom:0!important}
+  main{padding-bottom:54px!important}
+
+  /* Deja espacio a la izquierda para el sidebar fijo */
+  #sticky-wrap,main{margin-left:86px!important}
+  #sticky-wrap{width:calc(100% - 86px)!important}
+
+  .subli-side-nav{
+    display:flex!important;
+    position:fixed;left:0;top:0;bottom:0;
+    z-index:600;
+    width:86px;
+    flex-direction:column;
+    align-items:center;
+    gap:3px;
+    padding:16px 0 18px;
+    background:#FFFFFF;
+    border-right:1px solid #E7DDD5;
+    box-shadow:2px 0 20px rgba(54,39,31,.06);
+  }
+  .subli-side-nav .side-nav-logo{
+    width:32px;height:32px;object-fit:contain;
+    margin-bottom:12px;
+  }
+  .subli-side-nav .side-nav-btn{
+    display:flex;flex-direction:column;align-items:center;
+    gap:5px;
+    width:74px;
+    padding:10px 2px;
+    border:0;
+    border-left:3px solid transparent;
+    background:transparent;
+    cursor:pointer;
+    color:#877D75;
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:10.5px;font-weight:800;letter-spacing:.4px;
+    text-transform:uppercase;
+    border-radius:0 12px 12px 0;
+    transition:background .18s ease,color .18s ease;
+  }
+  .subli-side-nav .side-nav-ico{
+    display:flex;align-items:center;justify-content:center;
+    width:26px;height:26px;
+  }
+  .subli-side-nav .side-nav-ico img{
+    width:100%;height:100%;object-fit:contain;
+    opacity:.72;
+    transition:opacity .18s ease;
+  }
+  .subli-side-nav .side-nav-btn:hover{background:#FAF3EE;color:#B30E20}
+  .subli-side-nav .side-nav-btn:hover .side-nav-ico img{opacity:1}
+  .subli-side-nav .side-nav-btn.active{
+    color:#E50914;
+    background:#FFF3F1;
+    border-left-color:#E50914;
+  }
+  .subli-side-nav .side-nav-btn.active .side-nav-ico img{opacity:1}
+
+  /* ── Panel "Nosotros": tarjeta compacta, no gigante,
+     desliza desde el borde derecho ── */
+  .subli-side-panel{
+    position:fixed;top:0;right:0;bottom:0;
+    z-index:10050;
+    width:min(400px,calc(100% - 40px));
+    display:flex;flex-direction:column;
+    background:#FAF7F4;
+    border-left:1px solid #E7DDD5;
+    box-shadow:-18px 0 48px rgba(54,39,31,.18);
+    transform:translate3d(105%,0,0);
+    transition:transform .32s cubic-bezier(.22,.8,.22,1);
+  }
+  .subli-side-panel.open{transform:translate3d(0,0,0)}
+  .subli-side-panel-head{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:14px;
+    padding:18px 20px;
+    border-bottom:1px solid #E7DDD5;
+    background:#FFFFFF;
+  }
+  .subli-side-panel-head>div{display:flex;flex-direction:column}
+  .subli-side-panel-head span{
+    color:#E50914;font-family:'Barlow Condensed',sans-serif;
+    font-size:9px;font-weight:900;letter-spacing:1.6px;text-transform:uppercase;
+  }
+  .subli-side-panel-head strong{
+    margin-top:2px;color:#1A1A1A;font-family:'Barlow Condensed',sans-serif;
+    font-size:24px;font-weight:900;
+  }
+  .subli-side-panel-head button{
+    display:grid;place-items:center;
+    width:36px;height:36px;
+    border:1px solid #E7DDD5;border-radius:50%;
+    background:#FFFFFF;color:#E50914;
+    font-size:24px;line-height:1;cursor:pointer;
+  }
+  .subli-side-panel-body{
+    padding:22px 22px 26px;
+    overflow-y:auto;
+    color:#3A322C;
+    font-size:13.5px;line-height:1.6;
+  }
+  .subli-side-panel-body p{margin:0 0 12px}
+  .subli-side-panel-tag{color:#E50914;font-weight:700}
+  .subli-side-panel-cta{
+    display:inline-block;margin-top:6px;
+    background:#25D366;color:#fff;
+    font-weight:800;font-size:13px;
+    padding:12px 18px;border-radius:12px;
+    text-decoration:none;
+  }
+  .subli-side-panel-backdrop{
+    position:fixed;inset:0;z-index:10040;
+    background:rgba(54,39,31,.32);
+    border:0;padding:0;
+    opacity:0;visibility:hidden;pointer-events:none;
+    transition:opacity .25s ease,visibility .25s ease;
+  }
+  .subli-side-panel-backdrop.open{opacity:1;visibility:visible;pointer-events:auto}
+
+  /* SubliBot: en escritorio se ancla como panel lateral
+     completo (también "sale del lado derecho") */
+  #sb-pan{
+    top:0!important;right:0!important;bottom:0!important;
+    width:400px!important;max-width:400px!important;
+    height:100%!important;max-height:none!important;
+    border-radius:0!important;
+    transform:translateX(105%)!important;
+    transform-origin:center!important;
+  }
+  #sb-pan.open{transform:translateX(0)!important}
+  #sb-fab{display:none!important}
+}
+@media (max-width:899px){
+  .subli-side-nav,.subli-side-panel,.subli-side-panel-backdrop{display:none!important}
+}
+</style>
+<script>
+(function(){
+  window.openNosotrosPanel = function(){
+    var p=document.getElementById('subliNosotrosPanel'), b=document.getElementById('subliNosotrosBackdrop');
+    if(p) p.classList.add('open');
+    if(b) b.classList.add('open');
+    var btn=document.getElementById('sideNavNosotros'); if(btn) btn.classList.add('active');
+  };
+  window.closeNosotrosPanel = function(){
+    var p=document.getElementById('subliNosotrosPanel'), b=document.getElementById('subliNosotrosBackdrop');
+    if(p) p.classList.remove('open');
+    if(b) b.classList.remove('open');
+    var btn=document.getElementById('sideNavNosotros'); if(btn) btn.classList.remove('active');
+  };
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape') window.closeNosotrosPanel();
   });
 })();
 </script>
