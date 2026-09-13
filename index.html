@@ -53,7 +53,7 @@ header{background:rgba(0,0,0,.82);backdrop-filter:blur(16px) saturate(130%);-web
 .logo-line{width:112px;height:2px;background:linear-gradient(to right,transparent,#B30E20 40%,#B30E20 80%,transparent);box-shadow:0 0 12px rgba(179,14,32,.5);margin-top:2px}
 .hdr-sub{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:1.5px;color:#fff;font-weight:900;text-transform:uppercase;margin-top:2px}
 .hdr-brand{display:flex;flex-direction:column;align-items:center}
-.hdr-nav-desktop,.hdr-sublibot-btn,.foot-nosotros-link{display:none}
+.hdr-nav-desktop,.hdr-sublibot-btn,.hdr-ofertas-btn,.foot-nosotros-link{display:none}
 .tabs-outer{background:var(--bg2);border-bottom:1px solid var(--border);overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none}
 .ts{display:flex;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;max-width:100vw;}
 .ts::-webkit-scrollbar{display:none}
@@ -1284,9 +1284,14 @@ body { height: auto !important; min-height: 100vh; }
     <img src="/assets/img/img-1e10223ff0.png" class="logo-img"/>
     <div class="hdr-sub">Conectamos tu entretenimiento</div>
   </div>
-  <button type="button" class="hdr-sublibot-btn" onclick="window.mascotAbrirChat&&mascotAbrirChat()">
-    <img src="/assets/sublibot-catalogo.png" alt=""/> Sublibot
-  </button>
+  <div class="hdr-actions">
+    <button type="button" class="hdr-ofertas-btn" onclick="openTabById('promos')">
+      <img src="/mobile-icons/ofertas.png" alt=""/> Ofertas
+    </button>
+    <button type="button" class="hdr-sublibot-btn" onclick="window.mascotAbrirChat&&mascotAbrirChat()">
+      <img src="/assets/sublibot-catalogo.png" alt=""/> Sublibot
+    </button>
+  </div>
 </header>
 <div class="tabs-outer menu-vertical">
 <button id="menuToggle" class="menu-toggle" onclick="toggleMenu()">
@@ -1391,15 +1396,7 @@ body { height: auto !important; min-height: 100vh; }
   </section>
 
   <section class="subli-home-sports-hero" aria-hidden="true">
-    <div class="shh-copy">
-      <span class="shh-eyebrow">Tu pasi&oacute;n en un solo lugar</span>
-      <h2>Deportes, eventos <em>y mucho m&aacute;s</em></h2>
-      <p>Consulte Liga Saud&iacute;, MLS, Champions y m&aacute;s eventos del d&iacute;a.</p>
-    </div>
-    <div class="shh-art">
-      <span class="shh-tagline">Grandes emociones<br>todos los d&iacute;as</span>
-      <img src="/assets/img/agenda-hero-banner.png" alt="" loading="lazy">
-    </div>
+    <img src="/assets/img/agenda-hero-banner.png" alt="" loading="lazy">
   </section>
 
   <section class="subli-home-agenda" aria-labelledby="subliHomeAgendaTitle">
@@ -7251,6 +7248,17 @@ footer{padding-bottom:78px!important}
     width:auto!important;height:36px!important;max-width:150px!important;
   }
   .hdr-sub{margin-top:0!important;font-size:9.5px!important}
+  .hdr-actions{display:flex;align-items:center;gap:10px}
+  .hdr-ofertas-btn{
+    display:flex;align-items:center;gap:8px;
+    background:#fff;color:#E50914;border:2px solid #E50914;border-radius:999px;
+    padding:7px 16px 7px 8px;cursor:pointer;
+    font-family:'Barlow Condensed',sans-serif;font-weight:800;
+    font-size:13px;letter-spacing:.3px;text-transform:uppercase;
+    transition:transform .18s ease,background .18s ease,color .18s ease;
+  }
+  .hdr-ofertas-btn:hover{background:#E50914;color:#fff;transform:translateY(-1px)}
+  .hdr-ofertas-btn img{width:22px;height:22px;object-fit:contain}
   .hdr-sublibot-btn{
     display:flex;align-items:center;gap:8px;
     background:#E50914;color:#fff;border:0;border-radius:999px;
@@ -7338,25 +7346,10 @@ footer{padding-bottom:78px!important}
      (Competencia / Partido / Fecha y hora / Ver) según mockup de referencia,
      + hero "Deportes, eventos y mucho más" con el banner de balón ya provisto. */
   .subli-home-sports-hero{
-    display:flex;align-items:center;justify-content:space-between;gap:24px;
     margin:6px 0 22px;
   }
-  .shh-eyebrow{
-    display:block;color:#E50914;font-family:'Barlow Condensed',sans-serif;
-    font-size:11px;font-weight:900;letter-spacing:1.8px;text-transform:uppercase;
-  }
-  .subli-home-sports-hero h2{
-    margin:4px 0 8px;font-family:'Barlow Condensed',sans-serif;
-    font-size:34px;font-weight:900;color:#1A1A1A;line-height:1.05;
-  }
-  .subli-home-sports-hero h2 em{font-style:normal;color:#E50914}
-  .subli-home-sports-hero p{margin:0;color:#706761;font-size:13px;max-width:420px}
-  .shh-art{position:relative;flex:0 0 auto;display:flex;align-items:center;min-width:260px;justify-content:flex-end}
-  .shh-art img{width:min(340px,30vw);height:auto;display:block}
-  .shh-tagline{
-    position:absolute;left:6px;top:-10px;max-width:118px;
-    font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:700;
-    font-size:14px;color:#3a3a3a;line-height:1.25;
+  .subli-home-sports-hero img{
+    display:block;width:100%;height:auto;
   }
   .subli-home-agenda-table{
     display:flex;flex-direction:column;
@@ -7486,9 +7479,10 @@ footer{padding-bottom:78px!important}
   }
   #sb-pan.open{transform:translateX(0)!important}
   #sb-fab{display:none!important}
+  #sb-ofertas-fab{display:none!important}
 }
 @media (max-width:899px){
-  .subli-side-panel,.subli-side-panel-backdrop,.hdr-nav-desktop,.hdr-sublibot-btn,.foot-nosotros-link{display:none!important}
+  .subli-side-panel,.subli-side-panel-backdrop,.hdr-nav-desktop,.hdr-sublibot-btn,.hdr-ofertas-btn,.foot-nosotros-link{display:none!important}
 }
 </style>
 <script>
