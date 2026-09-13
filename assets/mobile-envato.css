@@ -390,7 +390,7 @@
   body.sm-mobile-shell-ready:not(.sm-store-page) #tab-inicio>*:not(#subliMobileHome){display:none!important;}
   #tab-inicio>.subli-mobile-home{
     min-height:100%!important;
-    padding:14px 14px 22px!important;
+    padding:14px 14px var(--sm-dock-space,106px)!important;
     margin:0 auto!important;
     box-sizing:border-box!important;
   }
