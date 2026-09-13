@@ -161,7 +161,7 @@ function centralAmericaFallback(hnDate) {
   };
   return (games[hnDate] || []).map((g) => ({
     local: g[0], visita: g[1], logoLocal: null, logoVisita: null,
-    horaHN: horaHN(new Date(g[2])), estado: "Programado",
+    horaHN: horaHN(new Date(g[2])), fechaISO: g[2], estado: "Programado",
     marcadorLocal: null, marcadorVisita: null,
   }));
 }
@@ -182,6 +182,7 @@ function mapEspnEvent(ev, competition) {
       logoLocal: competitorLogo(home),
       logoVisita: competitorLogo(away),
       horaHN: horaHN(dt),
+      fechaISO: dt && !isNaN(dt.getTime()) ? dt.toISOString() : null,
       estado: st.shortDetail || st.description || "",
       marcadorLocal: isFinalOrLive ? home.score : null,
       marcadorVisita: isFinalOrLive ? away.score : null,
@@ -216,6 +217,7 @@ function mapTsdbEvent(ev) {
       logoLocal: ev.strHomeTeamBadge || null,
       logoVisita: ev.strAwayTeamBadge || null,
       horaHN: dt ? horaHN(dt) : (ev.strTime || ""),
+      fechaISO: dt && !isNaN(dt.getTime()) ? dt.toISOString() : null,
       estado: ev.strStatus || "",
       marcadorLocal: played ? ev.intHomeScore : null,
       marcadorVisita: played ? ev.intAwayScore : null,
