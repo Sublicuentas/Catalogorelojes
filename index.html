@@ -1627,8 +1627,6 @@ body { height: auto !important; min-height: 100vh; }
 </div>
 <div class="foot-dots"><span>&#9670;</span></div>
 <span class="copy">Sublicuentas &copy; <b>2026</b> &ndash; Elevando tu experiencia digital.</span>
-<button type="button" class="foot-nosotros-link" onclick="openNosotrosPanel()">Nosotros</button>
-</footer>
 <nav class="subli-bottom-nav" id="subliBottomNav" aria-label="Navegaci&oacute;n principal">
   <button type="button" class="subli-bottom-btn active" data-tab="inicio"><span class="subli-bottom-icon"></span><small>Inicio</small></button>
   <button type="button" class="subli-bottom-btn" data-tab="cartelera"><span class="subli-bottom-icon"></span><small>Cartelera</small></button>
@@ -1931,6 +1929,15 @@ document.addEventListener('DOMContentLoaded', function() {
 #sb-fab .sb-x{display:none;font-size:22px;color:#E50914;font-weight:900;line-height:1;width:100%;text-align:center;}
 #sb-fab.open img{display:none;}
 #sb-fab.open .sb-x{display:block;}
+/* Botón flotante "Ofertas" — pedido explícito: debe verse siempre (móvil Y
+   escritorio), incluso donde #sb-fab se oculta (desktop usa .hdr-sublibot-btn
+   en el header en vez del círculo flotante). Por eso NO depende de ningún
+   media query: queda fijo en la esquina en todos los tamaños. */
+#sb-ofertas-fab{position:fixed;bottom:92px;right:18px;width:58px;height:58px;background:#fff;border:2.5px solid #E50914;border-radius:50%;box-shadow:0 4px 20px rgba(229,9,20,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;cursor:pointer;z-index:9998;outline:none;padding:0;}
+#sb-ofertas-fab img{width:24px;height:24px;object-fit:contain;}
+#sb-ofertas-fab span{font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:900;color:#E50914;line-height:1;text-transform:uppercase;letter-spacing:.3px;}
+#sb-ofertas-fab:active{transform:scale(.92)}
+@media(max-width:480px){#sb-ofertas-fab{width:52px;height:52px;bottom:82px}#sb-ofertas-fab img{width:21px;height:21px}#sb-ofertas-fab span{font-size:7px}}
 #sb-pan{position:fixed;bottom:90px;right:14px;width:calc(100vw - 28px);max-width:420px;height:66vh;max-height:560px;background:#FFFFFF;border:1px solid #E7DDD5;border-radius:22px;box-shadow:0 8px 40px rgba(0,0,0,.22);display:flex;flex-direction:column;z-index:9999;overflow:hidden;transform:scale(.88) translateY(16px);opacity:0;pointer-events:none;transform-origin:bottom right;transition:transform .28s cubic-bezier(.22,.8,.2,1),opacity .25s ease;}
 #sb-pan.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all;}
 .sb-hdr{background:#111;padding:10px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
@@ -1982,6 +1989,11 @@ document.addEventListener('DOMContentLoaded', function() {
 #sb-snd:disabled{opacity:.35;cursor:not-allowed;}
 #sb-snd svg{width:17px;height:17px;fill:#fff;}
 </style>
+
+<button id="sb-ofertas-fab" onclick="openTabById('promos')" aria-label="Ver ofertas y promociones">
+  <img src="/mobile-icons/ofertas.png" alt="Ofertas"/>
+  <span>Ofertas</span>
+</button>
 
 <button id="sb-fab" onclick="sbOpen()">
   <img src="/assets/sublibot-catalogo.png?v=20260824-v2" alt="SubliBot"/>
@@ -7398,6 +7410,71 @@ footer{padding-bottom:78px!important}
   });
 })();
 </script>
+
+<style id="subli-category-color-backgrounds-20260913">
+/* ════════════════════════════════════════════════════
+   Categorías: fondo de color completo por tarjeta (assets
+   provistos por el negocio, 8_fondos.png). Se reutiliza EXACTAMENTE
+   el mismo mapeo de color que ya tenía el halo del ícono
+   (nth-child 8n+1..8n+8, ver bloque "app-mockup-style" arriba),
+   así que el fondo y el aro del ícono siempre hacen juego.
+   Se repiten los selectores con "#tab-inicio " y "!important"
+   porque las reglas de escritorio (min-width:900px, bloque
+   "subli-desktop-layout-fix") ya traían su propio !important
+   forzando columna vertical y fondo plano — sin iguales o mayor
+   especificidad esto no se vería en escritorio.
+   ════════════════════════════════════════════════════ */
+.subli-category-grid,
+#tab-inicio .subli-category-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:12px!important;
+}
+@media(min-width:900px){
+  .subli-category-grid,
+  #tab-inicio .subli-category-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:16px!important;
+  }
+}
+.subli-category-card,
+#tab-inicio .subli-category-card{
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  text-align:left!important;
+  gap:10px!important;
+  min-height:82px!important;
+  border:0!important;
+  border-radius:18px!important;
+  padding:10px 14px!important;
+  background-color:transparent!important;
+  background-repeat:no-repeat!important;
+  background-position:left center!important;
+  background-size:cover!important;
+  box-shadow:0 6px 16px rgba(35,20,50,.14)!important;
+}
+.subli-category-card:hover,
+#tab-inicio .subli-category-card:hover{
+  border-color:transparent!important;
+  background-color:transparent!important;
+  transform:translateY(-3px)!important;
+  box-shadow:0 10px 22px rgba(35,20,50,.2)!important;
+}
+.subli-category-card strong,
+#tab-inicio .subli-category-card strong{
+  max-width:none!important;
+  color:#221933!important;
+  text-shadow:0 1px 1px rgba(255,255,255,.55);
+}
+.subli-category-card:nth-child(8n+1),#tab-inicio .subli-category-card:nth-child(8n+1){background-image:url(/assets/category-bg/purple-1.png)!important}
+.subli-category-card:nth-child(8n+2),#tab-inicio .subli-category-card:nth-child(8n+2){background-image:url(/assets/category-bg/orange.png)!important}
+.subli-category-card:nth-child(8n+3),#tab-inicio .subli-category-card:nth-child(8n+3){background-image:url(/assets/category-bg/green.png)!important}
+.subli-category-card:nth-child(8n+4),#tab-inicio .subli-category-card:nth-child(8n+4){background-image:url(/assets/category-bg/red.png)!important}
+.subli-category-card:nth-child(8n+5),#tab-inicio .subli-category-card:nth-child(8n+5){background-image:url(/assets/category-bg/blue.png)!important}
+.subli-category-card:nth-child(8n+6),#tab-inicio .subli-category-card:nth-child(8n+6){background-image:url(/assets/category-bg/pink.png)!important}
+.subli-category-card:nth-child(8n+7),#tab-inicio .subli-category-card:nth-child(8n+7){background-image:url(/assets/category-bg/purple-2.png)!important}
+.subli-category-card:nth-child(8n+8),#tab-inicio .subli-category-card:nth-child(8n+8){background-image:url(/assets/category-bg/dark.png)!important}
+</style>
 
 </body>
 </html>
