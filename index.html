@@ -432,8 +432,8 @@ body{background:#0D0D0D!important;color:var(--text);}
 
 /* === PALETA D — CREMA + ROJO === */
 :root{
-  --bg:#FAF7F4;
-  --bg2:#F5F0EB;
+  --bg:#FFFFFF;
+  --bg2:#FFFFFF;
   --bg3:#EDE8E2;
   --surface:#FFFFFF;
   --border:#E7DDD5;
@@ -451,7 +451,7 @@ body{font-family:'Barlow',sans-serif}
 
 /* Header */
 #sticky-wrap{background:var(--bg2)!important;}
-header{background:var(--bg2)!important;border-bottom:none!important;box-shadow:none!important;padding-bottom:2px!important}
+header{background:var(--bg2)!important;border-bottom:1px solid #EEE6DE!important;box-shadow:none!important;padding-bottom:2px!important}
 .tabs-outer{box-shadow:none!important}
 .logo-img{filter:none!important}
 .hdr-sub{color:var(--accent)!important;font-size:9px!important;letter-spacing:2px!important;font-weight:900!important}
@@ -1399,14 +1399,16 @@ body { height: auto !important; min-height: 100vh; }
       </div>
       <button type="button" onclick="openTabById('mundial')">Ver agenda <b>&rsaquo;</b></button>
     </div>
-    <button type="button" class="subli-home-agenda-card" onclick="openTabById('mundial')">
-      <span class="subli-home-agenda-ico"><img src="/mobile-icons/agenda-deportiva.png" alt=""></span>
-      <span class="subli-home-agenda-copy">
-        <strong>Partidos del d&iacute;a</strong>
-        <p>Ligas, horarios y resultados en vivo desde la agenda completa.</p>
-      </span>
-      <span class="subli-home-agenda-arrow">&rsaquo;</span>
-    </button>
+    <div id="subliHomeAgendaPreview" aria-live="polite">
+      <button type="button" class="subli-home-agenda-card">
+        <span class="subli-home-agenda-ico"><img src="/mobile-icons/agenda-deportiva.png" alt=""></span>
+        <span class="subli-home-agenda-copy">
+          <strong>Cargando partidos&hellip;</strong>
+          <p>Ligas, horarios y resultados en vivo desde la agenda completa.</p>
+        </span>
+        <span class="subli-home-agenda-arrow">&rsaquo;</span>
+      </button>
+    </div>
   </section>
 
   <div class="sp"></div>
@@ -1929,7 +1931,7 @@ document.addEventListener('DOMContentLoaded', function() {
 #sb-fab .sb-x{display:none;font-size:22px;color:#E50914;font-weight:900;line-height:1;width:100%;text-align:center;}
 #sb-fab.open img{display:none;}
 #sb-fab.open .sb-x{display:block;}
-#sb-pan{position:fixed;bottom:90px;right:14px;width:calc(100vw - 28px);max-width:420px;height:66vh;max-height:560px;background:#F5F0EB;border-radius:22px;box-shadow:0 8px 40px rgba(0,0,0,.22);display:flex;flex-direction:column;z-index:9999;overflow:hidden;transform:scale(.88) translateY(16px);opacity:0;pointer-events:none;transform-origin:bottom right;transition:transform .28s cubic-bezier(.22,.8,.2,1),opacity .25s ease;}
+#sb-pan{position:fixed;bottom:90px;right:14px;width:calc(100vw - 28px);max-width:420px;height:66vh;max-height:560px;background:#FFFFFF;border:1px solid #E7DDD5;border-radius:22px;box-shadow:0 8px 40px rgba(0,0,0,.22);display:flex;flex-direction:column;z-index:9999;overflow:hidden;transform:scale(.88) translateY(16px);opacity:0;pointer-events:none;transform-origin:bottom right;transition:transform .28s cubic-bezier(.22,.8,.2,1),opacity .25s ease;}
 #sb-pan.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all;}
 .sb-hdr{background:#111;padding:10px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
 .sb-hdr-btns{margin-left:auto;display:flex;align-items:center;gap:6px;}
@@ -3043,6 +3045,74 @@ function sbCerrar() {
 })();
 </script>
 <script>
+/* ── Vista previa de 3 partidos próximos en Inicio (Agenda Deportiva) ── */
+(function(){
+  var box=document.getElementById('subliHomeAgendaPreview');
+  if(!box) return;
+
+  function esc(s){return String(s===null||s===undefined?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function hnToday(){
+    var d=new Date(Date.now()-6*60*60*1000);
+    return d.toISOString().slice(0,10);
+  }
+  function addDays(iso,n){
+    var d=new Date(iso+'T12:00:00Z');
+    d.setUTCDate(d.getUTCDate()+n);
+    return d.toISOString().slice(0,10);
+  }
+
+  function fallbackCard(){
+    box.innerHTML='<button type="button" class="subli-home-agenda-card" onclick="openTabById(\'mundial\')">'+
+      '<span class="subli-home-agenda-ico"><img src="/mobile-icons/agenda-deportiva.png" alt=""></span>'+
+      '<span class="subli-home-agenda-copy"><strong>Partidos del d\u00eda</strong>'+
+      '<p>Ligas, horarios y resultados en vivo desde la agenda completa.</p></span>'+
+      '<span class="subli-home-agenda-arrow">\u203a</span></button>';
+  }
+
+  function matchRow(p,league){
+    var fh=p.logoLocal?'<img src="'+esc(p.logoLocal)+'" alt="">':'<span class="sha-ball">\u26bd</span>';
+    var time=p.horaHN||p.estado||'';
+    return '<button type="button" class="subli-home-agenda-row" onclick="openTabById(\'mundial\')">'+
+      '<span class="sha-row-ico">'+fh+'</span>'+
+      '<span class="sha-row-info">'+
+        '<span class="sha-league">'+esc(league)+'</span>'+
+        '<strong>'+esc(p.local||'')+' vs '+esc(p.visita||'')+'</strong>'+
+        '<span class="sha-time">'+esc(time)+'</span>'+
+      '</span>'+
+      '<span class="subli-home-agenda-arrow">\u203a</span></button>';
+  }
+
+  function pick3(cats){
+    var picked=[];
+    (cats||[]).forEach(function(c){
+      if(picked.length>=3) return;
+      (c.partidos||[]).forEach(function(p){
+        if(picked.length>=3) return;
+        picked.push(matchRow(p,c.label));
+      });
+    });
+    return picked;
+  }
+
+  function render(data){
+    var cats=(data&&data.categorias)?data.categorias:[];
+    var rows=pick3(cats);
+    if(!rows.length){ fallbackCard(); return; }
+    box.innerHTML='<div class="subli-home-agenda-rows">'+rows.join('')+'</div>';
+  }
+
+  fetch('/api/agenda?date='+hnToday())
+    .then(function(r){return r.json();})
+    .then(function(data){
+      var cats=(data&&data.categorias)?data.categorias:[];
+      var has=cats.some(function(c){return (c.partidos||[]).length;});
+      if(has){ render(data); return; }
+      return fetch('/api/agenda?date='+addDays(hnToday(),1)).then(function(r){return r.json();}).then(render);
+    })
+    .catch(fallbackCard);
+})();
+</script>
+<script>
 /* FAILSAFE: asegurar que el contenido se vea aunque algo falle arriba */
 (function(){
   function revealAll(){
@@ -3177,18 +3247,18 @@ window.addEventListener('message', function(e){
 <style id="subli-design-b-reorganization">
 /* ===== DISEÑO B: SOLO REORGANIZACIÓN DE LA PORTADA ===== */
 html,body{
-  background:#FAF7F4!important;
+  background:#FFFFFF!important;
   background-image:none!important;
 }
 body{
   padding-bottom:96px!important;
 }
 #sticky-wrap,header{
-  background:#F5F0EB!important;
+  background:#FFFFFF!important;
   background-image:none!important;
 }
 #tab-inicio,.hero-wrap,.hero-top{
-  background:#FAF7F4!important;
+  background:#FFFFFF!important;
   background-image:none!important;
 }
 #tab-inicio .hero-wrap{
@@ -3202,7 +3272,7 @@ body{
   box-shadow:0 8px 24px rgba(59,42,33,.08)!important;
 }
 #tab-inicio .nc-dots{
-  background:#FAF7F4!important;
+  background:#FFFFFF!important;
 }
 #tab-inicio .nc-dot{
   background:#CFC5BC!important;
@@ -3228,7 +3298,7 @@ body{
   overflow:hidden!important;
   border:0!important;
   border-left:1px solid #E7DDD5!important;
-  background:#FAF7F4!important;
+  background:#FFFFFF!important;
   padding:0!important;
   box-shadow:-18px 0 52px rgba(54,39,31,.18)!important;
   visibility:hidden;
@@ -3252,7 +3322,7 @@ body.subli-menu-open .tabs-outer.menu-vertical{
   justify-content:space-between;
   gap:14px;
   border-bottom:1px solid #E7DDD5;
-  background:#FAF7F4;
+  background:#FFFFFF;
   padding:14px 16px;
 }
 .subli-drawer-head>div{
@@ -3297,7 +3367,7 @@ body.subli-menu-open .tabs-outer.menu-vertical{
   overflow-y:auto!important;
   border:0!important;
   border-radius:0!important;
-  background:#FAF7F4!important;
+  background:#FFFFFF!important;
   margin:0!important;
   padding:12px 12px 116px!important;
   box-shadow:none!important;
@@ -3386,13 +3456,13 @@ body.subli-menu-open .subli-menu-backdrop{
   padding:7px 0;
   color:#E50914;
   font-family:'Barlow Condensed',sans-serif;
-  font-size:12px;
+  font-size:16px;
   font-weight:900;
   cursor:pointer;
 }
 .subli-home-heading>button b{
   margin-left:4px;
-  font-size:19px;
+  font-size:22px;
 }
 .subli-category-grid{
   display:grid;
@@ -3701,7 +3771,7 @@ body.subli-menu-open .subli-menu-backdrop{
 }
 footer{
   border-top:1px solid #E7DDD5!important;
-  background:#FAF7F4!important;
+  background:#FFFFFF!important;
   background-image:none!important;
   padding-bottom:34px!important;
 }
@@ -4647,7 +4717,7 @@ main{background:#080A10!important}
 
 <style id="fase3-app-light-inspired">
 :root{
-  --app-bg:#F6F7FB;
+  --app-bg:#FFFFFF;
   --app-card:#FFFFFF;
   --app-text:#121522;
   --app-muted:#6F7685;
@@ -4660,7 +4730,7 @@ main{background:#080A10!important}
   --app-shadow:0 12px 34px rgba(20,24,40,.08);
 }
 html,body{background:var(--app-bg)!important;color:var(--app-text)!important}
-main{background:linear-gradient(180deg,#FAFAFD 0%,#F6F7FB 100%)!important}
+main{background:#FFFFFF!important}
 
 /* Header + nav */
 header,.subli-header,.site-header{
@@ -4884,7 +4954,7 @@ header,.subli-header,.site-header{
 #tab-promos{
   background:
     radial-gradient(circle at 85% 8%,rgba(124,58,237,.10),transparent 24%),
-    #F6F7FB!important;
+    #FFFFFF!important;
   color:#171A27!important;
 }
 #tab-promos .promo-fire-header{
@@ -4941,7 +5011,7 @@ header,.subli-header,.site-header{
 
 /* Cartelera / Agenda: same app style, readable */
 #tab-cartelera,#tab-mundial,#tab-tv,#tab-musica,#tab-iptv,#tab-juegos,#tab-ia,#tab-diseno,#tab-software{
-  background:#F6F7FB!important;
+  background:#FFFFFF!important;
   color:#171A27!important;
 }
 #tab-cartelera .cartelera-title,
@@ -5015,8 +5085,8 @@ header,.subli-header,.site-header{
 <style id="subli-marketplace-v2">
 /* Marketplace mobile v2 — inspired by compact digital-store UI */
 @media(max-width:700px){
-  body{background:#f7f8fc!important;padding-bottom:78px!important}
-  #tab-inicio{background:#f7f8fc!important}
+  body{background:#FFFFFF!important;padding-bottom:78px!important}
+  #tab-inicio{background:#FFFFFF!important}
   #tab-inicio .subli-home-web-hero-grid{padding:10px 14px 0!important}
   #tab-inicio .subli-commerce-hero{grid-template-columns:minmax(0,1fr) 112px!important;min-height:248px!important;padding:18px 16px!important;gap:8px!important;border-radius:22px!important;box-shadow:0 12px 32px rgba(38,43,70,.08)!important}
   #tab-inicio .subli-commerce-live{font-size:8px!important;padding:5px 8px!important;letter-spacing:.8px!important}
@@ -5236,7 +5306,7 @@ header,.subli-header,.site-header{
 <style id="marketplace-pass4-compact">
 /* PASS 4: compactación fina sin cambiar arquitectura */
 :root{
-  --p4-bg:#F6F7FB;
+  --p4-bg:#FFFFFF;
   --p4-card:#FFFFFF;
   --p4-line:#E4E7EE;
   --p4-text:#151826;
@@ -5525,7 +5595,7 @@ main{padding-bottom:96px!important}
   background:
     radial-gradient(circle at 86% 5%,rgba(124,58,237,.08),transparent 24%),
     radial-gradient(circle at 12% 18%,rgba(37,99,235,.05),transparent 22%),
-    #F6F7FB!important;
+    #FFFFFF!important;
   color:#171A27!important;
   padding-bottom:110px!important;
 }
@@ -5827,7 +5897,7 @@ main{padding-bottom:96px!important}
 <style id="pass7-cartelera-corrected">
 /* PASS 7 CORREGIDO: conservar posters; compactar sin destruir contenido */
 #tab-cartelera{
-  background:#f6f7fb!important;
+  background:#FFFFFF!important;
   padding-bottom:112px!important;
 }
 #tab-cartelera .cartelera-grid{
@@ -5990,7 +6060,7 @@ img{max-width:100%}
 
 <style id="app-mockup-style">
 /* ===== HOME estilo app (referencia de captura) ===== */
-#tab-inicio{background:linear-gradient(180deg,#FBF8F4 0%,#F6F1EA 100%)!important}
+#tab-inicio{background:#FFFFFF!important}
 
 /* Categorías: iconos redondos con halo de color, como la captura */
 #tab-inicio .subli-category-grid{gap:10px 6px!important}
@@ -7189,6 +7259,37 @@ footer{padding-bottom:78px!important}
   .subli-home-agenda-arrow{
     flex:0 0 auto;font-size:30px;color:#E50914;line-height:1;
   }
+  .subli-home-agenda-rows{
+    display:flex;flex-direction:column;gap:10px;
+  }
+  .subli-home-agenda-row{
+    display:flex;align-items:center;gap:16px;
+    width:100%;text-align:left;cursor:pointer;
+    border:1px solid #E7DDD5;border-radius:16px;
+    background:#FFFFFF;padding:14px 20px;
+    transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+  }
+  .subli-home-agenda-row:hover{
+    transform:translateY(-2px);
+    border-color:#E7BFC1;
+    box-shadow:0 10px 24px rgba(59,42,33,.09);
+  }
+  .sha-row-ico{
+    flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+    width:42px;height:42px;border-radius:12px;background:#FFF3F1;
+    overflow:hidden;font-size:20px;
+  }
+  .sha-row-ico img{width:26px;height:26px;object-fit:contain}
+  .sha-row-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+  .sha-league{
+    color:#E50914;font-family:'Barlow Condensed',sans-serif;
+    font-size:10px;font-weight:900;letter-spacing:1.3px;text-transform:uppercase;
+  }
+  .sha-row-info strong{
+    color:#1A1A1A;font-family:'Barlow Condensed',sans-serif;
+    font-size:17px;font-weight:800;line-height:1.2;
+  }
+  .sha-time{color:#706761;font-size:12px}
 
   /* Enlace "Nosotros" discreto en el pie, junto al copyright */
   footer{position:relative}
@@ -7209,7 +7310,7 @@ footer{padding-bottom:78px!important}
     z-index:10050;
     width:min(400px,calc(100% - 40px));
     display:flex;flex-direction:column;
-    background:#FAF7F4;
+    background:#FFFFFF;
     border-left:1px solid #E7DDD5;
     box-shadow:-18px 0 48px rgba(54,39,31,.18);
     transform:translate3d(105%,0,0);
