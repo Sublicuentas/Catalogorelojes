@@ -50,6 +50,28 @@
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
   }
+  // Mismo mapeo de íconos que usa el modo móvil (assets/mobile-envato.js),
+  // para que Categorías se vea igual en escritorio y en móvil.
+  function categoryIconFile(category) {
+    var t = normalize(((category && category.id) || '') + ' ' + ((category && category.name) || ''));
+    if (/pase.*flexible|flexible.*vip/.test(t)) return 'pase-flexible-vip.png';
+    if (/agenda|mundial|deportiv/.test(t)) return 'agenda-deportiva.png';
+    if (/cine|series|streaming/.test(t)) return 'cine-series.png';
+    if (/musica|music/.test(t)) return 'musica-premium.png';
+    if (/tv digital|iptv/.test(t)) return 'tv-digital.png';
+    if (/recargas|gaming|juegos/.test(t)) return 'recargas-gaming.png';
+    if (/ia|educacion|inteligencia artificial/.test(t)) return 'ia-educacion.png';
+    if (/zona creativa|diseno|creativa/.test(t)) return 'zona-creativa.png';
+    if (/antivirus|software|seguridad/.test(t)) return 'antivirus-software.png';
+    return '';
+  }
+  function categoryIconMarkup(category) {
+    var file = categoryIconFile(category);
+    if (file) {
+      return '<img src="/mobile-icons/' + file + '" alt="" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src=\'/assets/mobile-icons/' + file + '\';}">';
+    }
+    return escapeHtml((category && category.icon) || '\u231A');
+  }
   function statusOf(value) {
     return STATUS[value] || STATUS.available;
   }
@@ -180,7 +202,7 @@
       filters.innerHTML = '<button type="button" data-home-category="all">Todo</button>' +
         categories.map(function (category) {
           return '<button type="button" data-home-category="' + escapeHtml(category.id) + '">' +
-            (category.icon ? '<span aria-hidden="true">' + escapeHtml(category.icon) + '</span> ' : '') +
+            (category.icon ? '<span aria-hidden="true">' + categoryIconMarkup(category) + '</span> ' : '') +
             escapeHtml(category.name) + '</button>';
         }).join('');
       filters.querySelectorAll('[data-home-category]').forEach(function (button) {
@@ -206,7 +228,7 @@
       return '<button type="button" class="subli-category-card" data-live-category="' +
         escapeHtml(category.id) + '" aria-label="Abrir ' + escapeHtml(category.name) + '">' +
         '<span class="subli-category-icon subli-live-category-icon" aria-hidden="true">' +
-        escapeHtml(category.icon || '⌚') + '</span><strong>' + escapeHtml(category.name) +
+        categoryIconMarkup(category) + '</span><strong>' + escapeHtml(category.name) +
         '</strong><i>&rsaquo;</i></button>';
     }).join('');
     categoryGrid.querySelectorAll('[data-live-category]').forEach(function (button) {
