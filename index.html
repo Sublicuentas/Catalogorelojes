@@ -1390,6 +1390,18 @@ body { height: auto !important; min-height: 100vh; }
     <div class="subli-home-poster-row" id="subliHomePosterRow" aria-live="polite"></div>
   </section>
 
+  <section class="subli-home-sports-hero" aria-hidden="true">
+    <div class="shh-copy">
+      <span class="shh-eyebrow">Tu pasi&oacute;n en un solo lugar</span>
+      <h2>Deportes, eventos <em>y mucho m&aacute;s</em></h2>
+      <p>Consulte Liga Saud&iacute;, MLS, Champions y m&aacute;s eventos del d&iacute;a.</p>
+    </div>
+    <div class="shh-art">
+      <span class="shh-tagline">Grandes emociones<br>todos los d&iacute;as</span>
+      <img src="/assets/img/agenda-hero-banner.png" alt="" loading="lazy">
+    </div>
+  </section>
+
   <section class="subli-home-agenda" aria-labelledby="subliHomeAgendaTitle">
     <div class="subli-home-heading">
       <div>
@@ -3057,7 +3069,11 @@ function sbCerrar() {
 })();
 </script>
 <script>
-/* ── Vista previa de 3 partidos próximos en Inicio (Agenda Deportiva) ── */
+/* ── Vista previa de 3 partidos próximos en Inicio (Agenda Deportiva) ──
+   Rediseño 2026-09-13: antes tomaba los primeros 3 partidos que llegaran
+   (orden de prioridad de liga), sin importar la hora ni si ya empezaron.
+   Ahora junta HOY + MAÑANA, descarta lo que ya inició/terminó y ordena
+   por fechaISO ascendente, así siempre salen los 3 que jugarán más pronto. */
 (function(){
   var box=document.getElementById('subliHomeAgendaPreview');
   if(!box) return;
@@ -3081,47 +3097,62 @@ function sbCerrar() {
       '<span class="subli-home-agenda-arrow">\u203a</span></button>';
   }
 
-  function matchRow(p,league){
-    var fh=p.logoLocal?'<img src="'+esc(p.logoLocal)+'" alt="">':'<span class="sha-ball">\u26bd</span>';
-    var time=p.horaHN||p.estado||'';
-    return '<button type="button" class="subli-home-agenda-row" onclick="openTabById(\'mundial\')">'+
-      '<span class="sha-row-ico">'+fh+'</span>'+
-      '<span class="sha-row-info">'+
-        '<span class="sha-league">'+esc(league)+'</span>'+
-        '<strong>'+esc(p.local||'')+' vs '+esc(p.visita||'')+'</strong>'+
-        '<span class="sha-time">'+esc(time)+'</span>'+
-      '</span>'+
-      '<span class="subli-home-agenda-arrow">\u203a</span></button>';
+  function crest(url){
+    return url?'<img src="'+esc(url)+'" alt="">':'<span class="sha-ball">\u26bd</span>';
   }
 
-  function pick3(cats){
-    var picked=[];
+  function matchRow(p,league){
+    return '<button type="button" class="subli-home-agenda-tr" onclick="openTabById(\'mundial\')">'+
+      '<span class="sha-td sha-td-liga"><span class="sha-liga-dot"></span>'+esc(league)+'</span>'+
+      '<span class="sha-td sha-td-partido">'+
+        '<span class="sha-crest">'+crest(p.logoLocal)+'</span>'+
+        '<strong>'+esc(p.local||'')+'</strong>'+
+        '<em>vs</em>'+
+        '<span class="sha-crest">'+crest(p.logoVisita)+'</span>'+
+        '<strong>'+esc(p.visita||'')+'</strong>'+
+      '</span>'+
+      '<span class="sha-td sha-td-fecha"><span class="sha-cal">\uD83D\uDCC5</span>'+esc(p.horaHN||p.estado||'')+'</span>'+
+      '<span class="sha-td sha-td-ver"><span class="subli-home-agenda-arrow">\u203a</span></span>'+
+      '</button>';
+  }
+
+  /* Junta todas las categorías en una sola lista plana con su liga pegada,
+     se queda solo con lo que aún no arranca (fechaISO en el futuro) y
+     ordena por fecha — antes no se ordenaba por hora en absoluto. */
+  function upcomingSorted(cats,nowMs){
+    var flat=[];
     (cats||[]).forEach(function(c){
-      if(picked.length>=3) return;
       (c.partidos||[]).forEach(function(p){
-        if(picked.length>=3) return;
-        picked.push(matchRow(p,c.label));
+        if(!p.fechaISO) return;
+        var t=Date.parse(p.fechaISO);
+        if(!t || t<=nowMs) return; // ya empezó o ya jugó: no es "próximo"
+        flat.push({p:p,league:c.label,t:t});
       });
     });
-    return picked;
+    flat.sort(function(a,b){return a.t-b.t;});
+    return flat;
   }
 
-  function render(data){
-    var cats=(data&&data.categorias)?data.categorias:[];
-    var rows=pick3(cats);
-    if(!rows.length){ fallbackCard(); return; }
-    box.innerHTML='<div class="subli-home-agenda-rows">'+rows.join('')+'</div>';
+  function render(list){
+    if(!list.length){ fallbackCard(); return; }
+    var rows=list.slice(0,3).map(function(item){return matchRow(item.p,item.league);});
+    box.innerHTML='<div class="subli-home-agenda-table">'+
+      '<div class="subli-home-agenda-thead">'+
+        '<span>Competencia</span><span>Partido</span><span>Fecha y hora</span><span>Ver</span>'+
+      '</div>'+rows.join('')+'</div>';
   }
 
-  fetch('/api/agenda?date='+hnToday())
-    .then(function(r){return r.json();})
-    .then(function(data){
-      var cats=(data&&data.categorias)?data.categorias:[];
-      var has=cats.some(function(c){return (c.partidos||[]).length;});
-      if(has){ render(data); return; }
-      return fetch('/api/agenda?date='+addDays(hnToday(),1)).then(function(r){return r.json();}).then(render);
-    })
-    .catch(fallbackCard);
+  var nowMs=Date.now();
+  Promise.all([
+    fetch('/api/agenda?date='+hnToday()).then(function(r){return r.json();}).catch(function(){return null;}),
+    fetch('/api/agenda?date='+addDays(hnToday(),1)).then(function(r){return r.json();}).catch(function(){return null;})
+  ]).then(function(results){
+    var cats=[].concat(
+      (results[0]&&results[0].categorias)||[],
+      (results[1]&&results[1].categorias)||[]
+    );
+    render(upcomingSorted(cats,nowMs));
+  }).catch(fallbackCard);
 })();
 </script>
 <script>
@@ -7302,6 +7333,73 @@ footer{padding-bottom:78px!important}
     font-size:17px;font-weight:800;line-height:1.2;
   }
   .sha-time{color:#706761;font-size:12px}
+
+  /* Rediseño 2026-09-13 — tabla de "Agenda Deportiva" con columnas
+     (Competencia / Partido / Fecha y hora / Ver) según mockup de referencia,
+     + hero "Deportes, eventos y mucho más" con el banner de balón ya provisto. */
+  .subli-home-sports-hero{
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+    margin:6px 0 22px;
+  }
+  .shh-eyebrow{
+    display:block;color:#E50914;font-family:'Barlow Condensed',sans-serif;
+    font-size:11px;font-weight:900;letter-spacing:1.8px;text-transform:uppercase;
+  }
+  .subli-home-sports-hero h2{
+    margin:4px 0 8px;font-family:'Barlow Condensed',sans-serif;
+    font-size:34px;font-weight:900;color:#1A1A1A;line-height:1.05;
+  }
+  .subli-home-sports-hero h2 em{font-style:normal;color:#E50914}
+  .subli-home-sports-hero p{margin:0;color:#706761;font-size:13px;max-width:420px}
+  .shh-art{position:relative;flex:0 0 auto;display:flex;align-items:center;min-width:260px;justify-content:flex-end}
+  .shh-art img{width:min(340px,30vw);height:auto;display:block}
+  .shh-tagline{
+    position:absolute;left:6px;top:-10px;max-width:118px;
+    font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:700;
+    font-size:14px;color:#3a3a3a;line-height:1.25;
+  }
+  .subli-home-agenda-table{
+    display:flex;flex-direction:column;
+    border:1px solid #EEE5DE;border-radius:16px;overflow:hidden;
+  }
+  .subli-home-agenda-thead{
+    display:grid;grid-template-columns:24% 1fr 24% 56px;gap:10px;
+    padding:11px 20px;background:#FAF7F4;
+    font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:900;
+    letter-spacing:1.1px;text-transform:uppercase;color:#9a9088;
+  }
+  .subli-home-agenda-tr{
+    display:grid;grid-template-columns:24% 1fr 24% 56px;gap:10px;align-items:center;
+    width:100%;text-align:left;border:0;border-top:1px solid #F1ECE6;
+    background:#fff;padding:14px 20px;cursor:pointer;font:inherit;
+    transition:background .15s ease;
+  }
+  .subli-home-agenda-tr:hover{background:#FFF7F6}
+  .sha-td{min-width:0}
+  .sha-td-liga{
+    display:flex;align-items:center;gap:7px;color:#173558;
+    font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;
+    text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;
+  }
+  .sha-liga-dot{width:7px;height:7px;border-radius:50%;background:#2563EB;flex:0 0 auto}
+  .sha-td-partido{
+    display:flex;align-items:center;gap:8px;color:#1A1A1A;
+    font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .sha-td-partido em{font-style:normal;color:#9a9a9a;font-weight:700;font-size:11px}
+  .sha-crest{
+    width:22px;height:22px;flex:0 0 auto;border-radius:50%;overflow:hidden;
+    background:#F4F1EC;display:flex;align-items:center;justify-content:center;font-size:12px;
+  }
+  .sha-crest img{width:100%;height:100%;object-fit:contain}
+  .sha-td-fecha{display:flex;align-items:center;gap:6px;color:#706761;font-size:12px;font-weight:700;white-space:nowrap}
+  .sha-cal{font-size:12px}
+  .sha-td-ver{display:flex;justify-content:flex-end}
+  .sha-td-ver .subli-home-agenda-arrow{
+    display:flex;align-items:center;justify-content:center;
+    width:30px;height:30px;border-radius:50%;background:#FFF0EF;font-size:20px;
+  }
 
   /* Enlace "Nosotros" discreto en el pie, junto al copyright */
   footer{position:relative}
