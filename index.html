@@ -53,7 +53,7 @@ header{background:rgba(0,0,0,.82);backdrop-filter:blur(16px) saturate(130%);-web
 .logo-line{width:112px;height:2px;background:linear-gradient(to right,transparent,#B30E20 40%,#B30E20 80%,transparent);box-shadow:0 0 12px rgba(179,14,32,.5);margin-top:2px}
 .hdr-sub{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:1.5px;color:#fff;font-weight:900;text-transform:uppercase;margin-top:2px}
 .hdr-brand{display:flex;flex-direction:column;align-items:center}
-.hdr-nav-desktop,.hdr-sublibot-btn,.hdr-ofertas-btn,.foot-nosotros-link{display:none}
+.hdr-nav-desktop,.hdr-sublibot-btn,.hdr-ofertas-btn,.hdr-inicio-btn,.foot-nosotros-link{display:none}
 .tabs-outer{background:var(--bg2);border-bottom:1px solid var(--border);overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none}
 .ts{display:flex;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;max-width:100vw;}
 .ts::-webkit-scrollbar{display:none}
@@ -1285,6 +1285,9 @@ body { height: auto !important; min-height: 100vh; }
     <div class="hdr-sub">Conectamos tu entretenimiento</div>
   </div>
   <div class="hdr-actions">
+    <button type="button" class="hdr-inicio-btn" onclick="openTabById('inicio')">
+      <img src="/mobile-icons/inicio.png" alt=""/> Inicio
+    </button>
     <button type="button" class="hdr-ofertas-btn" onclick="openTabById('promos')">
       <img src="/mobile-icons/ofertas.png" alt=""/> Ofertas
     </button>
@@ -7249,6 +7252,16 @@ footer{padding-bottom:78px!important}
   }
   .hdr-sub{margin-top:0!important;font-size:9.5px!important}
   .hdr-actions{display:flex;align-items:center;gap:10px}
+  .hdr-inicio-btn{
+    display:flex;align-items:center;gap:8px;
+    background:#fff;color:#173558;border:2px solid #E7DDD5;border-radius:999px;
+    padding:7px 16px 7px 8px;cursor:pointer;
+    font-family:'Barlow Condensed',sans-serif;font-weight:800;
+    font-size:13px;letter-spacing:.3px;text-transform:uppercase;
+    transition:transform .18s ease,border-color .18s ease,color .18s ease;
+  }
+  .hdr-inicio-btn:hover{border-color:#E50914;color:#E50914;transform:translateY(-1px)}
+  .hdr-inicio-btn img{width:20px;height:20px;object-fit:contain}
   .hdr-ofertas-btn{
     display:flex;align-items:center;gap:8px;
     background:#fff;color:#E50914;border:2px solid #E50914;border-radius:999px;
@@ -7346,10 +7359,10 @@ footer{padding-bottom:78px!important}
      (Competencia / Partido / Fecha y hora / Ver) según mockup de referencia,
      + hero "Deportes, eventos y mucho más" con el banner de balón ya provisto. */
   .subli-home-sports-hero{
-    margin:6px 0 22px;
+    margin:6px 0 16px;
   }
   .subli-home-sports-hero img{
-    display:block;width:100%;height:auto;
+    display:block;width:100%;max-width:640px;height:auto;
   }
   .subli-home-agenda-table{
     display:flex;flex-direction:column;
@@ -7482,7 +7495,7 @@ footer{padding-bottom:78px!important}
   #sb-ofertas-fab{display:none!important}
 }
 @media (max-width:899px){
-  .subli-side-panel,.subli-side-panel-backdrop,.hdr-nav-desktop,.hdr-sublibot-btn,.hdr-ofertas-btn,.foot-nosotros-link{display:none!important}
+  .subli-side-panel,.subli-side-panel-backdrop,.hdr-nav-desktop,.hdr-sublibot-btn,.hdr-ofertas-btn,.hdr-inicio-btn,.foot-nosotros-link{display:none!important}
 }
 </style>
 <script>
