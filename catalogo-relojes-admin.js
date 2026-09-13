@@ -2,7 +2,7 @@
   'use strict';
 
   const API='/api/catalogo-relojes';
-  const BUILD='20260911-CAT-PRICE-FIX-1';
+  const BUILD='20260910-CAT-1';
   const state={
     loaded:false,loading:false,saving:false,dirty:false,tab:'products',catalog:null,history:[],baseStatus:'Catálogo listo.',savebarObserver:null
   };
@@ -44,7 +44,7 @@
     return catalog;
   }
 
-  async function api(payload,options={}){
+  async function api(payload){
     const headers={'Content-Type':'application/json'};
     // El fetch general de Sublichat también adjunta esta sesión. Se agrega aquí
     // explícitamente para que el módulo no dependa del orden de los scripts.
@@ -53,43 +53,15 @@
         ?await window.sublichatCurrentAuthUser():null;
       if(user&&typeof user.getIdToken==='function')headers.Authorization=`Bearer ${await user.getIdToken()}`;
     }catch(_){}
-
-    const attempts=Math.max(1,Math.min(2,Number(options.attempts)||2));
-    let lastError=null;
-    for(let attempt=1;attempt<=attempts;attempt++){
-      const controller=typeof AbortController==='function'?new AbortController():null;
-      const timer=controller?setTimeout(()=>controller.abort(),55000):null;
-      try{
-        const response=await fetch(API,{
-          method:'POST',headers,cache:'no-store',credentials:'same-origin',
-          body:JSON.stringify(payload||{}),signal:controller?controller.signal:undefined
-        });
-        const text=await response.text();
-        let data={};
-        try{data=JSON.parse(text);}catch(_){data={error:text};}
-        if(!response.ok||!data.ok){
-          if(response.status===401)throw new Error('La sesión venció. Recargue Sublichat e ingrese nuevamente.');
-          const error=new Error(data.error||`Error del catálogo (HTTP ${response.status}).`);
-          error.httpStatus=response.status;
-          throw error;
-        }
-        return data;
-      }catch(error){
-        lastError=error;
-        const status=Number(error&&error.httpStatus)||0;
-        const transient=!status||[408,425,429,500,502,503,504].includes(status)||error?.name==='AbortError';
-        if(attempt<attempts&&transient){
-          await new Promise(resolve=>setTimeout(resolve,700));
-          continue;
-        }
-        if(error?.name==='AbortError')throw new Error('El catálogo tardó demasiado en responder. Se canceló el intento; vuelva a guardar.');
-        if(!status&&/Failed to fetch|NetworkError|Load failed/i.test(String(error&&error.message||error))){
-          throw new Error('No se pudo completar la publicación. La conexión con el servidor del catálogo se interrumpió; vuelva a presionar Guardar y publicar.');
-        }
-        throw error;
-      }finally{if(timer)clearTimeout(timer);}
+    const response=await fetch(API,{method:'POST',headers,body:JSON.stringify(payload||{})});
+    const text=await response.text();
+    let data={};
+    try{data=JSON.parse(text);}catch(_){data={error:text};}
+    if(!response.ok||!data.ok){
+      if(response.status===401)throw new Error('La sesión venció. Recargue Sublichat e ingrese nuevamente.');
+      throw new Error(data.error||`Error del catálogo (HTTP ${response.status}).`);
     }
-    throw lastError||new Error('No se pudo conectar con el catálogo.');
+    return data;
   }
 
   function setSaving(active){
@@ -363,42 +335,6 @@
     }
   }
 
-
-  async function saveProductOnly(product,options={}){
-    if(!product||state.saving)return false;
-    const beforeCatalog=clone(state.catalog);
-    setSaving(true);
-    status(options.progress||'Guardando precio y producto…');
-    try{
-      let data;
-      try{
-        data=await api({accion:'guardar_producto',product:clone(product),catalogVersion:Number(state.catalog?.catalogVersion)||0});
-      }catch(error){
-        // Compatibilidad durante un despliegue parcial: si Vercel todavía sirve
-        // la API anterior, usamos el guardado completo como último recurso.
-        if(/Acción no válida|Accion no valida|HTTP 400/i.test(String(error&&error.message||''))){
-          data=await api({accion:'guardar',catalog:state.catalog});
-        }else throw error;
-      }
-      state.catalog=ensureCatalogShape(data.catalog||state.catalog);
-      state.dirty=false;
-      const version=$('#crVersion');
-      if(version)version.textContent=`v${state.catalog.catalogVersion||1}`;
-      const message=options.message||data.message||`Producto “${product.name||'Producto'}” publicado.`;
-      state.baseStatus='Catálogo actualizado y conectado.';
-      status(`✅ ${message}`,'good');
-      notify(`✅ ${message}`);
-      return true;
-    }catch(error){
-      state.catalog=beforeCatalog;
-      status(error.message,'bad');
-      notify(`⚠️ ${error.message}`);
-      return false;
-    }finally{
-      setSaving(false);
-    }
-  }
-
   function productCard(product){
     const search=(`${product.name||''} ${categoryName(product.categoryId)}`).toLowerCase();
     return `<article class="cr-card" data-product-card data-search="${esc(search)}">
@@ -620,7 +556,7 @@
         return;
       }
       const button=$('#cpeOk');button.disabled=true;button.textContent='Publicando…';
-      const saved=await saveProductOnly(product,{progress:'Guardando precios y producto…',message:`Producto “${product.name}” guardado.`});
+      const saved=await saveCatalog({progress:'Guardando producto…',message:`Producto “${product.name}” guardado.`});
       if(!saved){
         state.catalog=before;
         const errorBox=$('#cpeError');errorBox.hidden=false;errorBox.textContent=$('#crStatus')?.textContent||'No se pudo guardar.';
@@ -676,24 +612,30 @@
       id:`categoria-${Date.now()}`,name:'Nueva categoría',icon:'⌚',order:(state.catalog.categories.length+1)*10,active:true
     };
     const originalId=existing?.id||'';
-    const modal=$('#crModal');modal.hidden=false;
-    modal.innerHTML=`<div class="cr-sheet cr-sheet-small">
-      <h2>${existing?'Editar':'Nueva'} categoría</h2>
-      <div class="cr-form">
+    // ✅ Usa la misma estructura head + scroll + actions que editProduct (probada y
+    // estable). El editor viejo (h2 + cr-form + cr-actions suelto) quedaba cortado
+    // por la regla CSS "#crModal .cr-sheet" (altura fija + overflow:hidden pensada
+    // para 4 filas: head/nav/scroll/actions) y el botón de Guardar era inalcanzable.
+    const modal=openModal(`<div class="cr-sheet cr-sheet-small cr-category-editor">
+      <div class="cr-editor-head">
+        <div><span class="cr-editor-kicker">${existing?'EDITANDO CATEGORÍA':'NUEVA CATEGORÍA'}</span><h2>${esc(category.name||'Categoría')}</h2></div>
+      </div>
+      <div class="cr-editor-scroll"><div class="cr-editor-grid">
         <label class="cr-field wide">Nombre<input id="catName" value="${esc(category.name)}" placeholder="Ej. Pase Flexible VIP"></label>
         <label class="cr-field wide">ID <input id="catId" value="${esc(category.id)}" placeholder="pase-flexible-vip"><span class="cr-field-help">Identificador interno. Puede editarlo; se ajustarán automáticamente los productos de esta categoría.</span></label>
         <label class="cr-field">Icono<input id="catIcon" value="${esc(category.icon||'')}" placeholder="🎟️"></label>
         <label class="cr-field">Orden<input id="catOrder" type="number" value="${Number(category.order)||0}"></label>
         <label class="cr-check"><input id="catActive" type="checkbox" ${category.active!==false?'checked':''}> Categoría activa</label>
       </div>
-      <div class="cr-modal-error" id="catError" hidden></div>
-      <div class="cr-actions"><button class="cr-btn ghost" id="catCancel">Cancelar</button><button class="cr-btn red" id="catOk">Guardar y publicar</button></div>
-    </div>`;
+      <div class="cr-modal-error" id="catError" hidden></div></div>
+      <div class="cr-actions cr-editor-actions"><button class="cr-btn ghost" id="catCancel">Cancelar</button><button class="cr-btn red" id="catOk">Guardar y publicar</button></div>
+    </div>`);
+    if(!modal)return;
     enhanceModal();
     const autoId=()=>{if($('#catId').dataset.auto==='1'){$('#catId').value=slugId($('#catName').value)||`categoria-${Date.now()}`;$('#catId').dataset.auto='1';}};
     if(!existing){$('#catId').dataset.auto='1';$('#catName').oninput=autoId;}
     $('#catId').oninput=()=>{$('#catId').dataset.auto='0';};
-    $('#catCancel').onclick=()=>{if(!state.saving)modal.hidden=true;};
+    $('#catCancel').onclick=()=>{if(!state.saving)closeModal();};
     $('#catOk').onclick=async()=>{
       if(state.saving)return;
       const newId=slugId($('#catId').value);
@@ -733,7 +675,7 @@
 
   function promotionCard(promotion){
     return `<article class="cr-card">
-      <div class="cr-row"><h3>${esc(promotion.title)}</h3><span class="cr-badge ${promotion.active?'':'paused'}">${promotion.active?'Activa':'Pausada'}</span></div>
+      <div class="cr-row"><h3>${esc(promotion.title)}</h3><span class="cr-card-badges"><span class="cr-badge ${promotion.active?'':'paused'}">${promotion.active?'Activa':'Pausada'}</span>${promotion.badge?`<span class="cr-badge promo">${esc(promotion.badge)}</span>`:''}</span></div>
       <small>${esc(promotion.description||'Sin descripción')}</small>
       <div class="cr-row"><span>${(promotion.productIds||[]).length} producto(s)</span><span class="cr-card-actions"><button class="cr-btn ghost" data-edit-promotion="${esc(promotion.id)}">Editar</button><button class="cr-btn danger" data-delete-promotion="${esc(promotion.id)}">Eliminar</button></span></div>
     </article>`;
@@ -761,36 +703,95 @@
     renderPromotions();
   }
 
+  // Promociones "plantilla" para arrancar rápido en vez de un formulario en
+  // blanco — cubre lo que se pide más seguido (combo, flash, renovación).
+  // Solo rellenan el formulario; el usuario sigue pudiendo editar todo antes
+  // de publicar.
+  const PROMO_TEMPLATES={
+    combo:{label:'🎁 Combo 2 plataformas',title:'Combo doble',description:'Lleve 2 plataformas juntas y ahorre.',badge:'Combo',badgeTone:'popular',features:['Ahorra pagando las 2 juntas','Un solo pago, dos accesos'],optionsText:'Combo mensual=180=Ahorro vs. comprar separado'},
+    flash:{label:'⚡ Oferta relámpago',title:'Oferta relámpago',description:'Precio especial por tiempo limitado.',badge:'Promo limitada',badgeTone:'offer',features:['Cupos limitados','Precio válido solo por unos días'],optionsText:'Oferta=110=Precio especial por tiempo limitado'},
+    ending:{label:'⏳ Se va pronto',title:'Últimos cupos',description:'Quedan pocos cupos con este precio.',badge:'Se va pronto',badgeTone:'offer',features:['Cupos limitados','Vuelve a precio normal al agotarse'],optionsText:'Oferta=100=Antes de que se acabe'},
+    new:{label:'✨ Producto nuevo',title:'Recién llegado',description:'Nueva plataforma disponible en el catálogo.',badge:'Nuevo',badgeTone:'new',features:['Recién agregado al catálogo'],optionsText:'Lanzamiento=100=Precio de estreno'}
+  };
+
+  function applyPromoTemplate(promotion,templateKey){
+    const tpl=PROMO_TEMPLATES[templateKey];if(!tpl)return;
+    $('#prTitle').value=tpl.title;
+    $('#prDesc').value=tpl.description;
+    $('#prBadge').value=tpl.badge;
+    $('#prBadgeTone').value=tpl.badgeTone;
+    $('#prFeatures').value=tpl.features.join('\n');
+    $('#prOptions').value=tpl.optionsText;
+    $('#prActive').checked=true;
+  }
+
   function editPromotion(promotionId){
     const existing=state.catalog.promotions.find((item)=>item.id===promotionId);
     const promotion=existing?clone(existing):{
       id:uid('promocion'),title:'Nueva promoción',description:'',active:false,startsAt:'',endsAt:'',
-      order:state.catalog.promotions.length*10,accent:'#E2231A',productIds:[],features:[],
+      order:state.catalog.promotions.length*10,accent:'#E2231A',badge:'',badgeTone:'offer',productIds:[],features:[],
       options:[{id:uid('option'),label:'Oferta',price:null,bonus:''}]
     };
-    const modal=$('#crModal');
-    modal.hidden=false;
-    modal.innerHTML=`<div class="cr-sheet">
-      <h2>${existing?'Editar':'Nueva'} promoción</h2>
-      <div class="cr-form">
-        <label class="cr-field wide">Título<input id="prTitle" value="${esc(promotion.title)}"></label>
-        <label class="cr-field wide">Descripción<textarea id="prDesc">${esc(promotion.description||'')}</textarea></label>
-        <label class="cr-field">Inicio<input id="prStart" type="datetime-local" value="${esc((promotion.startsAt||'').slice(0,16))}"></label>
-        <label class="cr-field">Final<input id="prEnd" type="datetime-local" value="${esc((promotion.endsAt||'').slice(0,16))}"></label>
-        <label class="cr-check"><input id="prActive" type="checkbox" ${promotion.active?'checked':''}> Promoción activa</label>
-        <div class="cr-section">Productos incluidos</div>
-        <div class="cr-checks wide">${state.catalog.products.map((product)=>`<label class="cr-check"><input type="checkbox" data-pr-product="${esc(product.id)}" ${(promotion.productIds||[]).includes(product.id)?'checked':''}> ${esc(product.name)}</label>`).join('')||'<span class="cr-note-inline">Primero agregue un producto.</span>'}</div>
-        <label class="cr-field wide">Beneficios · uno por línea<textarea id="prFeatures">${esc((promotion.features||[]).join('\n'))}</textarea></label>
-        <label class="cr-field wide">Precios / opciones · Nombre=Precio=Beneficio<textarea id="prOptions" placeholder="1 mes=110=Oferta especial">${esc((promotion.options||[]).map((option)=>`${option.label||''}=${option.price??''}=${option.bonus||''}`).join('\n'))}</textarea></label>
+    // ✅ Misma estructura head + nav + scroll + actions que editProduct (la única
+    // que hoy funciona bien). El editor viejo (h2 + cr-form + cr-actions suelto,
+    // sin usar openModal/closeModal) chocaba con la regla CSS "#crModal .cr-sheet"
+    // (altura fija 820px + overflow:hidden, pensada para 4 filas fijas) y con un
+    // formulario largo (título, fechas, ~20 checkboxes de productos, beneficios,
+    // precios) el contenido y el botón "Guardar y publicar" quedaban totalmente
+    // fuera de vista y sin scroll — eso era el "bloqueado y ni se mira".
+    const modal=openModal(`<div class="cr-sheet cr-promotion-editor">
+      <div class="cr-editor-head">
+        <div><span class="cr-editor-kicker">${existing?'EDITANDO PROMOCIÓN':'NUEVA PROMOCIÓN'}</span><h2>${esc(promotion.title||'Promoción')}</h2><p>Se publica de inmediato en el catálogo público.</p></div>
       </div>
-      <div class="cr-modal-error" id="prError" hidden></div>
-      <div class="cr-actions"><button class="cr-btn danger" id="prDelete" ${existing?'':'hidden'}>Eliminar</button><button class="cr-btn ghost" id="prCancel">Cancelar</button><button class="cr-btn red" id="prOk">Guardar y publicar</button></div>
-    </div>`;
+      <nav class="cr-editor-nav" aria-label="Secciones del editor">
+        <button type="button" data-editor-jump="prBasicSection">1 · Datos generales</button>
+        <button type="button" data-editor-jump="prProductsSection">2 · Productos</button>
+        <button type="button" data-editor-jump="prPricingSection">3 · Beneficios y precios</button>
+      </nav>
+      <div class="cr-editor-scroll">
+        <section class="cr-editor-section" id="prBasicSection">
+          <div class="cr-section-title"><span>1</span><div><b>Datos generales</b><small>Título, vigencia, badge y estado.</small></div></div>
+          ${existing?'':`<div class="cr-note-inline" style="display:block;margin-bottom:10px">Plantilla rápida (opcional): ${Object.entries(PROMO_TEMPLATES).map(([key,tpl])=>`<button type="button" class="cr-btn ghost" data-promo-template="${key}" style="margin:4px 6px 0 0">${esc(tpl.label)}</button>`).join('')}</div>`}
+          <div class="cr-editor-grid">
+            <label class="cr-field wide">Título<input id="prTitle" value="${esc(promotion.title)}"></label>
+            <label class="cr-field wide">Descripción<textarea id="prDesc" rows="3">${esc(promotion.description||'')}</textarea></label>
+            <label class="cr-field">Inicio<input id="prStart" type="datetime-local" value="${esc((promotion.startsAt||'').slice(0,16))}"></label>
+            <label class="cr-field">Final<input id="prEnd" type="datetime-local" value="${esc((promotion.endsAt||'').slice(0,16))}"></label>
+            <label class="cr-field">Badge / etiqueta<input id="prBadge" value="${esc(promotion.badge||'')}" placeholder="Ej. Se va pronto"></label>
+            <label class="cr-field">Tipo de badge<select id="prBadgeTone">${Object.entries(BADGE_TONES).map(([key,label])=>`<option value="${key}" ${key===(promotion.badgeTone||'offer')?'selected':''}>${label}</option>`).join('')}</select><span class="cr-field-help">El badge se muestra sobre la tarjeta de la promoción en el catálogo.</span></label>
+          </div>
+          <div class="cr-publish-checks">
+            <label class="cr-check"><input id="prActive" type="checkbox" ${promotion.active?'checked':''}> Promoción activa</label>
+          </div>
+        </section>
+        <section class="cr-editor-section" id="prProductsSection">
+          <div class="cr-section-title"><span>2</span><div><b>Productos incluidos</b><small>Marque los productos que forman parte de esta promoción.</small></div></div>
+          <div class="cr-checks wide">${state.catalog.products.map((product)=>`<label class="cr-check"><input type="checkbox" data-pr-product="${esc(product.id)}" ${(promotion.productIds||[]).includes(product.id)?'checked':''}> ${esc(product.name)}</label>`).join('')||'<span class="cr-note-inline">Primero agregue un producto en la pestaña Productos — no aparece ninguno para elegir aquí.</span>'}</div>
+        </section>
+        <section class="cr-editor-section" id="prPricingSection">
+          <div class="cr-section-title"><span>3</span><div><b>Beneficios y precios</b><small>Uno por línea.</small></div></div>
+          <label class="cr-field wide">Beneficios · uno por línea<textarea id="prFeatures">${esc((promotion.features||[]).join('\n'))}</textarea></label>
+          <label class="cr-field wide">Precios / opciones · Nombre=Precio=Beneficio<textarea id="prOptions" placeholder="1 mes=110=Oferta especial">${esc((promotion.options||[]).map((option)=>`${option.label||''}=${option.price??''}=${option.bonus||''}`).join('\n'))}</textarea></label>
+        </section>
+        <div class="cr-modal-error" id="prError" hidden></div>
+      </div>
+      <div class="cr-actions cr-editor-actions"><button class="cr-btn danger" id="prDelete" ${existing?'':'hidden'}>Eliminar</button><button class="cr-btn ghost" id="prCancel">Cancelar</button><button class="cr-btn red" id="prOk">Guardar y publicar</button></div>
+    </div>`);
+    if(!modal)return;
     enhanceModal();
-    $('#prCancel').onclick=()=>{if(!state.saving)modal.hidden=true;};
+    modal.querySelectorAll('[data-editor-jump]').forEach((button)=>{
+      button.onclick=()=>{
+        const target=modal.querySelector('#'+button.dataset.editorJump);
+        if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+      };
+    });
+    modal.querySelectorAll('[data-promo-template]').forEach((button)=>{
+      button.onclick=()=>applyPromoTemplate(promotion,button.dataset.promoTemplate);
+    });
+    $('#prCancel').onclick=()=>{if(!state.saving)closeModal();};
     if(existing)$('#prDelete').onclick=async()=>{
       if(!confirm(`¿Eliminar la promoción “${promotion.title}”?`))return;
-      modal.hidden=true;
+      closeModal();
       await deletePromotion(existing.id,null,true);
     };
     $('#prOk').onclick=async()=>{
@@ -800,6 +801,8 @@
       promotion.startsAt=$('#prStart').value;
       promotion.endsAt=$('#prEnd').value;
       promotion.active=$('#prActive').checked;
+      promotion.badge=$('#prBadge').value.trim();
+      promotion.badgeTone=$('#prBadgeTone').value;
       promotion.features=$('#prFeatures').value.split('\n').map((item)=>item.trim()).filter(Boolean);
       promotion.productIds=[...modal.querySelectorAll('[data-pr-product]:checked')].map((input)=>input.dataset.prProduct);
       promotion.options=parseOptions($('#prOptions').value,promotion.options||[]);
@@ -810,6 +813,7 @@
       if(errors.length){
         state.catalog=before;
         const errorBox=$('#prError');errorBox.hidden=false;errorBox.textContent=errors[0];
+        errorBox.scrollIntoView({behavior:'smooth',block:'center'});
         return;
       }
       const button=$('#prOk');button.disabled=true;button.textContent='Publicando…';
