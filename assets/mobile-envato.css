@@ -678,3 +678,17 @@
     color:#9aa7b4!important;
   }
 }
+
+/* 2026-09-14 FIX: SubliBot no abría (o se veía tapado) en móvil.
+   El dock inferior nuevo (.sm-mobile-dock) y el panel "Nosotros" ya
+   tenían z-index muy altos (14000 y 13900) para no quedar debajo de
+   nada; #sb-pan y #sb-fab se quedaron en su z-index original (9999)
+   porque nunca se tocaron en esas correcciones. Si el cálculo de
+   --sm-view-bottom no coincide exactamente en algún equipo, el dock
+   (opaco, z-index más alto) queda por encima del chat y lo tapa o
+   impide tocar el botón de enviar. Subimos el chat por encima de
+   todo lo demás del shell móvil para que esto no vuelva a pasar. */
+@media (max-width:700px){
+  #sb-pan{z-index:14200!important;}
+  #sb-fab{z-index:14200!important;}
+}
