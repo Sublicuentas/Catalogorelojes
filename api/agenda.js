@@ -30,6 +30,7 @@ export default async function handler(req, res) {
       { key: "arg",           label: "🇦🇷 Liga Profesional Argentina", type: "espn", sport: "soccer", slug: "arg.1" },
       { key: "bra",           label: "🇧🇷 Brasileirão", type: "espn", sport: "soccer", slug: "bra.1" },
       { key: "eng",           label: "🏴 Premier League", type: "espn", sport: "soccer", slug: "eng.1", alwaysShow: true },
+      { key: "ksa",           label: "🇸🇦 Liga Saudí (Roshn League)", type: "espn", sport: "soccer", slug: "ksa.1", alwaysShow: true },
       { key: "esp",           label: "🇪🇸 LaLiga", type: "espn", sport: "soccer", slug: "esp.1" },
       { key: "copadelrey",    label: "🏆 Copa del Rey", type: "espn", sport: "soccer", slug: "esp.copa_del_rey" },
       { key: "ita",           label: "🇮🇹 Serie A", type: "espn", sport: "soccer", slug: "ita.1" },
