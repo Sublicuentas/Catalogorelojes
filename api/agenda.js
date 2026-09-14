@@ -114,7 +114,16 @@ async function fetchCat(c, espnDate, hnDate) {
       const r = await fetch(url, { signal: ctrl.signal });
       if (!r.ok) return [];
       const data = await r.json();
-      return (data.events || []).map((ev) => mapTsdbEvent(ev)).filter(Boolean);
+      // TheSportsDB a veces clasifica el partido bajo el día equivocado
+      // (usa otra referencia horaria para "eventsday"), lo que hacía que
+      // un partido de ayer (ya finalizado) apareciera dentro de "Hoy".
+      // Igual que ya se hace arriba con ESPN, se vuelve a validar cada
+      // partido contra la fecha pedida usando su hora real en Honduras;
+      // si no coincide (o no se puede calcular), se descarta.
+      return (data.events || [])
+        .map((ev) => mapTsdbEvent(ev))
+        .filter(Boolean)
+        .filter((ev) => isoDateHN(ev.fechaISO) === hnDate);
     }
     return [];
   } catch (e) {
@@ -136,6 +145,16 @@ function eventDateHN(ev) {
     const raw = (ev && ev.competitions && ev.competitions[0] && ev.competitions[0].date) || (ev && ev.date);
     if (!raw) return "";
     return new Date(new Date(raw).getTime() - 6 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  } catch (_) { return ""; }
+}
+
+// Misma idea que eventDateHN() pero para un ISO string ya calculado
+// (lo usan las fuentes, como TheSportsDB, que no traen el objeto crudo
+// del evento sino un fechaISO ya armado por mapTsdbEvent).
+function isoDateHN(iso) {
+  try {
+    if (!iso) return "";
+    return new Date(new Date(iso).getTime() - 6 * 60 * 60 * 1000).toISOString().slice(0, 10);
   } catch (_) { return ""; }
 }
 
