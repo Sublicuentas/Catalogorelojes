@@ -1932,6 +1932,20 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<!-- 2026-09-14 FIX RAÍZ: el <footer> de arriba (línea ~1635) nunca se
+     cerraba con </footer> en ningún punto del archivo. Por las reglas
+     de HTML, eso hacía que TODO lo que sigue en el documento —incluidos
+     el botón flotante y el panel de SubliBot que empiezan más abajo—
+     quedara "dentro" del footer sin que nadie lo notara en el código.
+     En escritorio no se nota porque el footer se ve normal, pero en
+     móvil existe la regla "body>footer{display:none!important}" (para
+     dar paso al dock nuevo de abajo), y esa regla apagaba también a
+     SubliBot por estar adentro. El botón sí ejecutaba mascotAbrirChat()
+     y le agregaba la clase "open" al panel, pero el panel no podía
+     pintarse porque todo su contenedor estaba oculto. Cerrando el
+     footer aquí, SubliBot vuelve a ser un elemento independiente de
+     <body> y ya no lo apaga esa regla. -->
+</footer>
 
 <!-- SUBLIBOT -->
 <style>
