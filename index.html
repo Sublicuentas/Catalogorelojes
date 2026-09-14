@@ -2308,41 +2308,11 @@ function mascotAbrirChat(){ var pan=sbEl('sb-pan'), fab=sbEl('sb-fab'); if(!pan)
 document.addEventListener('DOMContentLoaded',function(){ var ta=sbEl('sb-ta'); if(ta){ta.addEventListener('input',function(){this.style.height='auto'; this.style.height=Math.min(this.scrollHeight,90)+'px';});} /* fab ocultado - se usa mascot-btn en su lugar */ });
 </script>
 
-
-<script>
-// Mascot button safe opener - waits for sbOpen to be ready
-function mascotAbrirChat() {
-  var pan = document.getElementById('sb-pan');
-  if (!pan) return;
-  pan.classList.add('open');
-  pan.classList.remove('minimized');
-  sbWelcome();
-  setTimeout(function() {
-    var m = document.getElementById('sb-msgs');
-    if (m) m.scrollTop = m.scrollHeight;
-  }, 400);
-}
-
-function sbMinimizar() {
-  var pan = document.getElementById('sb-pan');
-  if (!pan) return;
-  if (pan.classList.contains('minimized')) {
-    pan.classList.remove('minimized');
-  } else {
-    pan.classList.add('minimized');
-  }
-}
-
-function sbCerrar() {
-  var pan = document.getElementById('sb-pan');
-  var fab = document.getElementById('sb-fab');
-  if (pan) {
-    pan.classList.remove('open');
-    pan.classList.remove('minimized');
-  }
-  if (fab) fab.classList.remove('open');
-}
-</script>
+<!-- 2026-09-14 FIX: se quitó un <script> duplicado que redefinía
+     mascotAbrirChat/sbMinimizar/sbCerrar y pisaba silenciosamente la
+     versión de arriba (la que sí sincroniza la clase "open" del
+     botón flotante #sb-fab). Con dos definiciones del mismo nombre
+     solo la última quedaba activa; ahora solo existe una, consistente. -->
 
 <script>
 (function(){
