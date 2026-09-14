@@ -1955,15 +1955,6 @@ document.addEventListener('DOMContentLoaded', function() {
 #sb-fab .sb-x{display:none;font-size:22px;color:#E50914;font-weight:900;line-height:1;width:100%;text-align:center;}
 #sb-fab.open img{display:none;}
 #sb-fab.open .sb-x{display:block;}
-/* Botón flotante "Ofertas" — pedido explícito: debe verse siempre (móvil Y
-   escritorio), incluso donde #sb-fab se oculta (desktop usa .hdr-sublibot-btn
-   en el header en vez del círculo flotante). Por eso NO depende de ningún
-   media query: queda fijo en la esquina en todos los tamaños. */
-#sb-ofertas-fab{position:fixed;bottom:92px;right:18px;width:58px;height:58px;background:#fff;border:2.5px solid #E50914;border-radius:50%;box-shadow:0 4px 20px rgba(229,9,20,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;cursor:pointer;z-index:9998;outline:none;padding:0;}
-#sb-ofertas-fab img{width:24px;height:24px;object-fit:contain;}
-#sb-ofertas-fab span{font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:900;color:#E50914;line-height:1;text-transform:uppercase;letter-spacing:.3px;}
-#sb-ofertas-fab:active{transform:scale(.92)}
-@media(max-width:480px){#sb-ofertas-fab{width:52px;height:52px;bottom:82px}#sb-ofertas-fab img{width:21px;height:21px}#sb-ofertas-fab span{font-size:7px}}
 #sb-pan{position:fixed;bottom:90px;right:14px;width:calc(100vw - 28px);max-width:420px;height:66vh;max-height:560px;background:#FFFFFF;border:1px solid #E7DDD5;border-radius:22px;box-shadow:0 8px 40px rgba(0,0,0,.22);display:flex;flex-direction:column;z-index:9999;overflow:hidden;transform:scale(.88) translateY(16px);opacity:0;pointer-events:none;transform-origin:bottom right;transition:transform .28s cubic-bezier(.22,.8,.2,1),opacity .25s ease;}
 #sb-pan.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all;}
 .sb-hdr{background:#111;padding:10px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
@@ -2015,11 +2006,6 @@ document.addEventListener('DOMContentLoaded', function() {
 #sb-snd:disabled{opacity:.35;cursor:not-allowed;}
 #sb-snd svg{width:17px;height:17px;fill:#fff;}
 </style>
-
-<button id="sb-ofertas-fab" onclick="openTabById('promos')" aria-label="Ver ofertas y promociones">
-  <img src="/mobile-icons/ofertas.png" alt="Ofertas"/>
-  <span>Ofertas</span>
-</button>
 
 <button id="sb-fab" onclick="sbOpen()">
   <img src="/assets/sublibot-catalogo.png?v=20260824-v2" alt="SubliBot"/>
@@ -7476,7 +7462,6 @@ footer{padding-bottom:78px!important}
   }
   #sb-pan.open{transform:translateX(0)!important}
   #sb-fab{display:none!important}
-  #sb-ofertas-fab{display:none!important}
 }
 @media (max-width:899px){
   .subli-side-panel,.subli-side-panel-backdrop,.hdr-nav-desktop,.hdr-sublibot-btn,.hdr-ofertas-btn,.hdr-inicio-btn,.foot-nosotros-link{display:none!important}
