@@ -2,6 +2,11 @@ import { loadCatalogSnapshot } from './_lib/catalog-store.js';
 import { publicCatalog } from './_lib/catalog.js';
 
 export default async function handler(req, res) {
+  // This route only exposes the public catalog, without cookies or credentials.
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  if (req.method === 'OPTIONS') return res.status(204).end();
+
   if (req.method !== 'GET') {
     return res.status(405).json({ ok: false, error: 'Método no permitido.' });
   }
