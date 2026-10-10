@@ -1117,11 +1117,15 @@ async function fetchCat(c, espnDate, hnDate) {
       // Un partido nocturno en Honduras puede caer en el día siguiente en UTC.
       // Pedimos una ventana de dos días y luego filtramos estrictamente por fecha HN.
       const nextEspnDate = addDaysISO(hnDate, 1).replace(/-/g, "");
-      const url = `https://site.api.espn.com/apis/site/v2/sports/${c.sport}/${c.slug}/scoreboard?dates=${espnDate}-${nextEspnDate}&limit=200`;
-      const r = await fetch(url, { signal: ctrl.signal });
-      if (!r.ok) return c.key === "centralamerica" ? centralAmericaFallback(hnDate) : [];
-      const data = await r.json();
-      const events = (data.events || []).filter((ev) => eventDateHN(ev) === hnDate);
+      const feeds = await Promise.all([espnDate, nextEspnDate].map(async date => {
+        const url = `https://site.api.espn.com/apis/site/v2/sports/${c.sport}/${c.slug}/scoreboard?dates=${date}&limit=200`;
+        const r = await fetch(url, {signal:ctrl.signal});
+        if (!r.ok) return [];
+        const data = await r.json();
+        return data.events || [];
+      }));
+      const unique = new Map(feeds.flat().map(ev => [ev.id || ev.uid, ev]));
+      const events = [...unique.values()].filter(ev => eventDateHN(ev) === hnDate);
       const mapped = events.flatMap((ev) => {
         if (c.sport === "mma" && ev.competitions && ev.competitions.length) {
           return ev.competitions.map((comp) => mapEspnEvent(ev, comp)).filter(Boolean);
