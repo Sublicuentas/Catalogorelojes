@@ -613,7 +613,7 @@ export const DEFAULT_CATALOG = {
         'Compatible con Smart TV Samsung y LG, Android TV, TV Box, Fire TV, celular, tablet y PC',
         'Usuario y contraseña · instalación sencilla',
         'Cada perfil queda en un solo dispositivo',
-        'Demo de hasta 6 horas para fútbol y deportes en vivo'
+        'Demo gratis de 6 horas, ideal para fútbol y deportes en vivo'
       ],
       plans: [
         {
