@@ -679,6 +679,74 @@ export const DEFAULT_CATALOG = {
       ]
     },
     {
+      id: 'nanotech-tv',
+      name: 'Nanotech TV',
+      categoryId: 'iptv',
+      active: true,
+      storeEnabled: true,
+      availability: 'available',
+      order: 50,
+      accent: '#0B63E5',
+      visual: 'NANO',
+      imageUrl: '/assets/nanotech.webp',
+      summary: 'TV, películas, series y deportes en una sola opción.',
+      productFeatures: [
+        'Más de 2,000 canales en vivo',
+        'Más de 25,000 películas y 3,000 series',
+        'Deportes y eventos premium',
+        'Calidad SD, HD y FHD',
+        'Disponible en varios dispositivos según el plan',
+        'Demo gratis de 6 horas'
+      ],
+      plans: [
+        {
+          id: 'device-1',
+          name: 'Plan 1 · 1 dispositivo',
+          price: 100,
+          billingLabel: 'desde',
+          active: true,
+          availability: 'available',
+          badge: '',
+          options: [
+            { id: '1m', label: '1 mes', price: 100, bonus: '' },
+            { id: '3m', label: '3 meses', price: 240, bonus: 'Recomendado' },
+            { id: '6m', label: '6 meses', price: 420, bonus: 'Paga 5, recibe 6' },
+            { id: '12m', label: '12 meses', price: 740, bonus: 'Paga 9, recibe 12' }
+          ]
+        },
+        {
+          id: 'device-2',
+          name: 'Plan 2 · 2 dispositivos',
+          price: 140,
+          billingLabel: 'desde',
+          active: true,
+          availability: 'available',
+          badge: '',
+          options: [
+            { id: '1m', label: '1 mes', price: 140, bonus: '' },
+            { id: '3m', label: '3 meses', price: 360, bonus: 'Recomendado' },
+            { id: '6m', label: '6 meses', price: 620, bonus: 'Paga 5, recibe 6' },
+            { id: '12m', label: '12 meses', price: 1100, bonus: 'Paga 9, recibe 12' }
+          ]
+        },
+        {
+          id: 'device-3',
+          name: 'Plan 3 · 3 dispositivos',
+          price: 170,
+          billingLabel: 'desde',
+          active: true,
+          availability: 'available',
+          badge: '',
+          options: [
+            { id: '1m', label: '1 mes', price: 170, bonus: '' },
+            { id: '3m', label: '3 meses', price: 450, bonus: 'Recomendado' },
+            { id: '6m', label: '6 meses', price: 770, bonus: 'Paga 5, recibe 6' },
+            { id: '12m', label: '12 meses', price: 1370, bonus: 'Paga 9, recibe 12' }
+          ]
+        }
+      ]
+    },
+    {
       id: 'free-fire',
       name: 'Free Fire',
       categoryId: 'gaming',
