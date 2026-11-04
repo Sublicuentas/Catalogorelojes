@@ -597,6 +597,88 @@ export const DEFAULT_CATALOG = {
       ]
     },
     {
+      id: 'icomplay',
+      name: 'Icomplay',
+      categoryId: 'iptv',
+      active: true,
+      storeEnabled: true,
+      availability: 'available',
+      order: 40,
+      accent: '#E3141B',
+      visual: 'ICOM',
+      imageUrl: '/assets/icomplay.webp',
+      summary: 'TV en vivo, deportes, películas y series con reproductor incluido.',
+      productFeatures: [
+        'Reproductor incluido en todos los planes',
+        'Compatible con Smart TV Samsung y LG, Android TV, TV Box, Fire TV, celular, tablet y PC',
+        'Usuario y contraseña · instalación sencilla',
+        'Cada perfil queda en un solo dispositivo',
+        'Demo de hasta 6 horas para fútbol y deportes en vivo'
+      ],
+      plans: [
+        {
+          id: 'screen-1',
+          name: 'Plan 1 · 1 pantalla',
+          price: 179,
+          billingLabel: 'desde',
+          active: true,
+          availability: 'available',
+          badge: '',
+          options: [
+            { id: '1m', label: '1 mes', price: 179, bonus: '' },
+            { id: '3m', label: '3 meses', price: 499, bonus: 'Precio especial' },
+            { id: '6m', label: '6 meses', price: 949, bonus: 'Ahorrás más' },
+            { id: '12m', label: '12 meses', price: 1799, bonus: 'Mejor precio del año' }
+          ]
+        },
+        {
+          id: 'screen-3',
+          name: 'Plan 3 · 3 pantallas',
+          price: 249,
+          billingLabel: 'desde',
+          active: true,
+          availability: 'available',
+          badge: 'Más elegido',
+          options: [
+            { id: '1m', label: '1 mes', price: 249, bonus: '' },
+            { id: '3m', label: '3 meses', price: 699, bonus: 'Precio especial' },
+            { id: '6m', label: '6 meses', price: 1349, bonus: 'Ahorrás más' },
+            { id: '12m', label: '12 meses', price: 2499, bonus: 'Mejor precio del año' }
+          ]
+        },
+        {
+          id: 'screen-5',
+          name: 'Plan 5 · 5 pantallas',
+          price: 329,
+          billingLabel: 'desde',
+          active: true,
+          availability: 'available',
+          badge: '',
+          options: [
+            { id: '1m', label: '1 mes', price: 329, bonus: '' },
+            { id: '3m', label: '3 meses', price: 929, bonus: 'Precio especial' },
+            { id: '6m', label: '6 meses', price: 1799, bonus: 'Ahorrás más' },
+            { id: '12m', label: '12 meses', price: 3399, bonus: 'Mejor precio del año' }
+          ]
+        },
+        {
+          id: 'screen-7',
+          name: 'Plan 7 · 7 pantallas',
+          price: 399,
+          billingLabel: 'desde',
+          active: true,
+          availability: 'available',
+          badge: '',
+          options: [
+            { id: '1m', label: '1 mes', price: 399, bonus: '' },
+            { id: '3m', label: '3 meses', price: 1129, bonus: 'Precio especial' },
+            { id: '6m', label: '6 meses', price: 2199, bonus: 'Ahorrás más' },
+            { id: '12m', label: '12 meses', price: 4199, bonus: 'Mejor precio del año' }
+          ]
+        }
+      ]
+    },
+    {
       id: 'free-fire',
       name: 'Free Fire',
       categoryId: 'gaming',
