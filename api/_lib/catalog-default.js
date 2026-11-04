@@ -405,7 +405,7 @@ export const DEFAULT_CATALOG = {
       order: 10,
       accent: '#1768E5',
       visual: 'O',
-      imageUrl: '/assets/oleada-tv.webp',
+      imageUrl: '/assets/tv/oleada-tv.webp',
       summary: 'Películas, series y deportes para Android y web.',
       productFeatures: [
         'Compatible con Android, Android TV, TV Box, TV Stick y web',
@@ -453,7 +453,7 @@ export const DEFAULT_CATALOG = {
       order: 20,
       accent: '#D4AF37',
       visual: 'LATIN',
-      imageUrl: '/assets/latin-tv.webp',
+      imageUrl: '/assets/tv/latin-tv.webp',
       summary: 'Canales, películas, series y deportes en vivo.',
       productFeatures: [
         'Más de 5,000 canales en vivo',
@@ -529,7 +529,7 @@ export const DEFAULT_CATALOG = {
       order: 30,
       accent: '#C58A14',
       visual: '🦁',
-      imageUrl: '/assets/lion-tv.webp',
+      imageUrl: '/assets/tv/lion-tv.webp',
       summary: 'IPTV estable por conexiones con demo de 6 horas.',
       productFeatures: [
         'Activación inmediata',
@@ -606,7 +606,7 @@ export const DEFAULT_CATALOG = {
       order: 40,
       accent: '#E3141B',
       visual: 'ICOM',
-      imageUrl: '/assets/icomplay.webp',
+      imageUrl: '/assets/tv/icomplay.webp',
       summary: 'TV en vivo, deportes, películas y series con reproductor incluido.',
       productFeatures: [
         'Reproductor incluido en todos los planes',
@@ -688,7 +688,7 @@ export const DEFAULT_CATALOG = {
       order: 50,
       accent: '#0B63E5',
       visual: 'NANO',
-      imageUrl: '/assets/nanotech.webp',
+      imageUrl: '/assets/tv/nanotech.webp',
       summary: 'TV, películas, series y deportes en una sola opción.',
       productFeatures: [
         'Más de 2,000 canales en vivo',
