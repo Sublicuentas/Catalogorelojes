@@ -11,7 +11,7 @@ export const DEFAULT_CATALOG = {
     brand: 'Sublicuentas',
     slogan: 'Conectamos tu entretenimiento',
     currency: 'HNL',
-    currencyLabel: 'Lps.',
+    currencyLabel: 'L',
     locale: 'es-HN',
     whatsapp: '50432126332',
     pointsPerConfirmedPurchase: 10,

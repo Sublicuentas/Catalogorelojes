@@ -46,7 +46,7 @@
   function formatPrice(value) {
     if (value === null || value === undefined || value === '') return 'Consultar';
     var settings = state.catalog && state.catalog.settings || {};
-    return (settings.currencyLabel || 'Lps.') + ' ' + Number(value).toLocaleString(
+    return (settings.currencyLabel || 'L') + (/^[A-Za-z]$/.test(settings.currencyLabel || 'L') ? '' : ' ') + Number(value).toLocaleString(
       settings.locale || 'es-HN',
       { minimumFractionDigits: Number(value)%1 ? 2 : 0, maximumFractionDigits: 2 }
     );

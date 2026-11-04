@@ -85,7 +85,8 @@
   }
   function priceText(value, catalog) {
     if (value === null || value === undefined || value === '') return 'Consultar disponibilidad';
-    return (catalog.settings.currencyLabel || 'Lps.') + ' ' + formatNumber(value, catalog);
+    var label = catalog.settings.currencyLabel || 'L';
+    return label + (/^[A-Za-z]$/.test(label) ? '' : ' ') + formatNumber(value, catalog);
   }
   function safeAccent(value) {
     return /^#[0-9a-f]{3,8}$/i.test(String(value || '')) ? value : '#E2231A';
@@ -616,7 +617,7 @@
       '<div class="subli-offer-option-copy"><strong>' + escapeHtml(label) + '</strong>' +
       (bonus ? '<small>' + escapeHtml(bonus) + '</small>' : '') + '</div>' +
       '<div class="subli-offer-option-price"><small>' +
-      escapeHtml((catalog.settings || {}).currencyLabel || 'Lps.') + '</small><b>' +
+      escapeHtml((catalog.settings || {}).currencyLabel || 'L') + '</small><b>' +
       escapeHtml(formatNumber(option.price, catalog)) + '</b></div>' +
       '<a class="subli-offer-option-cta" target="_blank" rel="noopener" href="https://wa.me/' +
       escapeHtml(phone) + '?text=' + encodeURIComponent(message) + '" aria-label="Solicitar ' +
@@ -786,7 +787,7 @@
     var catalog = homeCatalogState.catalog || {};
     var settings = catalog.settings || {};
     if (value === null || value === undefined || value === '') return 'Consultar';
-    return (settings.currencyLabel || 'Lps.') + ' ' + Number(value).toLocaleString(
+    return (settings.currencyLabel || 'L') + (/^[A-Za-z]$/.test(settings.currencyLabel || 'L') ? '' : ' ') + Number(value).toLocaleString(
       settings.locale || 'es-HN',
       { minimumFractionDigits: Number(value)%1 ? 2 : 0, maximumFractionDigits: 2 }
     );

@@ -63,7 +63,7 @@
   }
   function formatPrice(value) {
     if (value === null || value === undefined || value === '') return 'Consultar';
-    return 'Lps. ' + Number(value).toLocaleString('es-HN', { maximumFractionDigits: 2 });
+    return 'L' + Number(value).toLocaleString('es-HN', { maximumFractionDigits: 2 });
   }
   function visualMarkup(item, className) {
     var body = item.imageUrl
