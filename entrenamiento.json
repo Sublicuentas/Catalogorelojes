@@ -17,67 +17,67 @@
       {
         "nombre": "Netflix Cuenta Premium",
         "precio_mes": 130,
-        "moneda": "Lps",
+        "moneda": "L",
         "detalles": "1 dispositivo, acceso por PIN, código de hogar válido 20 días"
       },
       {
         "nombre": "Netflix VIP",
         "precio_mes": 150,
-        "moneda": "Lps",
+        "moneda": "L",
         "detalles": "Correo y clave propios, multidispositivo, sin restricción de código de hogar"
       },
       {
         "nombre": "Disney+ Premium",
         "precio_mes": 100,
-        "moneda": "Lps",
+        "moneda": "L",
         "detalles": "Incluye ESPN"
       },
       {
         "nombre": "Disney+ Básico",
         "precio_mes": 60,
-        "moneda": "Lps",
+        "moneda": "L",
         "detalles": "Acceso básico sin ESPN"
       },
       {
         "nombre": "HBO Max",
         "precio_mes": 70,
-        "moneda": "Lps",
+        "moneda": "L",
         "detalles": "Series y películas HBO, DC y Warner"
       },
       {
         "nombre": "Prime Video",
         "precio_mes": 70,
-        "moneda": "Lps",
+        "moneda": "L",
         "detalles": "Amazon Prime Video"
       },
       {
         "nombre": "Crunchyroll",
         "precio_mes": 70,
-        "moneda": "Lps",
+        "moneda": "L",
         "detalles": "Plataforma de anime"
       },
       {
         "nombre": "Vix",
         "precio_mes": 70,
-        "moneda": "Lps",
+        "moneda": "L",
         "detalles": "Novelas mexicanas y TV en vivo en español"
       },
       {
         "nombre": "Paramount+",
         "precio_mes": 70,
-        "moneda": "Lps",
+        "moneda": "L",
         "detalles": "Incluye UFC en vivo"
       },
       {
         "nombre": "Viki Rakuten",
         "precio_mes": 80,
-        "moneda": "Lps",
+        "moneda": "L",
         "detalles": "K-dramas y contenido asiático"
       },
       {
         "nombre": "YouTube Premium",
         "precio_mes": 110,
-        "moneda": "Lps",
+        "moneda": "L",
         "detalles": "Sin anuncios, reproducción en segundo plano"
       }
     ],
@@ -85,13 +85,13 @@
       {
         "nombre": "Spotify Premium",
         "precio_mes": 110,
-        "moneda": "Lps",
+        "moneda": "L",
         "detalles": "Música sin anuncios, modo sin conexión"
       },
       {
         "nombre": "Deezer Premium",
         "precio_mes": 80,
-        "moneda": "Lps",
+        "moneda": "L",
         "detalles": "Música en alta calidad"
       }
     ],
@@ -99,25 +99,25 @@
       {
         "nombre": "ChatGPT Plus",
         "precio_mes": 170,
-        "moneda": "Lps",
+        "moneda": "L",
         "detalles": "Acceso a GPT-4 sin límites"
       },
       {
         "nombre": "Gemini Plus",
         "precio_mes": 170,
-        "moneda": "Lps",
+        "moneda": "L",
         "detalles": "IA de Google avanzada"
       },
       {
         "nombre": "Canva Edu Pro",
         "precio_desde_mes": 50,
-        "moneda": "Lps",
+        "moneda": "L",
         "detalles": "Diseño profesional, plan educativo"
       },
       {
         "nombre": "Office 365",
         "precio_anio": 350,
-        "moneda": "Lps",
+        "moneda": "L",
         "detalles": "Word, Excel, PowerPoint y más"
       }
     ],
@@ -125,7 +125,7 @@
       {
         "nombre": "Oleada TV IPTV",
         "precio_desde_mes": 80,
-        "moneda": "Lps",
+        "moneda": "L",
         "detalles": "Canales en vivo, deportes, películas. Consultar paquetes disponibles en WhatsApp"
       },
       {
@@ -157,71 +157,71 @@
       "producto": "Vix",
       "duracion": "3 meses",
       "precio_promo": 120,
-      "moneda": "Lps",
-      "ahorro": "Lps. 90 vs precio normal"
+      "moneda": "L",
+      "ahorro": "L90 vs precio normal"
     },
     {
       "producto": "Crunchyroll",
       "duracion": "3 meses",
       "precio_promo": 180,
-      "moneda": "Lps",
-      "ahorro": "Lps. 30 vs precio normal"
+      "moneda": "L",
+      "ahorro": "L30 vs precio normal"
     },
     {
       "producto": "Prime Video",
       "duracion": "3 meses",
       "precio_promo": 180,
-      "moneda": "Lps",
-      "ahorro": "Lps. 30 vs precio normal"
+      "moneda": "L",
+      "ahorro": "L30 vs precio normal"
     },
     {
       "producto": "Paramount+",
       "duracion": "3 meses",
       "precio_promo": 180,
-      "moneda": "Lps",
-      "ahorro": "Lps. 30 vs precio normal"
+      "moneda": "L",
+      "ahorro": "L30 vs precio normal"
     },
     {
       "producto": "HBO Max",
       "duracion": "3 meses",
       "precio_promo": 180,
-      "moneda": "Lps",
-      "ahorro": "Lps. 30 vs precio normal"
+      "moneda": "L",
+      "ahorro": "L30 vs precio normal"
     },
     {
       "producto": "Disney+",
       "duracion": "3 meses",
       "precio_promo": 150,
-      "moneda": "Lps",
-      "ahorro": "Lps. 30 vs precio normal básico"
+      "moneda": "L",
+      "ahorro": "L30 vs precio normal básico"
     },
     {
       "producto": "Deezer",
       "duracion": "3 meses",
       "precio_promo": 190,
-      "moneda": "Lps",
-      "ahorro": "Lps. 50 vs precio normal"
+      "moneda": "L",
+      "ahorro": "L50 vs precio normal"
     },
     {
       "producto": "Deezer",
       "duracion": "6 meses",
       "precio_promo": 380,
-      "moneda": "Lps",
-      "ahorro": "Lps. 100 vs precio normal"
+      "moneda": "L",
+      "ahorro": "L100 vs precio normal"
     }
   ],
   "ejemplos_respuesta": [
     {
       "pregunta": "¿Cuánto cuesta Netflix?",
-      "respuesta": "Manejamos dos opciones de Netflix: **Premium** a Lps. 130/mes (1 dispositivo con PIN) y **VIP** a Lps. 150/mes (correo y clave propios, multidispositivo). ¿Cuál le interesa?"
+      "respuesta": "Manejamos dos opciones de Netflix: **Premium** a L130/mes (1 dispositivo con PIN) y **VIP** a L150/mes (correo y clave propios, multidispositivo). ¿Cuál le interesa?"
     },
     {
       "pregunta": "¿Tienen algo más barato de streaming?",
-      "respuesta": "¡Claro! Tenemos Disney+ Básico a Lps. 60/mes, y HBO Max, Prime Video, Crunchyroll, Vix y Paramount+ desde Lps. 70/mes. También contamos con promos de 3 meses con descuento. ¿Le interesa alguno?"
+      "respuesta": "¡Claro! Tenemos Disney+ Básico a L60/mes, y HBO Max, Prime Video, Crunchyroll, Vix y Paramount+ desde L70/mes. También contamos con promos de 3 meses con descuento. ¿Le interesa alguno?"
     },
     {
       "pregunta": "¿Tienen alguna promoción?",
-      "respuesta": "¡Sí! Contamos con promos activas: Vix 3 meses Lps. 120, Disney+ 3 meses Lps. 150, HBO Max / Prime / Crunchyroll / Paramount+ 3 meses a Lps. 180, y Deezer 3 meses Lps. 190 o 6 meses Lps. 380. ¿Le interesa alguna?"
+      "respuesta": "¡Sí! Contamos con promos activas: Vix 3 meses L120, Disney+ 3 meses L150, HBO Max / Prime / Crunchyroll / Paramount+ 3 meses a L180, y Deezer 3 meses L190 o 6 meses L380. ¿Le interesa alguna?"
     },
     {
       "pregunta": "¿Me pueden hacer un descuento?",

@@ -334,8 +334,8 @@ export function publicCatalog(input, now = new Date()) {
 export function formatPrice(value, settings = {}) {
   if (value === null || value === undefined || value === '') return 'Consultar disponibilidad';
   const locale = settings.locale || 'es-HN';
-  const currencyLabel = settings.currencyLabel || 'Lps.';
-  return `${currencyLabel} ${Number(value).toLocaleString(locale, {
+  const currencyLabel = settings.currencyLabel || 'L';
+  return `${currencyLabel}${/^[A-Za-z]$/.test(currencyLabel) ? '' : ' '}${Number(value).toLocaleString(locale, {
     minimumFractionDigits: Number(value) % 1 ? 2 : 0,
     maximumFractionDigits: 2
   })}`;
